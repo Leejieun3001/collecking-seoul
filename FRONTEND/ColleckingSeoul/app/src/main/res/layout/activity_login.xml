@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="kr.ac.sungshin.colleckingseoul.LoginActivity">
+    android:orientation="vertical"
+    tools:context="kr.ac.sungshin.colleckingseoul.login.LoginActivity">
     <Button
-        android:id="@+id/button_login_facebook"
+        android:id="@+id/login_button_facebook"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="facebook 으로 로그인 하기"/>
+    <Button
+        android:id="@+id/login_button_kakao"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/kakao_login_button"/>
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

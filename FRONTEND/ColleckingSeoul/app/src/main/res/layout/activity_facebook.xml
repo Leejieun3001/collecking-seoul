@@ -4,11 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="kr.ac.sungshin.colleckingseoul.LoginActivity">
-    <Button
-        android:id="@+id/button_login_facebook"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="facebook 으로 로그인 하기"/>
+    tools:context="kr.ac.sungshin.colleckingseoul.FacebookActivity">
 
 </android.support.constraint.ConstraintLayout>

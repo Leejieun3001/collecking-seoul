@@ -1,7 +1,19 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        release {
+            keyAlias 'colleckingHash'
+            keyPassword 'wldms4292!'
+            storeFile file('collecking_hashkey.jks')
+            storePassword 'wldms4292!'
+        }
+    }
     compileSdkVersion 26
+    //레트로핏
+    repositories {
+        mavenCentral()
+    }
     defaultConfig {
         applicationId "kr.ac.sungshin.colleckingseoul"
         minSdkVersion 15
@@ -14,15 +26,18 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    //페이스북 로그인
+    compile 'com.facebook.android:facebook-android-sdk:4.+'
 }

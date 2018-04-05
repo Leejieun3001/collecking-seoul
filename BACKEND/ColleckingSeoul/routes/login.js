@@ -10,7 +10,7 @@ const errorConfig =  require('../config/error');
 
 /**
  * api 목적        : 로그인 (일반)
- * request params : {string id: "아이디", string spassword: "비밀번호"}
+ * request params : {string id: "아이디", string password: "비밀번호"}
  */
 router.post('/', function (req, res) {
     let resultJson = {
@@ -21,89 +21,166 @@ router.post('/', function (req, res) {
 
     let checkValid = function (connection, callback) {
         let result = globalModule.checkBasicValid(req.body);
-        if (result !== "FINE") {
-            resultJson.code = result.code;
-            resultJson.message = result.message;
-            res.status(200).send(resultJson);
+        if (result !== "OK") {
+            res.status(200).send(result);
             callback("ALREADY_SEND_MESSAGE", connection, "api : /login/");
         } else {
-            callback(null, connection, "api : /login/");
+            callback(null, connection);
         }
     }
 
     let selectUserInfo = function (connection, callback) {
         connection.query('select * from User where id = ?', req.body.id, function (error, rows) {
-            if (error) {
-                callback(error, connection, "Selecet query Error : ");
-            } else {
-                callback(null, connection, rows);
+            if (error) callback(error, connection, "Selecet query Error : ");
+            else {
+                if (rows.length === 0) {
+                    // 존재하는 아이디가 없는 경우
+                    res.status(200).send(errorConfig.NOT_SIGN_UP);
+                    callback("ALREADY_SEND_MESSAGE", connection, "api : /login/");
+                } else {
+                    if (rows[0].snsCategory !== 0) {
+                        res.status(200).send(errorConfig.IS_SNS_ACCOUNT);
+                        callback("ALREADY_SEND_MESSAGE", connection, "api : /login/");
+                    } else {
+                        callback(null, connection, rows);
+                    }
+                }
             }
         });
     }
 
-    var onSelectComlete = function (connection, rows, callback) {
-        if (rows.length === 0) {
-            // 존재하는 아이디가 없는 경우
-            console.log("존재하는 아이디 없음");
-            resultJson = errorConfig.NO_INFO;
-            res.status(200).send(resultJson);
-            callback("ALREADY_SEND_MESSAGE", connection, "api : /login/");
-        } else {
-            console.log("입력한 비밀번호" + req.body.password);
-            console.log("DB 에 저장된 " + rows[0].password);
+    let comparePW = function (connection, rows, callback) {
+        bcrypt.compare(req.body.password, rows[0].password, function (err, isCorrect) {
+            // isCorrect === true : 일치, isCorrect === false : 불일치
+            if (err) {
+                res.status(200).send(errorConfig.NOT_SIGN_UP);
+                callback(err, connection, "Bcrypt Error : ");
+            }
 
-            bcrypt.compare(req.body.password, rows[0].password, function (err, isCorrect) {
-                // isCorrect === true : 일치, isCorrect === false : 불일치
-                if (err) {
-                    resultJson = errorConfig.NOT_SIGN_UP;
-                    res.status(200).send(resultJson);
-                    callback(err, connection, "Bcrypt Error : ");
-                }
-
-                if (!isCorrect) {
-                    resultJson = "NOT_SIGN_UP";
-                } else {
-                    resultJson.message = "SUCCESS";
-                    resultJson.user = {
-                        idx: rows[0].idx,
-                        id: rows[0].id,
-                        nickname: rows[0].nickname,
-                        phone: rows[0].phone,
-                        birth: rows[0].birth
-                    };
-                    resultJson.token = jwtModule.makeToken(rows[0]);
-                }
+            if (!isCorrect) {
+                res.status(200).send(errorConfig.INCORRECT_PASSWORD);
+            } else {
+                resultJson.message = "SUCCESS";
+                resultJson.user = {
+                    idx: rows[0].idx,
+                    id: rows[0].id,
+                    nickname: rows[0].nickname,
+                    phone: rows[0].phone,
+                    birth: rows[0].birth
+                };
+                resultJson.token = jwtModule.makeToken(rows[0]);
                 res.status(200).send(resultJson);
-                callback(null, connection, "api : /login/");
-            });
-        }
+            }
+            callback(null, connection, "api : /login/");
+        });
     }
 
-    var task = [globalModule.connect.bind(this), checkValid, selectUserInfo, onSelectComlete, globalModule.releaseConnection.bind(this)];
-
-    async.waterfall(task, function (err, connection, result) {
-        if (connection) {
-            connection.release();
-        }
-
-        if (!!err) {
-            console.log(result, err.message);
-            if (err !== "ALREADY_SEND_MESSAGE") {
-                resultJson.message = "FAILURE";
-                res.status(503).send(resultJson);
-            }
-        } else {
-            console.log(result);
-        }
-    });
+    var task = [globalModule.connect.bind(this), checkValid, selectUserInfo, comparePW, globalModule.releaseConnection.bind(this)];
+    async.waterfall(task, globalModule.asyncCallback.bind(this));
 });
 
 /**
  * api 목적        : 로그인 (sns)
- * request params : {string id: "아이디", string spassword: "비밀번호"}
+ * request params : {
+ *                      string id: "아이디", 
+ *                      string accessToken: "비밀번호",
+ *                      string birth: 19950825,
+ *                      string phone: 01040908370,
+ *                      File profileUrl: profile,
+ *                      int snsCategory: 1
+ *                  }
  */
 router.post('/sns', function (req, res) {
-    
+    let resultJson = {
+        message: '',
+        code:"",
+        user: null
+    };
+
+    let checkValid = function (connection, callback) {
+        let result = globalModule.checkBasicValid(req.body);
+        if (result !== "OK") {
+            res.status(200).send(result);
+            callback("ALREADY_SEND_MESSAGE", connection, "api : /login/sns");
+        } else {
+            callback(null, connection);
+        }
+    }
+
+    let selectUserInfo = function (connection, callback) {
+        connection.query('select * from User ' + 
+                    'left outer join Photo ' + 
+                    'on User.idx=Photo.user_idx ' + 
+                    'where id = ?', req.body.id, function (error, rows) {
+            if (error) callback(error, connection, "Selecet query Error : ");
+            else {
+                if (rows.length === 0) joinForSns(connection, callback);
+                else {
+                    if (rows[0].snsCategory === req.body.snsCategory) {
+                        callback(null, connection, rows);
+                    } else {
+                        res.status(200).send(errorConfig.NOT_MATCH_ACCOUNT);
+                        callback("ALREADY_SEND_MESSAGE", connection, "api : /login/sns");
+                    }
+                }
+            }
+        });
+    }
+
+    let joinForSns = function (connection, callback) {
+        let insertQuery = "insert into User" +
+                        "(id, password, nickname, phone, birth, snsCategory )" +
+                        "values (?,?,?,?,?,?)";
+
+        bcrypt.hash(req.body.accessToken, null, null, function (err, hash) {
+            if (err) {
+                callback(err, connection, "Bcrypt hashing Error : ",res);
+            } else {
+                console.log(hash);
+                let params = [ req.body.id, hash, req.body.nickname, req.body.phone, Date(req.body.birth), req.body.snsCategory ];
+                let data = {
+                    id: req.body.id,
+                    password: hash,
+                    nickname: req.body.nickname,
+                    phone: req.body.phone,
+                    birth: Date(req.body.birth)
+                }
+                connection.query(insertQuery, params, function (error, rows) {
+                    if (error) callback(error, connection, "Selecet query Error : ", res);
+                    else callback(null, connection, data);
+                });
+            }
+        });
+    };
+
+    let comparePW = function (connection, rows, callback) {
+        bcrypt.compare(req.body.accessToken, rows[0].password, function (err, isCorrect) {
+            // isCorrect === true : 일치, isCorrect === false : 불일치
+            if (err) {
+                res.status(200).send(errorConfig.NOT_SIGN_UP);
+                callback(err, connection, "Bcrypt Error : ");
+            }
+
+            if (!isCorrect) {
+                res.status(200).send(errorConfig.INCORRECT_PASSWORD);
+            } else {
+                resultJson.message = "SUCCESS";
+                resultJson.user = {
+                    idx: rows[0].idx,
+                    id: rows[0].id,
+                    nickname: rows[0].nickname,
+                    phone: rows[0].phone,
+                    birth: rows[0].birth
+                };
+                resultJson.token = jwtModule.makeToken(rows[0]);
+                res.status(200).send(resultJson);
+            }
+            callback(null, connection, "api : /login/sns");
+        });
+    }
+
+    var task = [globalModule.connect.bind(this), checkValid, selectUserInfo, globalModule.releaseConnection.bind(this)];
+    async.waterfall(task, globalModule.asyncCallback.bind(this));
 });
 
 

@@ -165,7 +165,7 @@ router.post('/join', function (req, res) {
             resultJson.message = errorConfig.NOT_CORRESPOND.message;
             res.status(200).send(resultJson);
             callback("ALREADY_SEND_MESSAGE", connection, "api : /login/join");
-        } else if (!phoneRegExp.test(Number(req.body.phone)) || !emailRegExp.test(req.body.id)) {
+        } else if (!phoneRegExp.test(req.body.phone) || !emailRegExp.test(req.body.id)) {
             resultJson.code = errorConfig.NOT_MATCH_REGULATION.code;
             resultJson.message = errorConfig.NOT_MATCH_REGULATION.message;
             res.status(200).send(resultJson);
@@ -181,8 +181,8 @@ router.post('/join', function (req, res) {
                 callback(error, connection, "Select query Error : ");
             } else {
                 if (rows.length !== 0) {
-                    resultJson.code = errorConfig.Already_join.code;
-                    resultJson.message = errorConfig.Already_join.message;
+                    resultJson.code = errorConfig.ALREADY_JOIN.code;
+                    resultJson.message = errorConfig.ALREADY_JOIN.message;
                     res.status(200).send(resultJson);
                     callback("ALREADY_SEND_MESSAGE", connection, "api : /login/join");
                 } else {

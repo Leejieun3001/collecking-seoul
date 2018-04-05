@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="kr.ac.sungshin.colleckingseoul">
+
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".network.ApplicationController"
         android:allowBackup="true"
@@ -16,13 +18,11 @@
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="@string/kakao_app_key" />
-
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="@string/kakao_app_key" />
-        <activity android:name=".MainActivity">
 
-        </activity>
+        <activity android:name=".MainActivity" />
         <activity
             android:name=".login.LoginActivity"
             android:label="@string/app_name">
@@ -32,6 +32,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".login.JoinActivity" />
+        <activity android:name=".login.FindInfoActivity" />
+        <activity android:name=".login.FindIdFragment"></activity>
     </application>
 
 </manifest>

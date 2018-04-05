@@ -10,6 +10,8 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.CallbackManager;
@@ -44,6 +46,17 @@ public class LoginActivity extends AppCompatActivity {
     Button kakaoButton;
     @BindView(R.id.login_button_facebook)
     Button facebookButton;
+    @BindView(R.id.login_TextView_join)
+    TextView joinTextView;
+    @BindView(R.id.login_button_login)
+    Button loginButton;
+    @BindView(R.id.login_editText_id)
+    EditText idEditText;
+    @BindView(R.id.login_editText_password)
+    EditText passwordEditText;
+    @BindView(R.id.login_TextView_findInfo)
+    TextView findInfoTextView;
+
 
     private final String TAG = "LoginActivity";
     private CallbackManager facebookCallbackManager;
@@ -55,12 +68,25 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String id = idEditText.toString();
+                String password = passwordEditText.toString();
+
+                if (!checkValid(id, password)) return;
+
+
+            }
+        });
+
         kakaoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 loginOnKakao();
             }
         });
+
         facebookButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -68,6 +94,34 @@ public class LoginActivity extends AppCompatActivity {
                 loginOnFacebook(view);
             }
         });
+
+        joinTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //회원가입 페이지로 이동
+                Log.i(TAG, "클릭");
+                Intent intent = new Intent(getBaseContext(), JoinActivity.class);
+                startActivity(intent);
+            }
+        });
+        findInfoTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //회원가입 페이지로 이동
+                Log.i(TAG, "클릭");
+                Intent intent = new Intent(getBaseContext(), FindInfoActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    //유효성 체크
+    public boolean checkValid(String id, String password) {
+        if (id.equals("") || password.equals("")) {
+            Toast.makeText(getBaseContext(), "아이디와 패스워드를 입력해 주세요", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
     }
 
     private void loginOnKakao() {
@@ -81,18 +135,19 @@ public class LoginActivity extends AppCompatActivity {
     private class SessionCallback implements ISessionCallback {
         @Override
         public void onSessionOpened() {
-            Log.d("TAG" , "세션 오픈됨");
+            Log.d("TAG", "세션 오픈됨");
             // 사용자 정보를 가져옴, 회원가입 미가입시 자동가입 시킴
             KakaorequestMe();
         }
 
         @Override
         public void onSessionOpenFailed(KakaoException exception) {
-            if(exception != null) {
-                Log.d("TAG" , exception.getMessage());
+            if (exception != null) {
+                Log.d("TAG", exception.getMessage());
             }
         }
     }
+
     /**
      * 사용자의 상태를 알아 보기 위해 me API 호출을 한다.
      */
@@ -106,13 +161,13 @@ public class LoginActivity extends AppCompatActivity {
                 if (ErrorCode == ClientErrorCode) {
                     Toast.makeText(getApplicationContext(), "카카오톡 서버의 네트워크가 불안정합니다. 잠시 후 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
                 } else {
-                    Log.d("TAG" , "오류로 카카오로그인 실패 ");
+                    Log.d("TAG", "오류로 카카오로그인 실패 ");
                 }
             }
 
             @Override
             public void onSessionClosed(ErrorResult errorResult) {
-                Log.d("TAG" , "오류로 카카오로그인 실패 ");
+                Log.d("TAG", "오류로 카카오로그인 실패 ");
             }
 
             @Override

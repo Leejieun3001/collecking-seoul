@@ -6,15 +6,53 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="kr.ac.sungshin.colleckingseoul.login.LoginActivity">
+
+    <EditText
+        android:id="@+id/login_editText_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="아이디"
+        android:layout_margin="@dimen/small_margin"/>
+    <EditText
+        android:id="@+id/login_editText_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="비밀번호"
+        android:layout_margin="@dimen/small_margin"/>
+
     <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/login_button_login"
+        android:text="로그인 하기"
+        />
+    <com.facebook.login.widget.LoginButton
         android:id="@+id/login_button_facebook"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="facebook 으로 로그인 하기"/>
+        android:text="facebook 으로 로그인 하기"
+        android:layout_margin="@dimen/small_margin"
+        />
     <Button
         android:id="@+id/login_button_kakao"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/small_margin"
         android:background="@drawable/kakao_login_button"/>
+    <TextView
+        android:id="@+id/login_TextView_join"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/small_margin"
+        android:text="colleckingSeoul 회원가입 하러가기"
+        android:gravity="center"/>
+    <TextView
+        android:id="@+id/login_TextView_findInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/small_margin"
+        android:text="아이디와 패스워드 찾기"
+        android:gravity="center"/>
+
 
 </LinearLayout>

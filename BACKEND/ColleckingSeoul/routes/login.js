@@ -139,7 +139,7 @@ router.post('/', function (req, res) {
  *                      string id: "아이디", 
  *                      string password1: "비밀번호",
  *                      string password2: "비밀번호확인",
- *                      number phone: "01040908370",
+ *                      string phone: "01040908370",
  *                      string nickname: "이름",
  *                      string birth: "19950825"
  *                  }
@@ -165,7 +165,7 @@ router.post('/join', function (req, res) {
             resultJson.message = errorConfig.NOT_CORRESPOND.message;
             res.status(200).send(resultJson);
             callback("ALREADY_SEND_MESSAGE", connection, "api : /login/join");
-        } else if (!phoneRegExp.test(req.body.phone) || !emailRegExp.test(req.body.id)) {
+        } else if (!phoneRegExp.test(Number(req.body.phone)) || !emailRegExp.test(req.body.id)) {
             resultJson.code = errorConfig.NOT_MATCH_REGULATION.code;
             resultJson.message = errorConfig.NOT_MATCH_REGULATION.message;
             res.status(200).send(resultJson);

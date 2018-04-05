@@ -1,7 +1,5 @@
-const mysql = require('mysql');
 const pool = require('../config/dbPool');
-const express = require('express');
-const router = express.Router();
+const router = require('express').Router();
 const bcrypt = require('bcrypt-nodejs');
 const async = require('async');
 const jwtModule = require('../module/jwtModule');
@@ -9,39 +7,6 @@ const globalModule = require('../module/globalModule');
 const nodemailer = require('nodemailer');
 const mailConfig = require('../config/mailAccount');
 const errorConfig =  require('../config/error');
-const secret =  require('../config/secretKey');
-
-var loginByThirdparty = function (info, done) {
-    console.log('process : ' + info.auth_type);
-    var query = 'select * from User where id = ?';
-    connection.query(query, info.auth_id, function (err, result) {
-      if (err) {
-        return done(err);
-      } else {
-        if (result.length === 0) {
-          // 신규 유저는 회원 가입 이후 로그인 처리
-          query = 'insert into User set id = ?, pass`nickname`= ?';
-          connection.query(query, [info.auth_id, info.auth_name], function (err, result) {
-            if(err){
-              return done(err);
-            }else{
-              done(null, {
-                'user_id': info.auth_id,
-                'nickname': info.auth_name
-              });
-            }
-          });
-        } else {
-          //기존유저 로그인 처리
-          console.log('Old User');
-          done(null, {
-            'user_id': result[0].user_id,
-            'nickname': result[0].nickname
-          });
-        }
-      }
-    });
-  }
 
 /**
  * api 목적        : 로그인 (일반)
@@ -123,121 +88,6 @@ router.post('/', function (req, res) {
 
         if (!!err) {
             console.log(result, err.message);
-            if (err !== "ALREADY_SEND_MESSAGE") {
-                resultJson.message = "FAILURE";
-                res.status(503).send(resultJson);
-            }
-        } else {
-            console.log(result);
-        }
-    });
-});
-
-/**
- * api 목적        : 회원가입 (일반)
- * request params : {
- *                      string id: "아이디", 
- *                      string password1: "비밀번호",
- *                      string password2: "비밀번호확인",
- *                      string phone: "01040908370",
- *                      string nickname: "이름",
- *                      string birth: "19950825"
- *                  }
- */
-router.post('/join', function (req, res) {
-    let resultJson = {
-        message: '',
-        code:""
-    };
-
-    let checkValid = function (connection, callback) {
-        let phoneRegExp = /^(?:(010\d{4})|(01[1|6|7|8|9]\d{3,4}))(\d{4})$/;
-        let emailRegExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
-        let result = globalModule.checkBasicValid(req.body);
-
-        if (result !== "OK") {
-            resultJson.code = result.code;
-            resultJson.message = result.message;
-            res.status(200).send(resultJson);
-            callback("ALREADY_SEND_MESSAGE", connection, "api : /login/join");
-        } else if (req.body.password1 !== req.body.password2) {
-            resultJson.code = errorConfig.NOT_CORRESPOND.code;
-            resultJson.message = errorConfig.NOT_CORRESPOND.message;
-            res.status(200).send(resultJson);
-            callback("ALREADY_SEND_MESSAGE", connection, "api : /login/join");
-        } else if (!phoneRegExp.test(req.body.phone) || !emailRegExp.test(req.body.id)) {
-            resultJson.code = errorConfig.NOT_MATCH_REGULATION.code;
-            resultJson.message = errorConfig.NOT_MATCH_REGULATION.message;
-            res.status(200).send(resultJson);
-            callback("ALREADY_SEND_MESSAGE", connection, "api : /login/join");
-        } else {
-            callback(null, connection);
-        }
-    }
-
-    let checkAlreadyJoin = function (connection, callback) {
-        connection.query('select * from User where id = ?', req.body.id, function (error, rows) {
-            if (error) {
-                callback(error, connection, "Select query Error : ");
-            } else {
-                if (rows.length !== 0) {
-                    resultJson.code = errorConfig.ALREADY_JOIN.code;
-                    resultJson.message = errorConfig.ALREADY_JOIN.message;
-                    res.status(200).send(resultJson);
-                    callback("ALREADY_SEND_MESSAGE", connection, "api : /login/join");
-                } else {
-                    callback(null, connection);
-                }
-            }
-        });
-    }
-
-    var bcryptedPassword = function (connection, callback) {
-        console.log('bcryptedPassword', callback);
-        bcrypt.hash(req.body.password1, null, null, function (err, hash) {
-            if (err) {
-                callback(err, connection, "Bcrypt hashing Error : ");
-            } else {
-                console.log(hash);
-                callback(null, connection, hash);
-            }
-        });
-    }
-    //4. DB에 저장
-    var insertUserInfo = function (connection, hash, callback) {
-        console.log('insertUserInfo');
-        let insertQuery =
-            "insert into User" +
-            "(id, password, nickname, phone, birth )" +
-            "values (?,?,?,?,?)";
-        let params = [
-            req.body.id,
-            hash,
-            req.body.nickname,
-            req.body.phone,
-            Date(req.body.birth)
-        ];
-        connection.query(insertQuery, params, function (err, data) {
-            if (err) {
-                callback(err, connection, "insert query error : ");
-            }
-            else {
-                resultJson.message = 'SUCCESS';
-                res.status(200).send(resultJson);
-                callback(null, connection, "api : /login/join");
-            }
-        });
-    }
-
-    var task = [globalModule.connect.bind(this), checkValid, checkAlreadyJoin, bcryptedPassword, insertUserInfo, globalModule.releaseConnection.bind(this)];
-
-    async.waterfall(task, function (err, connection, result) {
-        if (connection) {
-            connection.release();
-        }
-
-        if (!!err) {
-            console.log("err", err, result, err.message);
             if (err !== "ALREADY_SEND_MESSAGE") {
                 resultJson.message = "FAILURE";
                 res.status(503).send(resultJson);

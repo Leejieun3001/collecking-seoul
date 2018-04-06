@@ -131,7 +131,7 @@ router.post('/sns', function (req, res) {
 
     let joinForSns = function (connection, callback) {
         let insertQuery = "insert into User" +
-                        "(id, password, nickname, phone, birth, snsCategory )" +
+                        "(id, password, nickname, phone, snsCategory )" +
                         "values (?,?,?,?,?,?)";
 
         bcrypt.hash(req.body.accessToken, null, null, function (err, hash) {
@@ -143,12 +143,19 @@ router.post('/sns', function (req, res) {
                     id: req.body.id,
                     password: hash,
                     nickname: req.body.nickname,
-                    phone: req.body.phone,
-                    birth: Date(req.body.birth)
+                    sex: 2,
+                    phone: "00000000000",
+                    birth: Date('19950825')
                 }
                 connection.query(insertQuery, params, function (error, rows) {
                     if (error) callback(error, connection, "Selecet query Error : ", res);
-                    else callback(null, connection, data);
+                    else {
+                        insertQuery = "insert into Photo (user_idx, url) values ((select idx from User where id = ?),?)"
+                        connection.query(insertQuery, [req.body.id, req.body.photo], function (error, rows) {
+                            if (error) callback(error, connection, "Selecet query Error : ", res);
+                            else callback(null, connection, data);
+                        });
+                    }
                 });
             }
         });
@@ -171,7 +178,8 @@ router.post('/sns', function (req, res) {
                     id: rows[0].id,
                     nickname: rows[0].nickname,
                     phone: rows[0].phone,
-                    birth: rows[0].birth
+                    birth: rows[0].birth,
+                    sex: rows[0].sex
                 };
                 resultJson.token = jwtModule.makeToken(rows[0]);
                 res.status(200).send(resultJson);

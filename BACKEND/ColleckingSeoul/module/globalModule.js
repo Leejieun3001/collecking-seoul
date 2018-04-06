@@ -16,7 +16,13 @@ let releaseConnection = function (connection, apiName, callback) {
 };
 
 let checkBasicValid = function (params) {
+    let phoneRegExp = /^(?:(010\d{4})|(01[1|6|7|8|9]\d{3,4}))(\d{4})$/;
+        let emailRegExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
     for (let param in params) {
+        if ((param === "id" && !emailRegExp.test(params[param])) 
+            || param === ("phone" && !phoneRegExp.test(params[param]))) 
+            return errorConfig.NOT_MATCH_REGULATION;
+            
         if (params[param] == null) return errorConfig.EMPTY_VALUE;
         else if (params[param].trim() === "") return errorConfig.NULL_VALUE;
     }

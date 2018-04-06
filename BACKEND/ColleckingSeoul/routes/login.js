@@ -30,7 +30,9 @@ router.post('/', function (req, res) {
     }
 
     let selectUserInfo = function (connection, callback) {
-        connection.query('select * from User where id = ?', req.body.id, function (error, rows) {
+        connection.query('select * from User left outer join Photo ' + 
+                        'on User.idx=Photo.user_idx ' + 
+                        'where id = ?', req.body.id, function (error, rows) {
             if (error) callback(error, connection, "Selecet query Error : ");
             else {
                 if (rows.length === 0) {
@@ -66,7 +68,8 @@ router.post('/', function (req, res) {
                     id: rows[0].id,
                     nickname: rows[0].nickname,
                     phone: rows[0].phone,
-                    birth: rows[0].birth
+                    birth: rows[0].birth,
+                    url: rows[0].url
                 };
                 resultJson.token = jwtModule.makeToken(rows[0]);
                 res.status(200).send(resultJson);
@@ -84,7 +87,6 @@ router.post('/', function (req, res) {
  * request params : {
  *                      string id: "아이디", 
  *                      string accessToken: "비밀번호",
- *                      string birth: 19950825,
  *                      string phone: 01040908370,
  *                      File profileUrl: profile,
  *                      int snsCategory: 1
@@ -136,7 +138,6 @@ router.post('/sns', function (req, res) {
             if (err) {
                 callback(err, connection, "Bcrypt hashing Error : ",res);
             } else {
-                console.log(hash);
                 let params = [ req.body.id, hash, req.body.nickname, req.body.phone, Date(req.body.birth), req.body.snsCategory ];
                 let data = {
                     id: req.body.id,

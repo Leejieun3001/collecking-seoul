@@ -2,12 +2,27 @@ const pool = require('../config/dbPool');
 const router = require('express').Router();
 const bcrypt = require('bcrypt-nodejs');
 const async = require('async');
-const jwtModule = require('../module/jwtModule');
 const globalModule = require('../module/globalModule');
 const sqlController = require('../controller/sqlController');
 const nodemailer = require('nodemailer');
 const mailConfig = require('../config/mailAccount');
 const errorConfig =  require('../config/error');
+const aws = require('aws-sdk');
+const multer = require('multer');
+const multerS3 = require('multer-s3');
+const jwtModule = require('../module/jwtModule');
+aws.config.loadFromPath('./config/aws_config.json')
+const s3 = new aws.S3();
+const upload = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: 'collecking-seoul',
+    acl: 'public-read',
+    key: function(req, file, cb) {
+      cb(null, Date.now() + '.' + file.originalname.split('.').pop())
+    }
+  })
+});
 
 /**
  * api 목적        : 회원가입 (일반)
@@ -17,13 +32,13 @@ const errorConfig =  require('../config/error');
  *                      string password2: "비밀번호확인",
  *                      string phone: "01040908370",
  *                      string nickname: "이름",
- *                      string birth: "19950825"
+ *                      string birth: "19950825",
+ *                      number sex: 0(남자) || 1(여자)
+ *                      File photo
  *                  }
  */
-router.post('/', function (req, res) {
+router.post('/', upload.single('photo'), function (req, res) {
     let checkValid = function (connection, callback) {
-        let phoneRegExp = /^(?:(010\d{4})|(01[1|6|7|8|9]\d{3,4}))(\d{4})$/;
-        let emailRegExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
         let result = globalModule.checkBasicValid(req.body);
 
         if (result !== "OK") {
@@ -31,9 +46,6 @@ router.post('/', function (req, res) {
             callback("ALREADY_SEND_MESSAGE", connection, "api : /login/join");
         } else if (req.body.password1 !== req.body.password2) {
             res.status(200).send(errorConfig.NOT_CORRESPOND);
-            callback("ALREADY_SEND_MESSAGE", connection, "api : /login/join");
-        } else if (!phoneRegExp.test(req.body.phone) || !emailRegExp.test(req.body.id)) {
-            res.status(200).send(errorConfig.NOT_MATCH_REGULATION);
             callback("ALREADY_SEND_MESSAGE", connection, "api : /login/join");
         } else {
             callback(null, connection);
@@ -55,28 +67,41 @@ router.post('/', function (req, res) {
         });
     }
 
-    var bcryptedPassword = function (connection, callback) {
+    let bcryptedPassword = function (connection, callback) {
         bcrypt.hash(req.body.password1, null, null, function (err, hash) {
-            if (err) {
-                callback(err, connection, "Bcrypt hashing Error : ",res);
-            } else {
-                console.log(hash);
-                callback(null, connection, hash);
-            }
+            if (err) callback(err, connection, "Bcrypt hashing Error : ",res);
+            else callback(null, connection, hash);
         });
     }
     //4. DB에 저장
-    var insertUserInfo = function (connection, hash, callback) {
+    let insertUserInfo = function (connection, hash, callback) {
         let insertQuery =
             "insert into User" +
-            "(id, password, nickname, phone, birth )" +
+            "(id, password, nickname, phone, birth, sex )" +
             "values (?,?,?,?,?)";
         let params = [
             req.body.id,
             hash,
             req.body.nickname,
             req.body.phone,
-            Date(req.body.birth)
+            Date(req.body.birth),
+            req.body.sex
+        ];
+        connection.query(insertQuery, params, function (err, data) {
+            if (err) callback(err, connection, "insert query error : ", res);
+            else callback(null, connection);
+        });
+    }
+
+    let insertPhoto = function (connection, callback) {
+        let insertQuery =
+            "insert into Photo" +
+            "(user_idx, url)" +
+            "values ((select idx from User where id = ?),?)";
+        let imageUrl = !req.file ? require('../config/secretKey').default_male : req.file.location;
+        let params = [
+            req.body.id,
+            imageUrl
         ];
         connection.query(insertQuery, params, function (err, data) {
             if (err) {
@@ -89,7 +114,7 @@ router.post('/', function (req, res) {
         });
     }
 
-    var task = [globalModule.connect.bind(this), checkValid, checkAlreadyJoin, bcryptedPassword, insertUserInfo, globalModule.releaseConnection.bind(this)];
+    var task = [globalModule.connect.bind(this), checkValid, checkAlreadyJoin, bcryptedPassword, insertUserInfo, insertPhoto, globalModule.releaseConnection.bind(this)];
     async.waterfall(task, globalModule.asyncCallback.bind(this));
 });
 
@@ -99,14 +124,10 @@ router.post('/', function (req, res) {
  */
 router.get('/check_dupplicate', function (req, res) {
     let checkValid = function (connection, callback) {
-        let emailRegExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
         let result = globalModule.checkBasicValid(req.query);
 
         if (result !== "OK") {
             res.status(200).send(result);
-            callback("ALREADY_SEND_MESSAGE", connection, "api : /join/check_dupplicate");
-        } else if (!emailRegExp.test(req.query.id)) {
-            res.status(200).send(errorConfig.NOT_MATCH_REGULATION);
             callback("ALREADY_SEND_MESSAGE", connection, "api : /join/check_dupplicate");
         } else {
             callback(null, connection);

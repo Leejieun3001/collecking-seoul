@@ -11,13 +11,14 @@
         android:id="@+id/login_editText_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="아이디"
+        android:hint="아이디"
         android:layout_margin="@dimen/small_margin"/>
     <EditText
         android:id="@+id/login_editText_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="비밀번호"
+        android:hint="비밀번호"
+        android:inputType="textPassword"
         android:layout_margin="@dimen/small_margin"/>
 
     <Button

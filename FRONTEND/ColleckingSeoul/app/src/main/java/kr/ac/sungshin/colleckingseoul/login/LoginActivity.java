@@ -179,7 +179,11 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(getBaseContext(), "아이디와 패스워드를 입력해 주세요", Toast.LENGTH_SHORT).show();
             return false;
         }
-        return true;
+        if (id.equals("") || !id.matches("^[_a-zA-Z0-9-\\.]+@[\\.a-zA-Z0-9-]+\\.[a-zA-Z]+$")) {
+            Toast.makeText(getApplicationContext(), "이메일 형식이 맞지 않습니다. 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+            return true;
     }
 
     private void loginOnKakao() {

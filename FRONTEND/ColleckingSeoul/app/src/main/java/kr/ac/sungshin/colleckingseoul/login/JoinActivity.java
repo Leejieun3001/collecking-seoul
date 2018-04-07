@@ -12,6 +12,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.kakao.auth.authorization.authcode.GetterAuthCode;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import kr.ac.sungshin.colleckingseoul.R;
@@ -82,19 +84,22 @@ public class JoinActivity extends AppCompatActivity {
                 if (id.equals("") || !id.matches("^[_a-zA-Z0-9-\\.]+@[\\.a-zA-Z0-9-]+\\.[a-zA-Z]+$")) {
                     Toast.makeText(getApplicationContext(), "이메일 형식이 맞지 않습니다. 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();
                     return;
-                } /*else {
-                    Call<Message> checkId = service.getDupCheckResult(id);
+                } else {
+                    Call<Message> checkId = service.getDuplicatedResult(id);
                     checkId.enqueue(new Callback<Message>() {
                         @Override
                         public void onResponse(Call<Message> call, Response<Message> response) {
                             if (response.isSuccessful()) {
                                 Log.d(TAG, response.body().toString());
-                                if (response.body().getMessage().equals("no duplication")) {
+                                if (response.body().getMessage().equals("SUCCESS")) {
                                     Toast.makeText(getApplicationContext(), "사용가능한 이메일 입니다.", Toast.LENGTH_SHORT).show();
                                     isDuplicate = true;
                                 }
-                                if (response.body().getMessage().equals("duplicated")) {
+                                if (response.body().getMessage().equals("ALREADY_JOIN")) {
                                     Toast.makeText(getApplicationContext(), "이미 사용중인 이메일이 존재합니다. 다른 이메일로 시도해 주세요.", Toast.LENGTH_SHORT).show();
+                                    isDuplicate = false;
+                                }if(response.body().getMessage().equals("NOT_MATCH_REGULATION")){
+                                    Toast.makeText(getApplicationContext(), "정규식이 일치 하지 않습니다.",Toast.LENGTH_SHORT).show();
                                     isDuplicate = false;
                                 }
                             }
@@ -105,7 +110,7 @@ public class JoinActivity extends AppCompatActivity {
 
                         }
                     });
-                }*/
+                }
             }
         });
         //이메일 인증번호 요청

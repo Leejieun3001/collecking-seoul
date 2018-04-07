@@ -1,9 +1,11 @@
 package kr.ac.sungshin.colleckingseoul.login;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -21,7 +23,6 @@ import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
 import com.kakao.auth.AuthType;
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
@@ -40,6 +41,15 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import kr.ac.sungshin.colleckingseoul.MainActivity;
 import kr.ac.sungshin.colleckingseoul.R;
+import kr.ac.sungshin.colleckingseoul.model.request.Login;
+import kr.ac.sungshin.colleckingseoul.model.response.LoginResult;
+import kr.ac.sungshin.colleckingseoul.model.response.User;
+import kr.ac.sungshin.colleckingseoul.network.ApplicationController;
+import kr.ac.sungshin.colleckingseoul.network.NetworkService;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 
 public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.login_button_kakao)
@@ -58,6 +68,7 @@ public class LoginActivity extends AppCompatActivity {
     TextView findInfoTextView;
 
 
+    private NetworkService service;
     private final String TAG = "LoginActivity";
     private CallbackManager facebookCallbackManager;
     SessionCallback callbackForKakao;
@@ -67,14 +78,61 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+        service = ApplicationController.getInstance().getNetworkService();
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String id = idEditText.toString();
-                String password = passwordEditText.toString();
+                String id = idEditText.getText().toString();
+                String password = passwordEditText.getText().toString();
+
+                final SharedPreferences userInfo = getSharedPreferences("user", MODE_PRIVATE);
+                final SharedPreferences.Editor editor = userInfo.edit();
 
                 if (!checkValid(id, password)) return;
+
+                Login info = new Login(id,password);
+                Call<LoginResult> checkLogin = service.getLoginResult(info);
+                checkLogin.enqueue(new Callback<LoginResult>() {
+                    @Override
+                    public void onResponse(Call<LoginResult> call, Response<LoginResult> response) {
+                        if(response.isSuccessful()){
+                            String message = response.body().getMessage();
+                            if(message.equals("EMPTY_VALUE")){
+                                Toast.makeText(getBaseContext(), "입력하신 값이 없습니다.", Toast.LENGTH_SHORT).show();
+                            }else if(message.equals("NULL_VALUE")){
+                                Toast.makeText(getBaseContext(), "받아야할 값이 없습니다.", Toast.LENGTH_SHORT).show();
+                            }else if(message.equals("NOT_SIGN_UP")){
+                                Toast.makeText(getBaseContext(), "가입하신 정보가 존재하지 않습니다.", Toast.LENGTH_SHORT).show();
+                            }else if(message.equals("INCORRECT_PASSWORD")){
+                                Toast.makeText(getBaseContext(), "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
+                            }else if(message.equals("IS_SNS_ACCOUNT")){
+                                Toast.makeText(getBaseContext(), "SNS계정 입니다.", Toast.LENGTH_SHORT).show();
+                            }else if(message.equals("FAILURE")){
+                                Toast.makeText(getBaseContext(), "서버의 알수없는 에러입니다. 죄송합니다", Toast.LENGTH_SHORT).show();
+                            }else if(message.equals("SUCCESS")){
+                                User user = response.body().getUser();
+
+                                editor.putString("idx", user.getIdx());
+                                editor.putString("id", user.getId());
+                                editor.putString("nickname", user.getNikname());
+                                editor.putString("phone", user.getPhone());
+                                editor.putString("birth", user.getBirth());
+                                editor.apply();
+
+                                Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                                startActivity(intent);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<LoginResult> call, Throwable t) {
+
+                    }
+                });
 
 
             }
@@ -212,10 +270,10 @@ public class LoginActivity extends AppCompatActivity {
 
         LoginManager.getInstance().logInWithReadPermissions(LoginActivity.this,
                 Arrays.asList("public_profile", "email"));
-        LoginManager.getInstance().registerCallback(facebookCallbackManager, new FacebookCallback<LoginResult>() {
+        LoginManager.getInstance().registerCallback(facebookCallbackManager, new FacebookCallback<com.facebook.login.LoginResult>() {
 
             @Override
-            public void onSuccess(final LoginResult result) {
+            public void onSuccess(final com.facebook.login.LoginResult result) {
 
                 GraphRequest request;
                 request = GraphRequest.newMeRequest(result.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {

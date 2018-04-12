@@ -107,30 +107,27 @@ public class LoginActivity extends AppCompatActivity {
                     public void onResponse(Call<LoginResult> call, Response<LoginResult> response) {
                         if(response.isSuccessful()){
                             String message = response.body().getMessage();
-                            if(message.equals("EMPTY_VALUE")){
-                                Toast.makeText(getBaseContext(), "입력하신 값이 없습니다.", Toast.LENGTH_SHORT).show();
-                            }else if(message.equals("NULL_VALUE")){
-                                Toast.makeText(getBaseContext(), "받아야할 값이 없습니다.", Toast.LENGTH_SHORT).show();
-                            }else if(message.equals("NOT_SIGN_UP")){
-                                Toast.makeText(getBaseContext(), "가입하신 정보가 존재하지 않습니다.", Toast.LENGTH_SHORT).show();
-                            }else if(message.equals("INCORRECT_PASSWORD")){
-                                Toast.makeText(getBaseContext(), "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
-                            }else if(message.equals("IS_SNS_ACCOUNT")){
-                                Toast.makeText(getBaseContext(), "SNS계정 입니다.", Toast.LENGTH_SHORT).show();
-                            }else if(message.equals("FAILURE")){
-                                Toast.makeText(getBaseContext(), "서버의 알수없는 에러입니다. 죄송합니다", Toast.LENGTH_SHORT).show();
-                            }else if(message.equals("SUCCESS")){
-                                User user = response.body().getUser();
 
-                                editor.putString("idx", user.getIdx());
-                                editor.putString("id", user.getId());
-                                editor.putString("nickname", user.getNickname());
-                                editor.putString("phone", user.getPhone());
-                                editor.putString("birth", user.getBirth());
-                                editor.apply();
+                            switch (message) {
+                                case "EMPTY_VALUE": Toast.makeText(getBaseContext(), "입력하신 값이 없습니다.", Toast.LENGTH_SHORT).show(); break;
+                                case "NULL_VALUE": Toast.makeText(getBaseContext(), "받아야할 값이 없습니다.", Toast.LENGTH_SHORT).show(); break;
+                                case "NOT_SIGN_UP": Toast.makeText(getBaseContext(), "가입하신 정보가 존재하지 않습니다.", Toast.LENGTH_SHORT).show(); break;
+                                case "INCORRECT_PASSWORD": Toast.makeText(getBaseContext(), "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show(); break;
+                                case "IS_SNS_ACCOUNT": Toast.makeText(getBaseContext(), "SNS로 가입하신 계정 입니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show(); break;
+                                case "FAILURE": Toast.makeText(getBaseContext(), "서버의 알수없는 에러입니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show(); break;
+                                case "SUCCESS":
+                                    User user = response.body().getUser();
 
-                                Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                                startActivity(intent);
+                                    editor.putString("idx", user.getIdx());
+                                    editor.putString("id", user.getId());
+                                    editor.putString("nickname", user.getNickname());
+                                    editor.putString("phone", user.getPhone());
+                                    editor.putString("birth", user.getBirth());
+                                    editor.apply();
+
+                                    Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                                    startActivity(intent);
+                                    break;
                             }
                         }
                     }
@@ -324,7 +321,7 @@ public class LoginActivity extends AppCompatActivity {
                                     editor.putString("phone", user.getPhone());
                                     editor.putString("birth", user.getBirth());
                                     editor.putString("photo", user.getUrl());
-                                    editor.putInt("sex", user.getSex()cd);
+                                    editor.putInt("sex", user.getSex());
                                     editor.putString("token", token);
                                     editor.apply();
 

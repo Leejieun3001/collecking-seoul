@@ -232,24 +232,7 @@ router.get('/verificationCode', function (req, res) {
         callback(null, null, '-verificationCode');
     }
 
-    var verificationCode_task = [connect, selectUserInfo, sendMail, releaseConnection];
-
-    async.waterfall(verificationCode_task, function (err, connection, result) {
-        if (connection) {
-            connection.release();
-        }
-        if (err) {
-            if (err != 'ok') {
-                console.log("async.waterfall error : ", err);
-                res.status(503).send({
-                    message: 'failuire',
-                    detail: 'internal server error'
-                });
-            }
-        }
-        else {
-            console.log(result);
-        }
-    });
+    var verificationCode_task = [globalModule.connect.bind(this), selectUserInfo, sendMail, globalModule.releaseConnection.bind(this)];
+    async.waterfall(task, globalModule.asyncCallback.bind(this));
 });
 module.exports = router;

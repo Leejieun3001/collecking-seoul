@@ -196,10 +196,8 @@ router.get('/verificationCode', function (req, res) {
                     callback(null, connection);
                 }
                 else {
-                    resultJson.message = "duplicated";
-                    resultJson.detail = "unable to sign up";
-                    res.status(201).send(resultJson);
-                    callback('ok', connection);
+                    res.status(201).send(errorConfig.ALREADY_JOIN);
+                    callback("ALREADY_SEND_MESSAGE", connection);
                 }
             }
         });

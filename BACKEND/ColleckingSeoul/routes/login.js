@@ -110,16 +110,6 @@ router.post('/sns', function (req, res) {
         user: null
     };
 
-    let checkValid = function (connection, callback) {
-        let result = globalModule.checkBasicValid(req.body);
-        if (result !== "OK") {
-            res.status(200).send(result);
-            callback("ALREADY_SEND_MESSAGE", connection, "api : /login/sns");
-        } else {
-            callback(null, connection);
-        }
-    }
-
     let selectUserInfo = function (connection, callback) {
         connection.query('select * from User ' + 
                     'left outer join Photo ' + 
@@ -206,7 +196,7 @@ router.post('/sns', function (req, res) {
         });
     }
 
-    var task = [globalModule.connect.bind(this), checkValid, selectUserInfo, comparePW, globalModule.releaseConnection.bind(this)];
+    var task = [globalModule.connect.bind(this), selectUserInfo, comparePW, globalModule.releaseConnection.bind(this)];
     async.waterfall(task, globalModule.asyncCallback.bind(this));
 });
 

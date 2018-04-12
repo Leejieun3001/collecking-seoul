@@ -79,7 +79,8 @@ router.post('/', function (req, res) {
                     nickname: rows[0].nickname,
                     phone: rows[0].phone,
                     birth: rows[0].birth,
-                    url: rows[0].url
+                    url: rows[0].url,
+                    sex: rows[0].sex
                 };
                 resultJson.token = jwtModule.makeToken(rows[0]);
                 res.status(200).send(resultJson);
@@ -189,6 +190,7 @@ router.post('/sns', function (req, res) {
                     nickname: rows[0].nickname,
                     phone: rows[0].phone,
                     birth: rows[0].birth,
+                    url: rows[0].url,
                     sex: rows[0].sex
                 };
                 resultJson.token = jwtModule.makeToken(rows[0]);

@@ -78,7 +78,7 @@ router.post('/', upload.single('photo'), function (req, res) {
         let insertQuery =
             "insert into User" +
             "(id, password, nickname, phone, birth, sex )" +
-            "values (?,?,?,?,?)";
+            "values (?,?,?,?,?,?)";
         let params = [
             req.body.id,
             hash,

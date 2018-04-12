@@ -179,7 +179,7 @@ router.get('/verificationCode', function (req, res) {
         pool.getConnection(function (err, connection) {
             if (err) {
                 console.log("getConnection error : ", err);
-                callback(err, connection, null);
+                callback(err, connection, "api : /join/verificationCode");
             }
             else callback(null, connection);
         });
@@ -190,14 +190,14 @@ router.get('/verificationCode', function (req, res) {
         connection.query(duplicate_check_query, req.query.tempEmail, function (err, data) {
             if (err) {
                 console.log("duplicate check select query error : ", err);
-                callback(err, connection, null);
+                callback(err, connection, "api : /join/verificationCode");
             } else {
                 if (data.length == 0) {
                     callback(null, connection);
                 }
                 else {
                     res.status(201).send(errorConfig.ALREADY_JOIN);
-                    callback("ALREADY_SEND_MESSAGE", connection);
+                    callback("ALREADY_SEND_MESSAGE", connection, "api : /join/verificationCode");
                 }
             }
         });
@@ -214,13 +214,12 @@ router.get('/verificationCode', function (req, res) {
         };
         Transport.sendMail(mailOption, function (error, info) {
             if (error) {
-                return console.log(error);
+                callback(error, connection, "Transport Error : ");
             } else {
-                resultJson.message = 'email success';
+                resultJson.message = "SUCCESS";
                 resultJson.verificationCode = rand;
                 res.status(201).send(resultJson);
-                callback(null, connection);
-
+                callback(null, connection, "api : /join/verificationCode");
             }
         });
     }

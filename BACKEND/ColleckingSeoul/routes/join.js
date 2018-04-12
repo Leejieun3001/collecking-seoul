@@ -209,12 +209,13 @@ router.get('/verificationCode', function (req, res) {
                 resultJson.message = "SUCCESS";
                 resultJson.verificationCode = rand;
                 res.status(201).send(resultJson);
+                console.log(1);
                 callback(null, connection, "api : /join/verificationCode", res);
             }
         });
     }
 
     var verificationCode_task = [globalModule.connect.bind(this), selectUserInfo, sendMail, globalModule.releaseConnection.bind(this)];
-    async.waterfall(task, globalModule.asyncCallback.bind(this));
+    async.waterfall(verificationCode_task, globalModule.asyncCallback.bind(this));
 });
 module.exports = router;

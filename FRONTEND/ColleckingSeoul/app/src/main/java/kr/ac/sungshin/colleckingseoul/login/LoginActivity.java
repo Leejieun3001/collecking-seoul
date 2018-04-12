@@ -265,7 +265,7 @@ public class LoginActivity extends AppCompatActivity {
         // 카카오 세션을 오픈한다
         callbackForKakao = new SessionCallback();
         Session.getCurrentSession().addCallback(callbackForKakao);
-        Session.getCurrentSession().open(AuthType.KAKAO_ACCOUNT, LoginActivity.this);
+        Session.getCurrentSession().open(AuthType.KAKAO_TALK, LoginActivity.this);
     }
 
     protected void requestMeOnKakao() {
@@ -296,7 +296,7 @@ public class LoginActivity extends AppCompatActivity {
                 snsCategory = 2;
 
                 Login info = new Login(id, accessToken, nickname, photo, snsCategory);
-                Call<LoginResult> checkLogin = service.getLoginResult(info);
+                Call<LoginResult> checkLogin = service.getSnsLoginResult(info);
                 checkLogin.enqueue(new Callback<LoginResult>() {
                     @Override
                     public void onResponse(Call<LoginResult> call, Response<LoginResult> response) {
@@ -339,7 +339,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<LoginResult> call, Throwable t) {
-
+                        Log.d(TAG, "카카오 로그인 onFailure");
                     }
                 });
             }

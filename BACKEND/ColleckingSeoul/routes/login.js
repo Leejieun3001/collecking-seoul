@@ -98,8 +98,8 @@ router.post('/', function (req, res) {
  * request params : {
  *                      string id: "아이디", 
  *                      string accessToken: "비밀번호",
- *                      string phone: 01040908370,
- *                      File profileUrl: profile,
+ *                      string nickname: "권현아",
+ *                      String profileUrl: profile,
  *                      int snsCategory: 1
  *                  }
  */
@@ -142,29 +142,30 @@ router.post('/sns', function (req, res) {
 
     let joinForSns = function (connection, callback) {
         let insertQuery = "insert into User" +
-                        "(id, password, nickname, phone, snsCategory )" +
-                        "values (?,?,?,?,?,?)";
+                        "(id, password, nickname, sex, phone, birth, snsCategory )" +
+                        "values (?,?,?,?,?,?,?)";
 
         bcrypt.hash(req.body.accessToken, null, null, function (err, hash) {
             if (err) {
-                callback(err, connection, "Bcrypt hashing Error : ",res);
+                callback(err, connection, "Bcrypt hashing Error : ", res);
             } else {
-                let params = [ req.body.id, hash, req.body.nickname, req.body.phone, Date(req.body.birth), req.body.snsCategory ];
-                let data = {
-                    id: req.body.id,
-                    password: hash,
-                    nickname: req.body.nickname,
-                    sex: 2,
-                    phone: "00000000000",
-                    birth: Date('19950825')
-                }
+                let params = [ req.body.id, hash, req.body.nickname, 2, "00000000000", Date(req.body.birth), req.body.snsCategory ];
                 connection.query(insertQuery, params, function (error, rows) {
-                    if (error) callback(error, connection, "Selecet query Error : ", res);
+                    if (error) callback(error, connection, "Insert user query Error : ", res);
                     else {
                         insertQuery = "insert into Photo (user_idx, url) values ((select idx from User where id = ?),?)"
-                        connection.query(insertQuery, [req.body.id, req.body.photo], function (error, rows) {
-                            if (error) callback(error, connection, "Selecet query Error : ", res);
-                            else callback(null, connection, data);
+                        connection.query(insertQuery, [req.body.id, req.body.photo], function (error, result) {
+                            if (error) callback(error, connection, "Insert photo query Error : ", res);
+                            else {
+                                let selectQuery = 'select * from User left outer join Photo ' + 
+                                                    'on User.idx=Photo.user_idx ' + 
+                                                    'where id = ?';
+
+                                connection.query(selectQuery, req.body.id, function (error, rows) {
+                                    if (error) callback(error, connection, "Select photo query Error : ", res);
+                                    else callback(null, connection, rows);
+                                });
+                            }
                         });
                     }
                 });
@@ -173,16 +174,20 @@ router.post('/sns', function (req, res) {
     };
 
     let comparePW = function (connection, rows, callback) {
+        console.log("1", rows[0]);
         bcrypt.compare(req.body.accessToken, rows[0].password, function (err, isCorrect) {
             // isCorrect === true : 일치, isCorrect === false : 불일치
             if (err) {
+                console.log("2");
                 res.status(200).send(errorConfig.NOT_SIGN_UP);
                 callback(err, connection, "Bcrypt Error : ");
             }
 
             if (!isCorrect) {
+                console.log("3");
                 res.status(200).send(errorConfig.INCORRECT_PASSWORD);
             } else {
+                console.log("4");
                 resultJson.message = "SUCCESS";
                 resultJson.user = {
                     idx: rows[0].idx,
@@ -196,11 +201,12 @@ router.post('/sns', function (req, res) {
                 resultJson.token = jwtModule.makeToken(rows[0]);
                 res.status(200).send(resultJson);
             }
+            console.log("5");
             callback(null, connection, "api : /login/sns");
         });
     }
 
-    var task = [globalModule.connect.bind(this), checkValid, selectUserInfo, globalModule.releaseConnection.bind(this)];
+    var task = [globalModule.connect.bind(this), checkValid, selectUserInfo, comparePW, globalModule.releaseConnection.bind(this)];
     async.waterfall(task, globalModule.asyncCallback.bind(this));
 });
 

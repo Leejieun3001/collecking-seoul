@@ -175,16 +175,6 @@ router.get('/verificationCode', function (req, res) {
         verificationCode: ''
     };
 
-    var connect = function (callback) {
-        pool.getConnection(function (err, connection) {
-            if (err) {
-                console.log("getConnection error : ", err);
-                callback(err, connection, "api : /join/verificationCode");
-            }
-            else callback(null, connection);
-        });
-    }
-
     var selectUserInfo = function (connection, callback) {
         let duplicate_check_query = "select * from User where id = ?";
         connection.query(duplicate_check_query, req.query.tempEmail, function (err, data) {
@@ -219,7 +209,7 @@ router.get('/verificationCode', function (req, res) {
                 resultJson.message = "SUCCESS";
                 resultJson.verificationCode = rand;
                 res.status(201).send(resultJson);
-                callback(null, connection, "api : /join/verificationCode");
+                callback(null, connection, "api : /join/verificationCode", res);
             }
         });
     }

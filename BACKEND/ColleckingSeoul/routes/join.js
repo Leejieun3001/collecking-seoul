@@ -48,6 +48,10 @@ router.post('/', upload.single('photo'), function (req, res) {
             res.status(200).send(errorConfig.NOT_CORRESPOND);
             callback("ALREADY_SEND_MESSAGE", connection, "api : /login/join");
         } else {
+            if (req.file.location === undefined) {
+                res.status(200).send(errorConfig.NO_IMAGE);
+            callback("ALREADY_SEND_MESSAGE", connection, "api : /login/join");
+            }
             callback(null, connection);
         }
     }
@@ -98,10 +102,9 @@ router.post('/', upload.single('photo'), function (req, res) {
             "insert into Photo" +
             "(user_idx, url)" +
             "values ((select idx from User where id = ?),?)";
-        let imageUrl = !req.file ? require('../config/secretKey').default_male : req.file.location;
         let params = [
             req.body.id,
-            imageUrl
+            req.file.location
         ];
         connection.query(insertQuery, params, function (err, data) {
             if (err) {

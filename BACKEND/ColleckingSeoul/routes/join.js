@@ -48,7 +48,7 @@ router.post('/', upload.single('photo'), function (req, res) {
             res.status(200).send(errorConfig.NOT_CORRESPOND);
             callback("ALREADY_SEND_MESSAGE", connection, "api : /login/join");
         } else {
-            if (!req.file.hasOwnProperty('file')) {
+            if (req.file === undefined) {
                 res.status(200).send(errorConfig.NO_IMAGE);
                 callback("ALREADY_SEND_MESSAGE", connection, "api : /login/join");
             }

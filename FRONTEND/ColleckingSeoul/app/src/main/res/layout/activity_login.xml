@@ -37,10 +37,8 @@
     <Button
         android:id="@+id/login_button_kakao"
         android:layout_width="match_parent"
-<<<<<<< Updated upstream
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/small_margin"
-        android:background="@drawable/kakao_login_button"/>
+        android:layout_height="65dp"
+        android:background="@drawable/kakao_login_button_wide"/>
     <TextView
         android:id="@+id/login_TextView_join"
         android:layout_width="match_parent"
@@ -55,10 +53,5 @@
         android:layout_margin="@dimen/small_margin"
         android:text="아이디와 패스워드 찾기"
         android:gravity="center"/>
-
-=======
-        android:layout_height="65dp"
-        android:background="@drawable/kakao_login_button_wide"/>
->>>>>>> Stashed changes
 
 </LinearLayout>

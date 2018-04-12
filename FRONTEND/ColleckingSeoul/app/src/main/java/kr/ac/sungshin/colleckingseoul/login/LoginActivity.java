@@ -2,15 +2,13 @@ package kr.ac.sungshin.colleckingseoul.login;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-<<<<<<< Updated upstream
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.support.v7.app.ActionBar;
-=======
->>>>>>> Stashed changes
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -25,11 +23,6 @@ import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
-<<<<<<< Updated upstream
-=======
-import com.facebook.login.LoginResult;
-
->>>>>>> Stashed changes
 import com.kakao.auth.AuthType;
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
@@ -38,32 +31,24 @@ import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.MeResponseCallback;
 import com.kakao.usermgmt.response.model.UserProfile;
 import com.kakao.util.exception.KakaoException;
-
 import org.json.JSONObject;
 
+import java.security.MessageDigest;
 import java.util.Arrays;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import kr.ac.sungshin.colleckingseoul.MainActivity;
 import kr.ac.sungshin.colleckingseoul.R;
 import kr.ac.sungshin.colleckingseoul.model.request.Login;
-<<<<<<< Updated upstream
-import kr.ac.sungshin.colleckingseoul.model.response.LoginResult;
 import kr.ac.sungshin.colleckingseoul.model.response.User;
-=======
+import kr.ac.sungshin.colleckingseoul.model.response.LoginResult;
 import kr.ac.sungshin.colleckingseoul.model.singleton.InfoManager;
 import kr.ac.sungshin.colleckingseoul.model.singleton.MyInfo;
->>>>>>> Stashed changes
 import kr.ac.sungshin.colleckingseoul.network.ApplicationController;
 import kr.ac.sungshin.colleckingseoul.network.NetworkService;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
 
 public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.login_button_kakao)
@@ -86,16 +71,13 @@ public class LoginActivity extends AppCompatActivity {
     private final String TAG = "LoginActivity";
     private CallbackManager facebookCallbackManager;
     SessionCallback callbackForKakao;
+
     //Back 키 두번 클릭 여부 확인
     private final long FINSH_INTERVAL_TIME = 2000;
     private long backPressedTime = 0;
 
-    private NetworkService service;
     private String id, password, accessToken, nickname, photo;
     private int snsCategory = 0;
-
-    public LoginActivity() {
-    }
 
 
     @Override
@@ -142,7 +124,7 @@ public class LoginActivity extends AppCompatActivity {
 
                                 editor.putString("idx", user.getIdx());
                                 editor.putString("id", user.getId());
-                                editor.putString("nickname", user.getNikname());
+                                editor.putString("nickname", user.getNickname());
                                 editor.putString("phone", user.getPhone());
                                 editor.putString("birth", user.getBirth());
                                 editor.apply();
@@ -163,7 +145,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        service = ApplicationController.getInstance().getNetworkService();
         kakaoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -211,65 +192,6 @@ public class LoginActivity extends AppCompatActivity {
             return true;
     }
 
-<<<<<<< Updated upstream
-    private void loginOnKakao() {
-        // 카카오 세션을 오픈한다
-        callbackForKakao = new SessionCallback();
-        Session.getCurrentSession().addCallback(callbackForKakao);
-        Session.getCurrentSession().checkAndImplicitOpen();
-        Session.getCurrentSession().open(AuthType.KAKAO_TALK_EXCLUDE_NATIVE_LOGIN, LoginActivity.this);
-    }
-
-    private class SessionCallback implements ISessionCallback {
-        @Override
-        public void onSessionOpened() {
-            Log.d("TAG", "세션 오픈됨");
-            // 사용자 정보를 가져옴, 회원가입 미가입시 자동가입 시킴
-            KakaorequestMe();
-        }
-
-        @Override
-        public void onSessionOpenFailed(KakaoException exception) {
-            if (exception != null) {
-                Log.d("TAG", exception.getMessage());
-            }
-        }
-    }
-
-    /**
-     * 사용자의 상태를 알아 보기 위해 me API 호출을 한다.
-     */
-    protected void KakaorequestMe() {
-        UserManagement.requestMe(new MeResponseCallback() {
-            @Override
-            public void onFailure(ErrorResult errorResult) {
-                int ErrorCode = errorResult.getErrorCode();
-                int ClientErrorCode = -777;
-
-                if (ErrorCode == ClientErrorCode) {
-                    Toast.makeText(getApplicationContext(), "카카오톡 서버의 네트워크가 불안정합니다. 잠시 후 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
-                } else {
-                    Log.d("TAG", "오류로 카카오로그인 실패 ");
-                }
-            }
-
-            @Override
-            public void onSessionClosed(ErrorResult errorResult) {
-                Log.d("TAG", "오류로 카카오로그인 실패 ");
-            }
-
-            @Override
-            public void onSuccess(UserProfile userProfile) {
-                Log.e(TAG, userProfile.toString());
-            }
-
-            @Override
-            public void onNotSignedUp() {
-                // 자동가입이 아닐경우 동의창
-            }
-        });
-    }
-
     private void getAppKeyHash() {
         try {
             PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
@@ -286,9 +208,6 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    //facebook Login
-=======
->>>>>>> Stashed changes
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -380,46 +299,49 @@ public class LoginActivity extends AppCompatActivity {
                 snsCategory = 2;
 
                 Login info = new Login(id, accessToken, nickname, photo, snsCategory);
-                Call<kr.ac.sungshin.colleckingseoul.model.response.LoginResult> checkLogin = service.getLoginResult(info);
-                checkLogin.enqueue(new Callback<kr.ac.sungshin.colleckingseoul.model.response.LoginResult>() {
+                Call<LoginResult> checkLogin = service.getLoginResult(info);
+                checkLogin.enqueue(new Callback<LoginResult>() {
                     @Override
-                    public void onResponse(Call<kr.ac.sungshin.colleckingseoul.model.response.LoginResult> call, Response<kr.ac.sungshin.colleckingseoul.model.response.LoginResult> response) {
+                    public void onResponse(Call<LoginResult> call, Response<LoginResult> response) {
                         if (response.isSuccessful()) {
                             String message = response.body().getMessage();
 
-                            if (message.equals("NOT_SIGN_UP")) Toast.makeText(getBaseContext(), "입력하신 회원정보는 존재하지 않습니다.", Toast.LENGTH_SHORT).show();
-                            else if (message.equals("INCORRECT_PASSWORD")) Toast.makeText(getBaseContext(), "비밀번호가 틀렸습니다.", Toast.LENGTH_SHORT).show();
-                            else if (message.equals("NOT_MATCH_ACCOUNT")) Toast.makeText(getBaseContext(), "카카오 계정이 아닌 다른 계정이 등록되어 있습니다.", Toast.LENGTH_SHORT).show();
-                            else if (message.equals("SUCCESS")) {
-                                MyInfo myInfo = response.body().getUser();
-                                String token = response.body().getToken();
-                                InfoManager.getInstance().setUserInfo(myInfo);
+                            switch (message) {
+                                case "NOT_SIGN_UP": Toast.makeText(getBaseContext(), "입력하신 회원정보는 존재하지 않습니다.", Toast.LENGTH_SHORT).show(); break;
+                                case "INCORRECT_PASSWORD": Toast.makeText(getBaseContext(), "비밀번호가 틀렸습니다.", Toast.LENGTH_SHORT).show(); break;
+                                case "NOT_MATCH_ACCOUNT": Toast.makeText(getBaseContext(), "카카오 계정이 아닌 다른 계정이 등록되어 있습니다.", Toast.LENGTH_SHORT).show(); break;
+                                case "SUCCESS":
+                                    User user = response.body().getUser();
+                                    String token = response.body().getToken();
+                                    InfoManager.getInstance().setUserInfo(user);
 
-                                SharedPreferences userInfo = getSharedPreferences("user", MODE_PRIVATE);
-                                SharedPreferences.Editor editor = userInfo.edit();
+                                    SharedPreferences userInfo = getSharedPreferences("user", MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = userInfo.edit();
 
-                                editor.putString("idx", myInfo.getIdx());
-                                editor.putString("id", myInfo.getId());
-                                editor.putString("nickname", myInfo.getNickname());
-                                editor.putString("phone", myInfo.getPhone());
-                                editor.putString("birth", myInfo.getBirth());
-                                editor.putString("photo", myInfo.getPhoto());
-                                editor.putInt("sex", myInfo.getSex());
-                                editor.putString("token", token);
-                                editor.apply();
+                                    editor.putString("idx", user.getIdx());
+                                    editor.putString("id", user.getId());
+                                    editor.putString("nickname", user.getNickname());
+                                    editor.putString("phone", user.getPhone());
+                                    editor.putString("birth", user.getBirth());
+                                    editor.putString("photo", user.getUrl());
+                                    editor.putInt("sex", user.getSex()cd);
+                                    editor.putString("token", token);
+                                    editor.apply();
 
-                                ApplicationController.getInstance().setTokenOnHeader(token);
+                                    ApplicationController.getInstance().setTokenOnHeader(token);
 
-                                Intent intent = new Intent(getBaseContext(), MainActivity.class);;
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
-                                finish();
+                                    Intent intent = new Intent(getBaseContext(), MainActivity.class);;
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(intent);
+                                    finish();
+                                    break;
+
                             }
                         }
                     }
 
                     @Override
-                    public void onFailure(Call<kr.ac.sungshin.colleckingseoul.model.response.LoginResult> call, Throwable t) {
+                    public void onFailure(Call<LoginResult> call, Throwable t) {
 
                     }
                 });

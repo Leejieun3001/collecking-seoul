@@ -7,16 +7,28 @@ package kr.ac.sungshin.colleckingseoul.model.response;
 public class User {
     private String idx;
     private String id;
-    private String nikname;
+    private String nickname;
     private String phone;
     private String birth;
+    private String url;
+    private int sex;
 
-    public User(String idx, String id, String nikname, String phone, String birth) {
+    public User(String idx, String id, String nickname, String phone, String birth) {
         this.idx = idx;
         this.id = id;
-        this.nikname = nikname;
+        this.nickname = nickname;
         this.phone = phone;
         this.birth = birth;
+    }
+
+    public User(String idx, String id, String nickname, String phone, String birth, String url, int sex) {
+        this.idx = idx;
+        this.id = id;
+        this.nickname = nickname;
+        this.phone = phone;
+        this.birth = birth;
+        this.url = url;
+        this.sex = sex;
     }
 
     public String getIdx() {
@@ -27,8 +39,8 @@ public class User {
         return id;
     }
 
-    public String getNikname() {
-        return nikname;
+    public String getNickname() {
+        return nickname;
     }
 
     public String getPhone() {
@@ -37,5 +49,13 @@ public class User {
 
     public String getBirth() {
         return birth;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public int getSex() {
+        return sex;
     }
 }

@@ -8,8 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.kakao.auth.authorization.authcode.GetterAuthCode;
@@ -18,7 +16,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import kr.ac.sungshin.colleckingseoul.R;
 import kr.ac.sungshin.colleckingseoul.model.request.Join;
-import kr.ac.sungshin.colleckingseoul.model.response.Message;
+import kr.ac.sungshin.colleckingseoul.model.response.BaseResult;
 import kr.ac.sungshin.colleckingseoul.network.ApplicationController;
 import kr.ac.sungshin.colleckingseoul.network.NetworkService;
 import retrofit2.Call;
@@ -85,10 +83,10 @@ public class JoinActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "이메일 형식이 맞지 않습니다. 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();
                     return;
                 } else {
-                    Call<Message> checkId = service.getDuplicatedResult(id);
-                    checkId.enqueue(new Callback<Message>() {
+                    Call<BaseResult> checkId = service.getDuplicatedResult(id);
+                    checkId.enqueue(new Callback<BaseResult>() {
                         @Override
-                        public void onResponse(Call<Message> call, Response<Message> response) {
+                        public void onResponse(Call<BaseResult> call, Response<BaseResult> response) {
                             if (response.isSuccessful()) {
                                 Log.d(TAG, response.body().toString());
                                 if (response.body().getMessage().equals("SUCCESS")) {
@@ -106,7 +104,7 @@ public class JoinActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onFailure(Call<Message> call, Throwable t) {
+                        public void onFailure(Call<BaseResult> call, Throwable t) {
 
                         }
                     });
@@ -178,11 +176,11 @@ public class JoinActivity extends AppCompatActivity {
                 if (!checkValid(id, password, repassword, nikname, phone, birth))
                     return;
                 Join Info = new Join(id, password,repassword, nikname, phone, birth );
-                Call<Message> getJoinResult = service.getJoinResult(Info);
+                Call<BaseResult> getJoinResult = service.getJoinResult(Info);
 
-                getJoinResult.enqueue(new Callback<Message>() {
+                getJoinResult.enqueue(new Callback<BaseResult>() {
                     @Override
-                    public void onResponse(Call<Message> call, Response<Message> response) {
+                    public void onResponse(Call<BaseResult> call, Response<BaseResult> response) {
                         if(response.isSuccessful()){
                             if(response.body().getMessage().equals("signup success")){
                                 Toast.makeText(getApplicationContext(), "회원가입이 성공적으로 완료되었습니다.", Toast.LENGTH_SHORT).show();
@@ -195,7 +193,7 @@ public class JoinActivity extends AppCompatActivity {
                         }
                     }
                     @Override
-                    public void onFailure(Call<Message> call, Throwable t) {
+                    public void onFailure(Call<BaseResult> call, Throwable t) {
 
                     }
                 });

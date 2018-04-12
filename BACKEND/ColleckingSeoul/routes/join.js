@@ -209,7 +209,7 @@ router.get('/verificationCode', function (req, res) {
         rand = Math.floor((Math.random() * 10000));
         let mailOption = {
             to: req.query.tempEmail,
-            subject: "안녕하세요. safe,save! 입니다.",
+            subject: "안녕하세요. CollecKing Seoul! 입니다.",
             html: "안녕하세요,<br> 고객님의 인증번호는 " + rand + "입니다. <br>"
             + "<br>어플로 돌아가셔서 인증번호를 입력해 주세요.</br>"
             + "<br>감사합니다.</br>"

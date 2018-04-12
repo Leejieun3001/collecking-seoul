@@ -20,11 +20,6 @@ public class KakaoSDKAdapter extends KakaoAdapter {
         super();
     }
 
-    /**
-     * Session Config에 대해서는 default값들이 존재한다.
-     * 필요한 상황에서만 override해서 사용하면 됨.
-     * @return Session의 설정값.
-     */
     @Override
     public ISessionConfig getSessionConfig() {
         return new ISessionConfig() {
@@ -35,6 +30,11 @@ public class KakaoSDKAdapter extends KakaoAdapter {
 
             @Override
             public boolean isUsingWebviewTimer() {
+                return false;
+            }
+
+            @Override
+            public boolean isSecureMode() {
                 return false;
             }
 
@@ -54,10 +54,6 @@ public class KakaoSDKAdapter extends KakaoAdapter {
     @Override
     public IApplicationConfig getApplicationConfig() {
         return new IApplicationConfig() {
-            @Override
-            public Activity getTopActivity() {
-                return ApplicationController.getCurrentActivity();
-            }
 
             @Override
             public Context getApplicationContext() {

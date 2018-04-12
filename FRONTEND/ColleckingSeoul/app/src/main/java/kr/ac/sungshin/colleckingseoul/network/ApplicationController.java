@@ -89,4 +89,9 @@ public class ApplicationController extends Application {
         instance.currentActivity = currentActivity;
     }
 
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        instance = null;
+    }
 }

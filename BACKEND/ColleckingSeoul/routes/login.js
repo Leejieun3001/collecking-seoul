@@ -8,6 +8,16 @@ const nodemailer = require('nodemailer');
 const mailConfig = require('../config/mailAccount');
 const errorConfig =  require('../config/error');
 
+Date.prototype.yyyymmdd = function() {
+    var mm = this.getMonth() + 1; // getMonth() is zero-based
+    var dd = this.getDate();
+  
+    return [this.getFullYear(),
+            (mm>9 ? '' : '0') + mm,
+            (dd>9 ? '' : '0') + dd
+           ].join('');
+};
+
 /**
  * api 목적        : 로그인 (일반)
  * request params : {string id: "아이디", string password: "비밀번호"}
@@ -195,7 +205,7 @@ router.post('/sns', function (req, res) {
 
 /**
  * api 목적        : 아이디 찾기
- * request params : {string name: "이름", int phone: "핸드폰번호"}
+ * request params : {int phone: "핸드폰번호", birth: "19950825"}
  */
 router.post('/find_id', function (req, res) {
     var resultJson = {
@@ -203,11 +213,20 @@ router.post('/find_id', function (req, res) {
         message: ''
     };
 
+    var selectId = function (connection, callback) {
+        let sql = "select id, birth from User where phone = ?";
+        let param = [req.body.phone];
+
+        connection.query(sql, param, function (err, rows) {
+            if (err) callback(err, connection, "Select query Error : ");
+             else callback(null, connection, rows);
+        });
+    }
+
     var onSelectId = function (connection, rows, callback) {
-        if (rows.length === 0) {
+        if (rows.length === 0 || (req.body.birth != rows[0].birth.yyyymmdd())) {
             // 해당 회원이 없는 경우
-            resultJson.message = "NO_USER";
-            res.status(201).send(resultJson);
+            res.status(200).send(errorConfig.NOT_SIGN_UP);
         } else {
             // 해당 회원이 있는 경우
             var id = rows[0].id.split("@");
@@ -225,50 +244,45 @@ router.post('/find_id', function (req, res) {
             }
 
             resultJson.message = "EXIST_MEMBER";
-            resultJson.id = id[0] + +"@" + id[1];
+            resultJson.id = id[0] + "@" + id[1];
             res.status(201).send(resultJson);
         }
         callback(null, connection, "api : find_id");
     }
 
-    var selectId = function (connection, callback) {
-        let sql = "select * from user where name = ? and phone = ?";
-        let param = [req.body.name, req.body.phone];
-
-        connection.query(sql, param, function (err, rows) {
-            if (err) {
-                callback(err, connection, "Select query Error : ");
-            } else {
-                callback(null, connection, rows);
-            }
-        });
-    }
+    
 
     var task = [globalModule.connect.bind(this), selectId, onSelectId, globalModule.releaseConnection.bind(this)];
-
-    async.waterfall(task, function (err, connection, result) {
-        if (connection) {
-            connection.release();
-        }
-
-        if (!!err) {
-            console.log(result, err.message);
-            resultJson.message = "FAILURE";
-            res.status(503).send(resultJson);
-        } else {
-            console.log(result);
-        }
-    });
+    async.waterfall(task, globalModule.asyncCallback.bind(this));
 });
 
 /**
  * api 목적        : 비밀번호 찾기
- * request params : {string id: "아이디", string name: "이름", phone: "핸드폰번호"}
+ * request params : {string id: "아이디", phone: "핸드폰번호"}
  */
 router.post('/find_password', function (req, res) {
     var resultJson = {
         message: ''
     };
+
+    var onSelectUserInfo = function (connection, rows, callback) {
+        if (rows.length === 0) {
+            // 존재하는 정보가 없는 경우
+            res.status(200).send(errorConfig.NOT_SIGN_UP);
+            callback(null, connection, "api : find_password");
+        } else {
+            callback(null, connection);
+        }
+    }
+
+    var selectUserInfo = function (connection, callback) {
+        let sql = 'select * from User where id = ? and phone = ?';
+        let params = [req.body.id, req.body.phone];
+        connection.query(sql, params, function (error, rows) {
+            if (error) callback(error, connection, "Selecet query Error1 : ");
+            else callback(null, connection, rows);
+        });
+    }
 
     var makeNewPassword = function () {
         var i = 10,
@@ -288,14 +302,11 @@ router.post('/find_password', function (req, res) {
             if (err) {
                 callback(err, connection, "Bcrypt hashing Error : ");
             } else {
-                let sql = 'update user set password = ? where id = ?';
+                let sql = 'update User set password = ? where id = ?';
                 let params = [hash, req.body.id];
                 connection.query(sql, params, function (error, rows) {
-                    if (error) {
-                        callback(error, connection, "Selecet query Error : ");
-                    } else {
-                        callback(null, connection, newPassword);
-                    }
+                    if (error) callback(error, connection, "Selecet query Error2 : ");
+                    else callback(null, connection, newPassword);
                 });
             }
         });
@@ -313,7 +324,7 @@ router.post('/find_password', function (req, res) {
 
         let mailOption = {
             to: req.body.id,
-            subject: "안녕하세요. safe, save! 입니다.",
+            subject: "안녕하세요. Collecking Seoul 입니다.",
             html: "안녕하세요,<br> 고객님의 임시 비밀번호는 " + newPassword + "입니다. <br>" +
             "<br>어플로 돌아가셔서 로그인 후 비밀번호를 변경해주세요.</br>" +
             "<br>감사합니다.</br>"
@@ -330,43 +341,7 @@ router.post('/find_password', function (req, res) {
         });
     }
 
-    var onSelectUserInfo = function (connection, rows, callback) {
-        if (rows.length === 0) {
-            // 존재하는 정보가 없는 경우
-            resultJson.message = "NO_INFO";
-            res.status(200).send(resultJson);
-            callback(null, connection, "api : find_password");
-        } else {
-            callback(null, connection);
-        }
-    }
-
-    var selectUserInfo = function (connection, callback) {
-        let sql = 'select * from user where id = ? and name = ? and phone = ?';
-        let params = [req.body.id, req.body.name, req.body.phone];
-        connection.query(sql, params, function (error, rows) {
-            if (error) {
-                callback(error, connection, "Selecet query Error : ");
-            } else {
-                callback(null, connection, rows);
-            }
-        });
-    }
-
     var task = [globalModule.connect.bind(this), selectUserInfo, onSelectUserInfo, saveNewPassword, sendMail, globalModule.releaseConnection.bind(this)];
-
-    async.waterfall(task, function (err, connection, result) {
-        if (connection) {
-            connection.release();
-        }
-
-        if (!!err) {
-            console.log(result, err.message);
-            resultJson.message = "FAILURE";
-            res.status(503).send(resultJson);
-        } else {
-            console.log(result);
-        }
-    });
+    async.waterfall(task, globalModule.asyncCallback.bind(this));
 });
 module.exports = router;

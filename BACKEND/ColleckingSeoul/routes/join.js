@@ -144,7 +144,7 @@ router.get('/check_dupplicate', function (req, res) {
                     callback("ALREADY_SEND_MESSAGE", connection, "api : /join/check_dupplicate");
                 } else {
                     res.status(200).send({message: "SUCCESS"});
-                    callback(null, connection);
+                    callback(null, connection, "api : /join/check_dupplicate");
                 }
             }
         });
@@ -225,11 +225,6 @@ router.get('/verificationCode', function (req, res) {
 
             }
         });
-    }
-
-    var releaseConnection = function (connection, callback) {
-        connection.release();
-        callback(null, null, '-verificationCode');
     }
 
     var verificationCode_task = [globalModule.connect.bind(this), selectUserInfo, sendMail, globalModule.releaseConnection.bind(this)];

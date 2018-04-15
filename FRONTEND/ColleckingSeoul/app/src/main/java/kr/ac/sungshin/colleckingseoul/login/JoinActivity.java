@@ -1,6 +1,13 @@
 package kr.ac.sungshin.colleckingseoul.login;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,14 +15,35 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+<<<<<<< Updated upstream
 import android.widget.Toast;
+=======
+import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Toast;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
+>>>>>>> Stashed changes
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import kr.ac.sungshin.colleckingseoul.R;
 import kr.ac.sungshin.colleckingseoul.model.request.Join;
+<<<<<<< Updated upstream
 import kr.ac.sungshin.colleckingseoul.model.response.BaseResult;
+=======
+import kr.ac.sungshin.colleckingseoul.model.response.Message;
+import kr.ac.sungshin.colleckingseoul.model.response.VerificationCodeResult;
+>>>>>>> Stashed changes
 import kr.ac.sungshin.colleckingseoul.network.ApplicationController;
 import kr.ac.sungshin.colleckingseoul.network.NetworkService;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -45,6 +73,12 @@ public class JoinActivity extends AppCompatActivity {
     DatePicker Datepickerbirth;
     @BindView(R.id.join_button_join)
     Button buttonJoin;
+    @BindView(R.id.join_button_profile)
+    Button buttonProfile;
+    @BindView(R.id.join_image_profile)
+    ImageView imageProfile;
+    @BindView(R.id.join_radioGroup_sex)
+    RadioGroup radioGroupSex;
 
     private NetworkService service;
     private final String TAG = "JoinActivity";
@@ -56,6 +90,16 @@ public class JoinActivity extends AppCompatActivity {
     //Back 키 두번 클릭 여부 확인
     private final long FINSH_INTERVAL_TIME = 2000;
     private long backPressedTime = 0;
+
+
+    private static final int GALLERY_CODE = 1112;
+    private static final String TYPE_IMAGE = "image/*";
+
+    private static final String TEMP_FILE_NAME = "profileImageTemp.jpg";
+
+
+    String imgUrl = "";
+    private Uri data;
 
 
     @Override
@@ -71,6 +115,24 @@ public class JoinActivity extends AppCompatActivity {
 
     //클릭 이벤트 바인딩
     public void bindClickListener() {
+
+        //갤러리에서 프로필 사진 가져오기
+        buttonProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                File tempFile = new File(Environment.getExternalStorageDirectory() + "/temp.jpg");
+                Uri tempUri = Uri.fromFile(tempFile);
+                intent.putExtra("crop", "true");
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
+                imgUrl = tempUri.toString();
+                intent.setType("image/*");
+                intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, GALLERY_CODE);
+            }
+        });
+
         //email 중복 체크
         buttonDuplication.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,8 +155,9 @@ public class JoinActivity extends AppCompatActivity {
                                 if (response.body().getMessage().equals("ALREADY_JOIN")) {
                                     Toast.makeText(getApplicationContext(), "이미 사용중인 이메일이 존재합니다. 다른 이메일로 시도해 주세요.", Toast.LENGTH_SHORT).show();
                                     isDuplicate = false;
-                                }if(response.body().getMessage().equals("NOT_MATCH_REGULATION")){
-                                    Toast.makeText(getApplicationContext(), "정규식이 일치 하지 않습니다.",Toast.LENGTH_SHORT).show();
+                                }
+                                if (response.body().getMessage().equals("NOT_MATCH_REGULATION")) {
+                                    Toast.makeText(getApplicationContext(), "정규식이 일치 하지 않습니다.", Toast.LENGTH_SHORT).show();
                                     isDuplicate = false;
                                 }
                             }
@@ -116,19 +179,19 @@ public class JoinActivity extends AppCompatActivity {
                 if (!isDuplicate) {
                     Toast.makeText(getApplicationContext(), "이메일 중복 체크를 해주세요.", Toast.LENGTH_SHORT).show();
                     return;
-                } /*else {
+                } else {
                     final Call<VerificationCodeResult> checkNumber = service.getVerifiCodeResult(id);
                     checkNumber.enqueue(new Callback<VerificationCodeResult>() {
                         @Override
                         public void onResponse(Call<VerificationCodeResult> call, Response<VerificationCodeResult> response) {
                             if (response.isSuccessful()) {
-                                if (response.body().getMessage().equals("duplicated")) {
+                                if (response.body().getMessage().equals("ALREADY_JOIN")) {
                                     Toast.makeText(getApplicationContext(), "이미 사용중인 이메일이 존재합니다. 다른 이메일로 시도해 주세요.", Toast.LENGTH_SHORT).show();
                                 }
                                 if (response.body().getMessage().equals("failuire")) {
                                     Toast.makeText(getApplicationContext(), "알수 없는 오류 입니다.", Toast.LENGTH_SHORT).show();
                                 }
-                                if (response.body().getMessage().equals("email success")) {
+                                if (response.body().getMessage().equals("SUCCESS")) {
                                     verificationCode = response.body().getVerificationCode();
                                     Toast.makeText(getApplicationContext(), "인증번호가 메일로 발송되었습니다. 확인후 입력해 주세요.", Toast.LENGTH_SHORT).show();
                                 }
@@ -140,7 +203,7 @@ public class JoinActivity extends AppCompatActivity {
 
                         }
                     });
-                }*/
+                }
             }
         });
 
@@ -162,14 +225,42 @@ public class JoinActivity extends AppCompatActivity {
         buttonJoin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String id = editTextId.getText().toString();
-                String password = editTextPassword.getText().toString();
-                final String repassword = editTextRepassword.getText().toString();
-                String nikname = editTextNikname.getText().toString();
-                String phone = editTextPhone.getText().toString();
-                String birth = Integer.toString(Datepickerbirth.getYear()) + Integer.toString(Datepickerbirth.getMonth()) + Integer.toString(Datepickerbirth.getDayOfMonth());
+//                String id = editTextId.getText().toString();
+//                String password = editTextPassword.getText().toString();
+//                final String password2 = editTextRepassword.getText().toString();
+//                String nikname = editTextNikname.getText().toString();
+//                String phone = editTextPhone.getText().toString();
+//
+
+//                String birth = Integer.toString(Datepickerbirth.getYear()) + Integer.toString(Datepickerbirth.getMonth()) + Integer.toString(Datepickerbirth.getDayOfMonth());
+//                imgUrl = getImageNameToUri(data );
 
 
+                int typeId = radioGroupSex.getCheckedRadioButtonId();
+                Log.d(TAG, " " + typeId);
+                RadioButton radionbuttonSex = (RadioButton) findViewById(typeId);
+                String type = radionbuttonSex.getText().toString();
+                int intType = 1;
+                if (type.equals("남자")) intType = 0;
+                else if (type.equals("여자")) intType = 1;
+                MultipartBody.Part photo;
+                RequestBody id = RequestBody.create(MediaType.parse("multipart/form-data"), editTextId.getText().toString());
+                RequestBody password = RequestBody.create(MediaType.parse("multipart/form-data"), editTextPassword.getText().toString());
+                RequestBody password2 = RequestBody.create(MediaType.parse("multipart/form-data"), editTextRepassword.getText().toString());
+                RequestBody nikname = RequestBody.create(MediaType.parse("multipart/form-data"), editTextNikname.getText().toString());
+                RequestBody phone = RequestBody.create(MediaType.parse("multipart/form-data"), editTextPhone.getText().toString());
+                RequestBody birth = RequestBody.create(MediaType.parse("multipart/form-data"), Integer.toString(Datepickerbirth.getYear()) + Integer.toString(Datepickerbirth.getMonth()) + Integer.toString(Datepickerbirth.getDayOfMonth()));
+                if (imgUrl == null) {
+                    photo = null;
+                    Log.d(TAG, "이미지 없음");
+                } else {
+                    Log.d(TAG, "이미지 있음");
+
+                    File file = new File(imgUrl);
+                    RequestBody fileBody = RequestBody.create(MediaType.parse("image/*"), file);
+                    photo = MultipartBody.Part.createFormData("image", file.getName(), fileBody);
+
+<<<<<<< Updated upstream
                 if (!checkValid(id, password, repassword, nikname, phone, birth))
                     return;
                 Join Info = new Join(id, password,repassword, nikname, phone, birth );
@@ -180,15 +271,36 @@ public class JoinActivity extends AppCompatActivity {
                     public void onResponse(Call<BaseResult> call, Response<BaseResult> response) {
                         if(response.isSuccessful()){
                             if(response.body().getMessage().equals("signup success")){
+=======
+                }
+
+                //  if (!checkValid(id, password, password2, nikname, phone, birth))
+                //    return;
+
+                //Join Info = new Join(id, password, password2, nikname, phone, birth, intType);
+
+                Call<Message> getJoinResult = service.getJoinResult(id, password, password2, nikname, phone, birth, intType, photo);
+
+                getJoinResult.enqueue(new Callback<Message>() {
+
+                    @Override
+                    public void onResponse(Call<Message> call, Response<Message> response) {
+                        Log.d(TAG, "레트로핏");
+                        if (response.isSuccessful()) {
+
+                            if (response.body().getMessage().equals("SUCCESS")) {
+>>>>>>> Stashed changes
                                 Toast.makeText(getApplicationContext(), "회원가입이 성공적으로 완료되었습니다.", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                                 startActivity(intent);
-                            }else{
+                            } else {
+                                Log.d(TAG, "여기" + response.body().getMessage());
                                 Toast.makeText(getApplicationContext(), "죄송합니다. 오류가 발생하였습니다. 빠른시일 내에 개선하겠습니다.", Toast.LENGTH_SHORT).show();
                             }
 
                         }
                     }
+
                     @Override
                     public void onFailure(Call<BaseResult> call, Throwable t) {
 
@@ -208,7 +320,6 @@ public class JoinActivity extends AppCompatActivity {
     }
 
     //유효성 체크
-
     public boolean checkValid(String id, String password, String repassword, String name, String phone, String birth) {
         // 빈칸 체크
         if (id.equals("")) {
@@ -272,6 +383,67 @@ public class JoinActivity extends AppCompatActivity {
         }
     }
 
+    //이미지 crop
+    private File getTempFile() {
+
+        File file = new File(Environment.getExternalStorageDirectory(), TEMP_FILE_NAME);
+        try {
+            file.createNewFile();
+        } catch (Exception e) {
+            Log.e(TAG, "fileCreation fail");
+        }
+        return file;
+    }
+
+    // 선택된 이미지 데이터 받아오기
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == GALLERY_CODE) {
+            //이미지를 성공적으로 가져왔을 경우
+            if (resultCode == Activity.RESULT_OK) {
+                try {
+                    this.data = data.getData();
+                    //이미지 데이터를 비트맵으로 받아온다.
+                    Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
+                    imageProfile.setImageBitmap(image_bitmap);
+
+                    Log.d(TAG, "dd1" + imgUrl);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                imgUrl = "";
+            }
+        }
+    }
+
+    //사진의 절대 경로 구하기
+    private String getRealPathFromURI(Uri contentUri) {
+        int column_index = 0;
+        String[] proj = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getContentResolver().query(contentUri, proj, null, null, null);
+        if (cursor.moveToFirst()) {
+            column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        }
+
+        return cursor.getString(column_index);
+    }
+
+    // 선택된 이미지 파일명 가져오기 나중에 코드를 재활용 해서 사용하 면 된다
+    public String getImageNameToUri(Uri data) {
+        String[] proj = {MediaStore.Images.Media.DATA};
+        Cursor cursor = managedQuery(data, proj, null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+
+        cursor.moveToFirst();
+
+        String imgPath = cursor.getString(column_index);
+        String imgName = imgPath.substring(imgPath.lastIndexOf("/") + 1);
+
+        imgUrl = imgPath;
+
+        return imgName;
+    }
 }
 
 

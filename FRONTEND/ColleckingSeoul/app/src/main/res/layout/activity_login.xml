@@ -34,11 +34,18 @@
         android:text="facebook 으로 로그인 하기"
         android:layout_margin="@dimen/small_margin"
         />
+
     <Button
         android:id="@+id/login_button_kakao"
         android:layout_width="match_parent"
+<<<<<<< Updated upstream
         android:layout_height="65dp"
         android:background="@drawable/kakao_login_button_wide"/>
+=======
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/small_margin"
+        android:background="@drawable/kakao_login_button" />
+>>>>>>> Stashed changes
     <TextView
         android:id="@+id/login_TextView_join"
         android:layout_width="match_parent"

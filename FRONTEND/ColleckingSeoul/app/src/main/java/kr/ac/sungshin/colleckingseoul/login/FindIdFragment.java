@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import kr.ac.sungshin.colleckingseoul.R;
 import kr.ac.sungshin.colleckingseoul.network.ApplicationController;
@@ -40,7 +41,6 @@ public class FindIdFragment extends Fragment {
         ButterKnife.bind(this, view);
         RelativeLayout Layout = (RelativeLayout) inflater.inflate(R.layout.fragment_find_id, container, false);
 
-        // Inflate the layout for this fragment
         return Layout;
     }
 }

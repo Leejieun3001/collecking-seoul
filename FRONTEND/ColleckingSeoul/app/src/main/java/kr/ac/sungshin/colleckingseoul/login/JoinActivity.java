@@ -15,30 +15,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-<<<<<<< Updated upstream
-import android.widget.Toast;
-=======
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 
->>>>>>> Stashed changes
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import kr.ac.sungshin.colleckingseoul.R;
-import kr.ac.sungshin.colleckingseoul.model.request.Join;
-<<<<<<< Updated upstream
 import kr.ac.sungshin.colleckingseoul.model.response.BaseResult;
-=======
-import kr.ac.sungshin.colleckingseoul.model.response.Message;
 import kr.ac.sungshin.colleckingseoul.model.response.VerificationCodeResult;
->>>>>>> Stashed changes
 import kr.ac.sungshin.colleckingseoul.network.ApplicationController;
 import kr.ac.sungshin.colleckingseoul.network.NetworkService;
 import okhttp3.MediaType;
@@ -260,52 +248,39 @@ public class JoinActivity extends AppCompatActivity {
                     RequestBody fileBody = RequestBody.create(MediaType.parse("image/*"), file);
                     photo = MultipartBody.Part.createFormData("image", file.getName(), fileBody);
 
-<<<<<<< Updated upstream
-                if (!checkValid(id, password, repassword, nikname, phone, birth))
-                    return;
-                Join Info = new Join(id, password,repassword, nikname, phone, birth );
-                Call<BaseResult> getJoinResult = service.getJoinResult(Info);
 
-                getJoinResult.enqueue(new Callback<BaseResult>() {
-                    @Override
-                    public void onResponse(Call<BaseResult> call, Response<BaseResult> response) {
-                        if(response.isSuccessful()){
-                            if(response.body().getMessage().equals("signup success")){
-=======
-                }
+                    //  if (!checkValid(id, password, password2, nikname, phone, birth))
+                    //    return;
 
-                //  if (!checkValid(id, password, password2, nikname, phone, birth))
-                //    return;
+                    //Join Info = new Join(id, password, password2, nikname, phone, birth, intType);
 
-                //Join Info = new Join(id, password, password2, nikname, phone, birth, intType);
+                    Call<BaseResult> getJoinResult = service.getJoinResult(id, password, password2, nikname, phone, birth, intType, photo);
 
-                Call<Message> getJoinResult = service.getJoinResult(id, password, password2, nikname, phone, birth, intType, photo);
+                    getJoinResult.enqueue(new Callback<BaseResult>() {
 
-                getJoinResult.enqueue(new Callback<Message>() {
+                        @Override
+                        public void onResponse(Call<BaseResult> call, Response<BaseResult> response) {
+                            Log.d(TAG, "레트로핏");
+                            if (response.isSuccessful()) {
 
-                    @Override
-                    public void onResponse(Call<Message> call, Response<Message> response) {
-                        Log.d(TAG, "레트로핏");
-                        if (response.isSuccessful()) {
+                                if (response.body().getMessage().equals("SUCCESS")) {
+                                    Toast.makeText(getApplicationContext(), "회원가입이 성공적으로 완료되었습니다.", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                    startActivity(intent);
+                                } else {
+                                    Log.d(TAG, "여기" + response.body().getMessage());
+                                    Toast.makeText(getApplicationContext(), "죄송합니다. 오류가 발생하였습니다. 빠른시일 내에 개선하겠습니다.", Toast.LENGTH_SHORT).show();
+                                }
 
-                            if (response.body().getMessage().equals("SUCCESS")) {
->>>>>>> Stashed changes
-                                Toast.makeText(getApplicationContext(), "회원가입이 성공적으로 완료되었습니다.", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                                startActivity(intent);
-                            } else {
-                                Log.d(TAG, "여기" + response.body().getMessage());
-                                Toast.makeText(getApplicationContext(), "죄송합니다. 오류가 발생하였습니다. 빠른시일 내에 개선하겠습니다.", Toast.LENGTH_SHORT).show();
                             }
+                        }
+
+                        @Override
+                        public void onFailure(Call<BaseResult> call, Throwable t) {
 
                         }
-                    }
-
-                    @Override
-                    public void onFailure(Call<BaseResult> call, Throwable t) {
-
-                    }
-                });
+                    });
+                }
             }
         });
 

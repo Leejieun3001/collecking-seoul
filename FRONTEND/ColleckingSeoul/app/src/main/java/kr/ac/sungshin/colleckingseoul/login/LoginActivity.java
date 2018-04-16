@@ -31,10 +31,12 @@ import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.MeResponseCallback;
 import com.kakao.usermgmt.response.model.UserProfile;
 import com.kakao.util.exception.KakaoException;
+
 import org.json.JSONObject;
 
 import java.security.MessageDigest;
 import java.util.Arrays;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import kr.ac.sungshin.colleckingseoul.MainActivity;
@@ -101,22 +103,32 @@ public class LoginActivity extends AppCompatActivity {
 
                 if (!checkValid(id, password)) return;
 
-                Login info = new Login(id,password);
+                Login info = new Login(id, password);
                 Call<LoginResult> checkLogin = service.getLoginResult(info);
                 checkLogin.enqueue(new Callback<LoginResult>() {
                     @Override
                     public void onResponse(Call<LoginResult> call, Response<LoginResult> response) {
-                        if(response.isSuccessful()){
+                        if (response.isSuccessful()) {
                             String message = response.body().getMessage();
-<<<<<<< Updated upstream
-
                             switch (message) {
-                                case "EMPTY_VALUE": Toast.makeText(getBaseContext(), "입력하신 값이 없습니다.", Toast.LENGTH_SHORT).show(); break;
-                                case "NULL_VALUE": Toast.makeText(getBaseContext(), "받아야할 값이 없습니다.", Toast.LENGTH_SHORT).show(); break;
-                                case "NOT_SIGN_UP": Toast.makeText(getBaseContext(), "가입하신 정보가 존재하지 않습니다.", Toast.LENGTH_SHORT).show(); break;
-                                case "INCORRECT_PASSWORD": Toast.makeText(getBaseContext(), "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show(); break;
-                                case "IS_SNS_ACCOUNT": Toast.makeText(getBaseContext(), "SNS로 가입하신 계정 입니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show(); break;
-                                case "FAILURE": Toast.makeText(getBaseContext(), "서버의 알수없는 에러입니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show(); break;
+                                case "EMPTY_VALUE":
+                                    Toast.makeText(getBaseContext(), "입력하신 값이 없습니다.", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case "NULL_VALUE":
+                                    Toast.makeText(getBaseContext(), "받아야할 값이 없습니다.", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case "NOT_SIGN_UP":
+                                    Toast.makeText(getBaseContext(), "가입하신 정보가 존재하지 않습니다.", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case "INCORRECT_PASSWORD":
+                                    Toast.makeText(getBaseContext(), "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case "IS_SNS_ACCOUNT":
+                                    Toast.makeText(getBaseContext(), "SNS로 가입하신 계정 입니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case "FAILURE":
+                                    Toast.makeText(getBaseContext(), "서버의 알수없는 에러입니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+                                    break;
                                 case "SUCCESS":
                                     User user = response.body().getUser();
 
@@ -130,32 +142,6 @@ public class LoginActivity extends AppCompatActivity {
                                     Intent intent = new Intent(getBaseContext(), MainActivity.class);
                                     startActivity(intent);
                                     break;
-=======
-                            if(message.equals("EMPTY_VALUE")){
-                                Toast.makeText(getBaseContext(), "입력하신 값이 없습니다.", Toast.LENGTH_SHORT).show();
-                            }else if(message.equals("NULL_VALUE")){
-                                Toast.makeText(getBaseContext(), "받아야할 값이 없습니다.", Toast.LENGTH_SHORT).show();
-                            }else if(message.equals("NOT_SIGN_UP")){
-                                Toast.makeText(getBaseContext(), "가입하신 정보가 존재하지 않습니다.", Toast.LENGTH_SHORT).show();
-                            }else if(message.equals("INCORRECT_PASSWORD")){
-                                Toast.makeText(getBaseContext(), "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
-                            }else if(message.equals("IS_SNS_ACCOUNT")){
-                                Toast.makeText(getBaseContext(), "SNS계정 입니다.", Toast.LENGTH_SHORT).show();
-                            }else if(message.equals("FAILURE")){
-                                Toast.makeText(getBaseContext(), "서버의 알수없는 에러입니다. 죄송합니다", Toast.LENGTH_SHORT).show();
-                            }else if(message.equals("SUCCESS")){
-                                User user = response.body().getUser();
-
-                                editor.putString("idx", user.getIdx());
-                                editor.putString("id", user.getId());
-                                editor.putString("nickname", user.getNikname());
-                                editor.putString("phone", user.getPhone());
-                                editor.putString("birth", user.getBirth());
-                                editor.apply();
-
-                                Intent intent = new Intent(getBaseContext(), MapsActivity.class);
-                                startActivity(intent);
->>>>>>> Stashed changes
                             }
                         }
                     }
@@ -214,7 +200,7 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "이메일 형식이 맞지 않습니다. 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();
             return false;
         }
-            return true;
+        return true;
     }
 
     private void getAppKeyHash() {
@@ -306,13 +292,13 @@ public class LoginActivity extends AppCompatActivity {
                 if (ErrorCode == ClientErrorCode) {
                     Toast.makeText(getApplicationContext(), "카카오톡 서버의 네트워크가 불안정합니다. 잠시 후 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
                 } else {
-                    Log.d("TAG" , "오류로 카카오로그인 실패 ");
+                    Log.d("TAG", "오류로 카카오로그인 실패 ");
                 }
             }
 
             @Override
             public void onSessionClosed(ErrorResult errorResult) {
-                Log.d(TAG , "오류로 카카오로그인 실패 ");
+                Log.d(TAG, "오류로 카카오로그인 실패 ");
             }
 
             @Override
@@ -332,9 +318,15 @@ public class LoginActivity extends AppCompatActivity {
                             String message = response.body().getMessage();
 
                             switch (message) {
-                                case "NOT_SIGN_UP": Toast.makeText(getBaseContext(), "입력하신 회원정보는 존재하지 않습니다.", Toast.LENGTH_SHORT).show(); break;
-                                case "INCORRECT_PASSWORD": Toast.makeText(getBaseContext(), "비밀번호가 틀렸습니다.", Toast.LENGTH_SHORT).show(); break;
-                                case "NOT_MATCH_ACCOUNT": Toast.makeText(getBaseContext(), "카카오 계정이 아닌 다른 계정이 등록되어 있습니다.", Toast.LENGTH_SHORT).show(); break;
+                                case "NOT_SIGN_UP":
+                                    Toast.makeText(getBaseContext(), "입력하신 회원정보는 존재하지 않습니다.", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case "INCORRECT_PASSWORD":
+                                    Toast.makeText(getBaseContext(), "비밀번호가 틀렸습니다.", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case "NOT_MATCH_ACCOUNT":
+                                    Toast.makeText(getBaseContext(), "카카오 계정이 아닌 다른 계정이 등록되어 있습니다.", Toast.LENGTH_SHORT).show();
+                                    break;
                                 case "SUCCESS":
                                     User user = response.body().getUser();
                                     String token = response.body().getToken();
@@ -355,7 +347,8 @@ public class LoginActivity extends AppCompatActivity {
 
                                     ApplicationController.getInstance().setTokenOnHeader(token);
 
-                                    Intent intent = new Intent(getBaseContext(), MainActivity.class);;
+                                    Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                                    ;
                                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                     startActivity(intent);
                                     finish();
@@ -383,15 +376,15 @@ public class LoginActivity extends AppCompatActivity {
     private class SessionCallback implements ISessionCallback {
         @Override
         public void onSessionOpened() {
-            Log.d("TAG" , "세션 오픈됨 : ");
+            Log.d("TAG", "세션 오픈됨 : ");
             // 사용자 정보를 가져옴, 회원가입 미가입시 자동가입 시킴
             requestMeOnKakao();
         }
 
         @Override
         public void onSessionOpenFailed(KakaoException exception) {
-            if(exception != null) {
-                Log.d("TAG" , exception.getMessage());
+            if (exception != null) {
+                Log.d("TAG", exception.getMessage());
             }
         }
     }

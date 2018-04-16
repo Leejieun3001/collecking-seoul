@@ -1,16 +1,11 @@
 package kr.ac.sungshin.colleckingseoul.network;
 
 import kr.ac.sungshin.colleckingseoul.model.request.Login;
-import kr.ac.sungshin.colleckingseoul.model.request.Join;
 import kr.ac.sungshin.colleckingseoul.model.response.LoginResult;
-<<<<<<< Updated upstream
 import kr.ac.sungshin.colleckingseoul.model.response.BaseResult;
-=======
-import kr.ac.sungshin.colleckingseoul.model.response.Message;
 import kr.ac.sungshin.colleckingseoul.model.response.VerificationCodeResult;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
->>>>>>> Stashed changes
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -28,15 +23,8 @@ public interface NetworkService {
     Call<LoginResult> getLoginResult(@Body Login login);
 
     @POST("/join")
-<<<<<<< Updated upstream
-    Call<BaseResult> getJoinResult(@Body Join join);
-    @GET("/join/check_dupplicate")
-    Call<BaseResult> getDuplicatedResult (@Query("id") String id);
-    @POST("/login/sns")
-    Call<LoginResult> getSnsLoginResult(@Body Login login);
-=======
     @Multipart
-    Call<Message> getJoinResult(@Part("id") RequestBody id,
+    Call<BaseResult> getJoinResult(@Part("id") RequestBody id,
                                 @Part("password1") RequestBody password1,
                                 @Part("password2") RequestBody password2,
                                 @Part("phone") RequestBody phone,
@@ -46,9 +34,11 @@ public interface NetworkService {
                                 @Part MultipartBody.Part photo);
 
     @GET("/join/check_dupplicate")
-    Call<Message> getDuplicatedResult(@Query("id") String id);
+    Call<BaseResult> getDuplicatedResult(@Query("id") String id);
+
+    @POST("/login/sns")
+    Call<LoginResult> getSnsLoginResult(@Body Login login);
 
     @GET("/join/verificationCode")
     Call<VerificationCodeResult> getVerifiCodeResult(@Query("tempEmail") String id);
->>>>>>> Stashed changes
 }

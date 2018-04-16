@@ -21,7 +21,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApplicationController extends Application {
     private static ApplicationController instance;
-    private static String baseUrl = "http://172.20.10.8:3000";
+    private static String baseUrl = "http://52.78.38.162:3000";
 
     private static volatile Activity currentActivity = null;
     private NetworkService networkService;

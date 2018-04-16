@@ -13,6 +13,7 @@ public class User {
     private String url;
     private int sex;
 
+
     public User(String idx, String id, String nickname, String phone, String birth) {
         this.idx = idx;
         this.id = id;

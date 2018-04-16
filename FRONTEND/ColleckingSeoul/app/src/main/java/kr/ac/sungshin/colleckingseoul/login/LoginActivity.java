@@ -42,6 +42,7 @@ import butterknife.ButterKnife;
 import kr.ac.sungshin.colleckingseoul.MainActivity;
 import kr.ac.sungshin.colleckingseoul.R;
 import kr.ac.sungshin.colleckingseoul.map.MapsActivity;
+import kr.ac.sungshin.colleckingseoul.model.request.BasicLogin;
 import kr.ac.sungshin.colleckingseoul.model.request.Login;
 import kr.ac.sungshin.colleckingseoul.model.response.User;
 import kr.ac.sungshin.colleckingseoul.model.response.LoginResult;
@@ -95,21 +96,24 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String id = idEditText.getText().toString();
-                String password = passwordEditText.getText().toString();
+                String loginId = idEditText.getText().toString();
+                String loginPassword = passwordEditText.getText().toString();
 
                 final SharedPreferences userInfo = getSharedPreferences("user", MODE_PRIVATE);
                 final SharedPreferences.Editor editor = userInfo.edit();
 
-                if (!checkValid(id, password)) return;
-
-                Login info = new Login(id, password);
+                if (!checkValid(loginId, loginPassword)) return;
+                BasicLogin info = new BasicLogin(loginId, loginPassword);
                 Call<LoginResult> checkLogin = service.getLoginResult(info);
+
+
                 checkLogin.enqueue(new Callback<LoginResult>() {
                     @Override
                     public void onResponse(Call<LoginResult> call, Response<LoginResult> response) {
+
                         if (response.isSuccessful()) {
                             String message = response.body().getMessage();
+                            Log.d("Login" ,message);
                             switch (message) {
                                 case "EMPTY_VALUE":
                                     Toast.makeText(getBaseContext(), "입력하신 값이 없습니다.", Toast.LENGTH_SHORT).show();
@@ -139,7 +143,7 @@ public class LoginActivity extends AppCompatActivity {
                                     editor.putString("birth", user.getBirth());
                                     editor.apply();
 
-                                    Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                                    Intent intent = new Intent(getBaseContext(), MapsActivity.class);
                                     startActivity(intent);
                                     break;
                             }
@@ -148,7 +152,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<LoginResult> call, Throwable t) {
-
+                            Log.d("실패", "실패");
                     }
                 });
 

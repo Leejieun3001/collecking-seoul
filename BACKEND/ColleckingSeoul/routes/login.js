@@ -134,7 +134,6 @@ router.post('/sns', function (req, res) {
         let insertQuery = "insert into User" +
                         "(id, password, nickname, sex, phone, birth, snsCategory )" +
                         "values (?,?,?,?,?,?,?)";
-
         bcrypt.hash(req.body.accessToken, null, null, function (err, hash) {
             if (err) {
                 callback(err, connection, "Bcrypt hashing Error : ", res);
@@ -153,7 +152,11 @@ router.post('/sns', function (req, res) {
 
                                 connection.query(selectQuery, req.body.id, function (error, rows) {
                                     if (error) callback(error, connection, "Select photo query Error : ", res);
-                                    else callback(null, connection, rows);
+                                    else {
+                                        setResultInfo(rows[0]);
+                                        res.status(200).send(resultJson);
+                                        callback("ALREADY_SEND_MESSAGE", connection, "api : /login/sns");
+                                    }
                                 });
                             }
                         });
@@ -163,40 +166,42 @@ router.post('/sns', function (req, res) {
         });
     };
 
-    let comparePW = function (connection, rows, callback) {
+    let updatePW = function (connection, rows, callback) {
         console.log("1", rows[0]);
-        bcrypt.compare(req.body.accessToken, rows[0].password, function (err, isCorrect) {
-            // isCorrect === true : 일치, isCorrect === false : 불일치
+        bcrypt.hash(req.body.accessToken, null, null, function (err, hash) {
             if (err) {
-                console.log("2");
-                res.status(200).send(errorConfig.NOT_SIGN_UP);
-                callback(err, connection, "Bcrypt Error : ");
-            }
-
-            if (!isCorrect) {
-                console.log("3");
-                res.status(200).send(errorConfig.INCORRECT_PASSWORD);
+                callback(err, connection, "Bcrypt hashing Error : ", res);
             } else {
-                console.log("4");
-                resultJson.message = "SUCCESS";
-                resultJson.user = {
-                    idx: rows[0].idx,
-                    id: rows[0].id,
-                    nickname: rows[0].nickname,
-                    phone: rows[0].phone,
-                    birth: rows[0].birth,
-                    url: rows[0].url,
-                    sex: rows[0].sex
-                };
-                resultJson.token = jwtModule.makeToken(rows[0]);
-                res.status(200).send(resultJson);
+                let params = [ req.body.accessToken, req.body.id ];
+                let updateQuery = "update User set password = ? where id = ?"
+                connection.query(updateQuery, params, function (error, updateRows) {
+                    if (error) callback(error, connection, "Insert user query Error : ", res);
+                    else {
+                        setResultInfo(rows[0]);
+                        res.status(200).send(resultJson);
+                        callback(null, connection, "api : /login/sns");
+                    }
+                });
             }
-            console.log("5");
-            callback(null, connection, "api : /login/sns");
         });
     }
 
-    var task = [globalModule.connect.bind(this), selectUserInfo, comparePW, globalModule.releaseConnection.bind(this)];
+    let setResultInfo = function (row) {
+        console.log("hyeonaaaaaa", row);
+        resultJson.message = "SUCCESS";
+        resultJson.user = {
+            idx: row.idx,
+            id: row.id,
+            nickname: row.nickname,
+            phone: row.phone,
+            birth: row.birth,
+            url: row.url,
+            sex: row.sex
+        };
+        resultJson.token = jwtModule.makeToken(row);
+    }
+
+    var task = [globalModule.connect.bind(this), selectUserInfo, updatePW, globalModule.releaseConnection.bind(this)];
     async.waterfall(task, globalModule.asyncCallback.bind(this));
 });
 

@@ -63,19 +63,18 @@ public class FindIdFragment extends Fragment {
         RelativeLayout Layout = (RelativeLayout) inflater.inflate(R.layout.fragment_find_id, container, false);
 
 
-
         buttinFindId.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String phone = editTextPhone.getText().toString();
-                String birth =  editTextBirth.getText().toString();
-                if (!checkValid(birth, phone)) return ;
-                FindId info  = new FindId(birth,phone);
+                String birth = editTextBirth.getText().toString();
+                if (!checkValid(birth, phone)) return;
+                FindId info = new FindId(birth, phone);
                 Call<FindInfoResult> findId = service.getFindIdResult(info);
                 findId.enqueue(new Callback<FindInfoResult>() {
                     @Override
                     public void onResponse(Call<FindInfoResult> call, Response<FindInfoResult> response) {
-                        if(response.isSuccessful()){
+                        if (response.isSuccessful()) {
                             Log.d(TAG, response.body().toString());
                             String message = response.body().getMessage();
                             if (message.equals("EXIST_MEMBER")) {
@@ -107,11 +106,11 @@ public class FindIdFragment extends Fragment {
                 });
 
 
-
             }
         });
         return view;
     }
+
     public boolean checkValid(String birth, String phone) {
         if (birth.equals("")) {
             Toast.makeText(getContext(), "생년월일을 입력해주세요.", Toast.LENGTH_SHORT).show();

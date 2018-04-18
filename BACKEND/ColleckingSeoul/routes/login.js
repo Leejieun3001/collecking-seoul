@@ -167,7 +167,6 @@ router.post('/sns', function (req, res) {
     };
 
     let updatePW = function (connection, rows, callback) {
-        console.log("1", rows[0]);
         bcrypt.hash(req.body.accessToken, null, null, function (err, hash) {
             if (err) {
                 callback(err, connection, "Bcrypt hashing Error : ", res);
@@ -187,7 +186,6 @@ router.post('/sns', function (req, res) {
     }
 
     let setResultInfo = function (row) {
-        console.log("hyeonaaaaaa", row);
         resultJson.message = "SUCCESS";
         resultJson.user = {
             idx: row.idx,

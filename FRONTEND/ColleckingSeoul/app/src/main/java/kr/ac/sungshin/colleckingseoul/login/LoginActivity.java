@@ -41,15 +41,13 @@ import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import kr.ac.sungshin.colleckingseoul.MainActivity;
 import kr.ac.sungshin.colleckingseoul.R;
-import kr.ac.sungshin.colleckingseoul.map.MapsActivity;
+import kr.ac.sungshin.colleckingseoul.home.HomeActivity;
 import kr.ac.sungshin.colleckingseoul.model.request.BasicLogin;
 import kr.ac.sungshin.colleckingseoul.model.request.Login;
 import kr.ac.sungshin.colleckingseoul.model.response.User;
 import kr.ac.sungshin.colleckingseoul.model.response.LoginResult;
 import kr.ac.sungshin.colleckingseoul.model.singleton.InfoManager;
-import kr.ac.sungshin.colleckingseoul.model.singleton.MyInfo;
 import kr.ac.sungshin.colleckingseoul.network.ApplicationController;
 import kr.ac.sungshin.colleckingseoul.network.NetworkService;
 import okhttp3.internal.Util;
@@ -146,7 +144,8 @@ public class LoginActivity extends AppCompatActivity {
                                     editor.putString("birth", user.getBirth());
                                     editor.apply();
 
-                                    Intent intent = new Intent(getBaseContext(), MapsActivity.class);
+                                    Intent intent = new Intent(getBaseContext(), HomeActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                     startActivity(intent);
                                     break;
                             }
@@ -317,8 +316,8 @@ public class LoginActivity extends AppCompatActivity {
 
                                                 setResult(RESULT_OK);
 
-                                                Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
-
+                                                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                                 startActivity(intent);
                                                 finish();
                                                 break;
@@ -332,8 +331,6 @@ public class LoginActivity extends AppCompatActivity {
                                     Log.d(TAG, "페이스북 로그인 onFailure");
                                 }
                             });
-
-
                         }
                     }
                 });
@@ -428,8 +425,7 @@ public class LoginActivity extends AppCompatActivity {
 
                                     ApplicationController.getInstance().setTokenOnHeader(token);
 
-                                    Intent intent = new Intent(getBaseContext(), MainActivity.class);
-
+                                    Intent intent = new Intent(getBaseContext(), HomeActivity.class);
                                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                     startActivity(intent);
                                     finish();

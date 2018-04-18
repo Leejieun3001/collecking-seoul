@@ -2,6 +2,7 @@ package kr.ac.sungshin.colleckingseoul.network;
 
 
 import kr.ac.sungshin.colleckingseoul.model.request.BasicLogin;
+import kr.ac.sungshin.colleckingseoul.model.request.FindPassWord;
 import kr.ac.sungshin.colleckingseoul.model.response.FindInfoResult;
 import kr.ac.sungshin.colleckingseoul.model.request.Login;
 import kr.ac.sungshin.colleckingseoul.model.response.BaseResult;
@@ -50,6 +51,6 @@ public interface NetworkService {
 
 
     @POST("/login/find_password")
-    Call<FindInfoResult> getFindIdResult(@Body Login Info);
+    Call<FindInfoResult> getFindPwResult(@Body FindPassWord Info);
 
 }

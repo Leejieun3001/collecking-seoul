@@ -16,12 +16,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.kakao.auth.AuthType;
 import com.kakao.auth.ISessionCallback;
@@ -50,6 +52,7 @@ import kr.ac.sungshin.colleckingseoul.model.singleton.InfoManager;
 import kr.ac.sungshin.colleckingseoul.model.singleton.MyInfo;
 import kr.ac.sungshin.colleckingseoul.network.ApplicationController;
 import kr.ac.sungshin.colleckingseoul.network.NetworkService;
+import okhttp3.internal.Util;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -113,7 +116,7 @@ public class LoginActivity extends AppCompatActivity {
 
                         if (response.isSuccessful()) {
                             String message = response.body().getMessage();
-                            Log.d("Login" ,message);
+                            Log.d("Login", message);
                             switch (message) {
                                 case "EMPTY_VALUE":
                                     Toast.makeText(getBaseContext(), "입력하신 값이 없습니다.", Toast.LENGTH_SHORT).show();
@@ -152,7 +155,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<LoginResult> call, Throwable t) {
-                            Log.d("실패", "실패");
+                        Log.d("실패", "실패");
                     }
                 });
 
@@ -223,6 +226,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    //페이스북 로그인
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -231,6 +235,9 @@ public class LoginActivity extends AppCompatActivity {
 
     //facebook Login
     public void loginOnFacebook(View v) {
+
+        boolean loggedIn = AccessToken.getCurrentAccessToken() == null;
+
         FacebookSdk.sdkInitialize(v.getContext());
         facebookCallbackManager = CallbackManager.Factory.create();
 
@@ -252,11 +259,85 @@ public class LoginActivity extends AppCompatActivity {
                             Log.i("TAG", "user: " + user.toString());
 
                             Log.i("TAG", "AccessToken: " + result.getAccessToken().getToken());
-                            setResult(RESULT_OK);
+                            snsCategory = 1;
 
-                            Intent i = new Intent(LoginActivity.this, MainActivity.class);
-                            startActivity(i);
-                            finish();
+                            Profile profile = Profile.getCurrentProfile();
+
+                            String link = profile.getProfilePictureUri(200, 200).toString();
+
+                            try {
+                                id = user.getString("email").toString();
+                                nickname = user.getString("name").toString();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            accessToken = result.getAccessToken().getToken();
+                            //Profile profile = Profile.getCurrentProfile();
+                             //photo = profile.getProfilePictureUri(200, 200).toString();
+
+                            if (link.isEmpty()) {
+                                link = "NO_IMAGE";
+                            }
+                            Log.d(TAG, id + accessToken + nickname + "사진은 : "+link + snsCategory);
+                            Login info = new Login(id, accessToken, nickname, link, snsCategory);
+                            Call<LoginResult> checkLogin = service.getSnsLoginResult(info);
+                            checkLogin.enqueue(new Callback<LoginResult>() {
+                                @Override
+                                public void onResponse(Call<LoginResult> call, Response<LoginResult> response) {
+                                    if (response.isSuccessful()) {
+                                        String message = response.body().getMessage();
+
+                                        switch (message) {
+                                            case "NOT_SIGN_UP":
+                                                Toast.makeText(getBaseContext(), "입력하신 회원정보는 존재하지 않습니다.", Toast.LENGTH_SHORT).show();
+                                                break;
+                                            case "INCORRECT_PASSWORD":
+                                                Toast.makeText(getBaseContext(), "비밀번호가 틀렸습니다.", Toast.LENGTH_SHORT).show();
+                                                break;
+                                            case "NOT_MATCH_ACCOUNT":
+                                                Toast.makeText(getBaseContext(), "페이스북 아닌 다른 계정이 등록되어 있습니다.", Toast.LENGTH_SHORT).show();
+                                                break;
+                                            case "SUCCESS":
+                                                Toast.makeText(getBaseContext(), " 감사합니다!. Facebook 으로 로그인 중 입니다.", Toast.LENGTH_SHORT).show();
+
+                                                User user = response.body().getUser();
+                                                String token = response.body().getToken();
+                                                InfoManager.getInstance().setUserInfo(user);
+
+                                                SharedPreferences userInfo = getSharedPreferences("user", MODE_PRIVATE);
+                                                SharedPreferences.Editor editor = userInfo.edit();
+
+                                                editor.putString("idx", user.getIdx());
+                                                editor.putString("id", user.getId());
+                                                editor.putString("nickname", user.getNickname());
+                                                editor.putString("phone", user.getPhone());
+                                                editor.putString("birth", user.getBirth());
+                                                editor.putString("photo", user.getUrl());
+                                                editor.putInt("sex", user.getSex());
+                                                editor.putString("token", token);
+                                                editor.apply();
+
+                                                ApplicationController.getInstance().setTokenOnHeader(token);
+
+                                                setResult(RESULT_OK);
+
+                                                Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
+
+                                                startActivity(intent);
+                                                finish();
+                                                break;
+
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<LoginResult> call, Throwable t) {
+                                    Log.d(TAG, "페이스북 로그인 onFailure");
+                                }
+                            });
+
+
                         }
                     }
                 });
@@ -352,7 +433,7 @@ public class LoginActivity extends AppCompatActivity {
                                     ApplicationController.getInstance().setTokenOnHeader(token);
 
                                     Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                                    ;
+
                                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                     startActivity(intent);
                                     finish();

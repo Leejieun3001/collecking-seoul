@@ -20,7 +20,10 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -114,8 +117,8 @@ public class JoinActivity extends AppCompatActivity {
                 Uri tempUri = Uri.fromFile(tempFile);
                 intent.putExtra("crop", "true");
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
-                imgUrl = tempUri.toString();
                 intent.setType("image/*");
+                intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
                 intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(intent, GALLERY_CODE);
             }
@@ -213,74 +216,114 @@ public class JoinActivity extends AppCompatActivity {
         buttonJoin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                String id = editTextId.getText().toString();
-//                String password = editTextPassword.getText().toString();
-//                final String password2 = editTextRepassword.getText().toString();
-//                String nikname = editTextNikname.getText().toString();
-//                String phone = editTextPhone.getText().toString();
-//
 
-//                String birth = Integer.toString(Datepickerbirth.getYear()) + Integer.toString(Datepickerbirth.getMonth()) + Integer.toString(Datepickerbirth.getDayOfMonth());
-//                imgUrl = getImageNameToUri(data );
-
+             //   if (!checkValid(editTextId.getText().toString(), editTextPassword.getText().toString(), editTextRepassword.getText().toString(), editTextNikname.getText().toString(), editTextPhone.getText().toString(), Integer.toString(Datepickerbirth.getYear()) + Integer.toString(Datepickerbirth.getMonth()) + Integer.toString(Datepickerbirth.getDayOfMonth())))
+              //      return;
 
                 int typeId = radioGroupSex.getCheckedRadioButtonId();
-                Log.d(TAG, " " + typeId);
+
                 RadioButton radionbuttonSex = (RadioButton) findViewById(typeId);
                 String type = radionbuttonSex.getText().toString();
-                int intType = 1;
+                int  intType= 1;
                 if (type.equals("남자")) intType = 0;
                 else if (type.equals("여자")) intType = 1;
-                MultipartBody.Part photo;
+
                 RequestBody id = RequestBody.create(MediaType.parse("multipart/form-data"), editTextId.getText().toString());
-                RequestBody password = RequestBody.create(MediaType.parse("multipart/form-data"), editTextPassword.getText().toString());
+                RequestBody password1 = RequestBody.create(MediaType.parse("multipart/form-data"), editTextPassword.getText().toString());
                 RequestBody password2 = RequestBody.create(MediaType.parse("multipart/form-data"), editTextRepassword.getText().toString());
                 RequestBody nikname = RequestBody.create(MediaType.parse("multipart/form-data"), editTextNikname.getText().toString());
                 RequestBody phone = RequestBody.create(MediaType.parse("multipart/form-data"), editTextPhone.getText().toString());
                 RequestBody birth = RequestBody.create(MediaType.parse("multipart/form-data"), Integer.toString(Datepickerbirth.getYear()) + Integer.toString(Datepickerbirth.getMonth()) + Integer.toString(Datepickerbirth.getDayOfMonth()));
+                RequestBody sex = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(intType));
+
+                File file = new File(imgUrl);
+
+//                RequestBody fileBody = RequestBody.create(MediaType.parse("image/*"), file);
+//                MultipartBody.Part photo = MultipartBody.Part.createFormData("image", file.getName(), fileBody);
+//                Log.d(TAG, photo.toString());
+                MultipartBody.Part profile;
                 if (imgUrl == null) {
-                    photo = null;
-                    Log.d(TAG, "이미지 없음");
+                    profile = null;
+
                 } else {
                     Log.d(TAG, "이미지 있음");
+                    BitmapFactory.Options options = new BitmapFactory.Options(); //사용자가 보기에 불편하지 않을 정도로 resizing 해준다
+                    InputStream in = null; // here, you need to get your context.
+                    try {
+                        in = getContentResolver().openInputStream(data);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    Bitmap bitmap = BitmapFactory.decodeStream(in, null, options); // InputStream 으로부터 Bitmap 을 만들어 준다.
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos); // 압축 옵션( JPEG, PNG ) , 품질 설정 ( 0 - 100까지의 int형 ),
 
-                    File file = new File(imgUrl);
-                    RequestBody fileBody = RequestBody.create(MediaType.parse("image/*"), file);
-                    photo = MultipartBody.Part.createFormData("image", file.getName(), fileBody);
 
+                    RequestBody photoBody = RequestBody.create(MediaType.parse("image/jpg"), baos.toByteArray());
 
-                    //  if (!checkValid(id, password, password2, nikname, phone, birth))
-                    //    return;
+                    File photo = new File(imgUrl); // 그저 블러온 파일의 이름을 알아내려고 사용.
 
-                    //Join Info = new Join(id, password, password2, nikname, phone, birth, intType);
-
-                    Call<BaseResult> getJoinResult = service.getJoinResult(id, password, password2, nikname, phone, birth, intType, photo);
-
-                    getJoinResult.enqueue(new Callback<BaseResult>() {
-
-                        @Override
-                        public void onResponse(Call<BaseResult> call, Response<BaseResult> response) {
-                            Log.d(TAG, "레트로핏");
-                            if (response.isSuccessful()) {
-
-                                if (response.body().getMessage().equals("SUCCESS")) {
-                                    Toast.makeText(getApplicationContext(), "회원가입이 성공적으로 완료되었습니다.", Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                                    startActivity(intent);
-                                } else {
-                                    Log.d(TAG, "여기" + response.body().getMessage());
-                                    Toast.makeText(getApplicationContext(), "죄송합니다. 오류가 발생하였습니다. 빠른시일 내에 개선하겠습니다.", Toast.LENGTH_SHORT).show();
-                                }
-
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<BaseResult> call, Throwable t) {
-
-                        }
-                    });
+                    // MultipartBody.Part is used to send also the actual file name
+                    //이미지 이름을 서버로 보낼 때에에는 아무렇게나 보내줘도된다! 서버에서 자동변환된다 (보안의문제)
+                    profile = MultipartBody.Part.createFormData("image", photo.getName());
                 }
+                Log.d("id", editTextId.getText().toString()+"패스워드"+editTextPassword.getText().toString()+"패스워드" +editTextRepassword.getText().toString()+"별명"+ editTextNikname.getText().toString()+"폰"+editTextPhone.getText().toString()+"생일"+ Integer.toString(Datepickerbirth.getYear()) + Integer.toString(Datepickerbirth.getMonth()) + Integer.toString(Datepickerbirth.getDayOfMonth())+"생"+String.valueOf(intType));
+
+                if (id == null) {
+                    Log.d("id", " null");
+                }
+                if (password1 == null) {
+                    Log.d("password1", " null");
+                }
+                if (password2 == null) {
+                    Log.d("password2", " null");
+
+                }
+                if (nikname == null) {
+
+                    Log.d("nikname", " null");
+                }
+                if (phone == null) {
+
+                    Log.d("phone", " null");
+                }
+                if (birth == null) {
+
+                    Log.d("birth", " null");
+                }
+                if (profile == null) {
+
+                    Log.d("profile", " null");
+                }
+
+
+                Call<BaseResult> getJoinResult = service.getJoinResult(id, password1, password2, nikname, phone, birth, sex, profile);
+
+                getJoinResult.enqueue(new Callback<BaseResult>() {
+
+                    @Override
+                    public void onResponse(Call<BaseResult> call, Response<BaseResult> response) {
+
+                        if (response.isSuccessful()) {
+
+                            if (response.body().getMessage().equals("SUCCESS")) {
+                                Toast.makeText(getApplicationContext(), "회원가입이 성공적으로 완료되었습니다.", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                startActivity(intent);
+                            } else {
+                                Log.d(TAG, "여기" + response.body().getMessage());
+                                Toast.makeText(getApplicationContext(), "죄송합니다. 오류가 발생하였습니다. 빠른시일 내에 개선하겠습니다.", Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<BaseResult> call, Throwable t) {
+
+                    }
+                });
+
             }
         });
 

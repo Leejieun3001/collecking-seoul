@@ -29,7 +29,7 @@
             />
 
         <Button
-            android:id="@+id/findid_button_find"
+            android:id="@+id/findid_button_find_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="아이디찾기"

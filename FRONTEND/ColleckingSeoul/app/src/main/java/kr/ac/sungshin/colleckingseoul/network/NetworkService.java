@@ -2,8 +2,10 @@ package kr.ac.sungshin.colleckingseoul.network;
 
 
 import kr.ac.sungshin.colleckingseoul.model.request.BasicLogin;
+import kr.ac.sungshin.colleckingseoul.model.response.FindInfoResult;
 import kr.ac.sungshin.colleckingseoul.model.request.Login;
 import kr.ac.sungshin.colleckingseoul.model.response.BaseResult;
+import kr.ac.sungshin.colleckingseoul.model.request.FindId;
 import kr.ac.sungshin.colleckingseoul.model.response.LoginResult;
 import kr.ac.sungshin.colleckingseoul.model.response.VerificationCodeResult;
 import okhttp3.MultipartBody;
@@ -32,7 +34,7 @@ public interface NetworkService {
                                    @Part("phone") RequestBody phone,
                                    @Part("nickname") RequestBody nickname,
                                    @Part("birth") RequestBody birth,
-                                   @Part("sex") int sex,
+                                   @Part("sex") RequestBody sex,
                                    @Part MultipartBody.Part photo);
 
     @GET("/join/check_dupplicate")
@@ -42,4 +44,12 @@ public interface NetworkService {
 
     @GET("/join/verificationCode")
     Call<VerificationCodeResult> getVerifiCodeResult(@Query("tempEmail") String id);
+
+    @POST("/login/find_id")
+    Call<FindInfoResult> getFindIdResult(@Body FindId Info);
+
+
+    @POST("/login/find_password")
+    Call<FindInfoResult> getFindIdResult(@Body Login Info);
+
 }

@@ -251,6 +251,7 @@ public class LoginActivity extends AppCompatActivity {
                 GraphRequest request;
                 request = GraphRequest.newMeRequest(result.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
 
+
                     @Override
                     public void onCompleted(JSONObject user, GraphResponse response) {
                         if (response.getError() != null) {
@@ -262,23 +263,18 @@ public class LoginActivity extends AppCompatActivity {
                             snsCategory = 1;
 
                             Profile profile = Profile.getCurrentProfile();
-
-                            String link = profile.getProfilePictureUri(200, 200).toString();
+                            final String link = profile.getProfilePictureUri(200, 200).toString();
 
                             try {
                                 id = user.getString("email").toString();
                                 nickname = user.getString("name").toString();
+
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
                             accessToken = result.getAccessToken().getToken();
-                            //Profile profile = Profile.getCurrentProfile();
-                             //photo = profile.getProfilePictureUri(200, 200).toString();
 
-                            if (link.isEmpty()) {
-                                link = "NO_IMAGE";
-                            }
-                            Log.d(TAG, id + accessToken + nickname + "사진은 : "+link + snsCategory);
+                            Log.d(TAG, id + accessToken + nickname + "사진은 : " + link + snsCategory);
                             Login info = new Login(id, accessToken, nickname, link, snsCategory);
                             Call<LoginResult> checkLogin = service.getSnsLoginResult(info);
                             checkLogin.enqueue(new Callback<LoginResult>() {

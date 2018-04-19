@@ -1,28 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content">
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/activity_join"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:weightSum="1">
-
-
-    <LinearLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/activity_join"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <Button
-            android:id="@+id/join_button_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="15dp"
-            android:text="로그인 화면으로" />
-
-    </LinearLayout>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="1">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -36,234 +22,231 @@
                 android:id="@+id/join_image_profile"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:src="@drawable/avatar_male"
-                />
+                android:src="@drawable/avatar_male" />
 
             <Button
-
                 android:id="@+id/join_button_profile"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_gravity="right"
-                android:layout_marginBottom="15dp"
-                android:layout_marginRight="0dp" />
+                android:layout_marginBottom="15dp"/>
         </LinearLayout>
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="47dp"
-        android:layout_marginRight="47dp"
-        android:orientation="vertical">
-
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_marginLeft="47dp"
+            android:layout_marginRight="47dp"
+            android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/join_edittext_id"
-                android:layout_width="150dp"
-                android:layout_height="35dp"
-                android:hint="   아이디"
-                android:textSize="12dp" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/join_edittext_id"
+                    android:layout_width="150dp"
+                    android:layout_height="35dp"
+                    android:hint="   아이디"
+                    android:textSize="12dp" />
 
 
-        </LinearLayout>
+            </LinearLayout>
 
-        <LinearLayout
+            <LinearLayout
 
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="5dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
+
+                <Button
+                    android:id="@+id/join_button_duplication"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="4dp"
+                    android:padding="15dp"
+                    android:text="이메일 중복확인" />
+
+                <Button
+                    android:id="@+id/join_button_requestcode"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="4dp"
+                    android:padding="15dp"
+                    android:text="이메일 인증번호 요청" />
+            </LinearLayout>
+
+            <LinearLayout
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/join_edittext_checkcode"
+                    android:layout_width="150dp"
+                    android:layout_height="35dp"
+                    android:hint="   인증번호"
+                    android:textSize="12dp" />
+
+                <Button
+                    android:id="@+id/join_button_checkcode"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="인증" />
+
+            </LinearLayout>
+
+            <LinearLayout
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+
+                <EditText
+                    android:id="@+id/join_edittext_password"
+                    android:layout_width="150dp"
+                    android:layout_height="35dp"
+                    android:hint="   비밀번호"
+                    android:password="true"
+                    android:textSize="12dp" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+
+                <EditText
+                    android:id="@+id/join_edittext_repassword"
+                    android:layout_width="150dp"
+                    android:layout_height="35dp"
+                    android:hint="   비밀번호 확인"
+                    android:password="true"
+                    android:textSize="12dp" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/join_edittext_nikname"
+                    android:layout_width="150dp"
+                    android:layout_height="35dp"
+                    android:hint="   닉네임"
+                    android:textSize="12dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/join_edittext_phone"
+                    android:layout_width="150dp"
+                    android:layout_height="35dp"
+                    android:hint="핸드폰 번호 (번호만 입력해주세요)"
+                    android:textSize="9dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="성별" />
+
+                <RadioGroup
+                    android:id="@+id/join_radioGroup_sex"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/small_margin"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/여자"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="여자" />
+
+                    <RadioButton
+                        android:id="@+id/남자"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="남자" />
+                </RadioGroup>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="생년 월일" />
+
+                <DatePicker
+                    android:id="@+id/join_datepicker_birth"
+                    android:layout_width="match_parent"
+                    android:layout_height="90dp"
+                    android:calendarViewShown="false"
+                    android:datePickerMode="spinner">
+
+                </DatePicker>
+            </LinearLayout>
 
             <Button
-                android:id="@+id/join_button_duplication"
+                android:id="@+id/join_button_join"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="4dp"
-                android:padding="15dp"
-                android:text="이메일 중복확인" />
-
-            <Button
-                android:id="@+id/join_button_requestcode"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="4dp"
-                android:padding="15dp"
-                android:text="이메일 인증번호 요청" />
+                android:text="회원가입 완료" />
         </LinearLayout>
-
-        <LinearLayout
-
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="5dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/join_edittext_checkcode"
-                android:layout_width="150dp"
-                android:layout_height="35dp"
-                android:hint="   인증번호"
-                android:textSize="12dp" />
-
-            <Button
-                android:id="@+id/join_button_checkcode"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="인증" />
-
-        </LinearLayout>
-
-        <LinearLayout
-
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="5dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-
-            <EditText
-                android:id="@+id/join_edittext_password"
-                android:layout_width="150dp"
-                android:layout_height="35dp"
-                android:hint="   비밀번호"
-                android:password="true"
-                android:textSize="12dp" />
-
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="5dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-
-            <EditText
-                android:id="@+id/join_edittext_repassword"
-                android:layout_width="150dp"
-                android:layout_height="35dp"
-                android:hint="   비밀번호 확인"
-                android:password="true"
-                android:textSize="12dp" />
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="5dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/join_edittext_nikname"
-                android:layout_width="150dp"
-                android:layout_height="35dp"
-                android:hint="   닉네임"
-                android:textSize="12dp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="5dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/join_edittext_phone"
-                android:layout_width="150dp"
-                android:layout_height="35dp"
-                android:hint="핸드폰 번호 (번호만 입력해주세요)"
-                android:textSize="9dp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="5dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="성별" />
-
-            <RadioGroup
-                android:id="@+id/join_radioGroup_sex"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/small_margin"
-                android:orientation="horizontal">
-
-                <RadioButton
-                    android:id="@+id/여자"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="여자" />
-
-                <RadioButton
-                    android:id="@+id/남자"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="남자" />
-            </RadioGroup>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="5dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="생년 월일  " />
-
-            <DatePicker
-                android:id="@+id/join_datepicker_birth"
-                android:layout_width="match_parent"
-                android:layout_height="90dp"
-                android:calendarViewShown="false"
-                android:datePickerMode="spinner">
-
-            </DatePicker>
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/join_button_join"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="4dp"
-            android:text="회원가입 완료" />
     </LinearLayout>
-</LinearLayout>
 </ScrollView>

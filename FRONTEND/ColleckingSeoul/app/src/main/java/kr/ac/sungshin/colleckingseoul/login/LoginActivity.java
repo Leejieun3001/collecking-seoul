@@ -97,8 +97,8 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String loginId = idEditText.getText().toString();
-                String loginPassword = passwordEditText.getText().toString();
+                String loginId = idEditText.getText().toString().trim();
+                String loginPassword = passwordEditText.getText().toString().trim();
 
                 final SharedPreferences userInfo = getSharedPreferences("user", MODE_PRIVATE);
                 final SharedPreferences.Editor editor = userInfo.edit();

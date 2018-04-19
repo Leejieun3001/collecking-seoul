@@ -8,9 +8,11 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -78,10 +80,6 @@ public class JoinActivity extends AppCompatActivity {
     private boolean isCheckEmail = false;
     private String verificationCode = "";
 
-    //Back 키 두번 클릭 여부 확인
-    private final long FINSH_INTERVAL_TIME = 2000;
-    private long backPressedTime = 0;
-
 
     private static final int GALLERY_CODE = 1112;
     private static final String TYPE_IMAGE = "image/*";
@@ -101,7 +99,19 @@ public class JoinActivity extends AppCompatActivity {
         service = ApplicationController.getInstance().getNetworkService();
         ButterKnife.bind(this);
 
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         bindClickListener();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     //클릭 이벤트 바인딩
@@ -327,14 +337,6 @@ public class JoinActivity extends AppCompatActivity {
             }
         });
 
-        buttonBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(intent);
-            }
-        });
-
     }
 
     //유효성 체크
@@ -385,20 +387,6 @@ public class JoinActivity extends AppCompatActivity {
             return false;
         }
         return true;
-    }
-
-    //뒤로가기 버튼 클릭
-    @Override
-    public void onBackPressed() {
-        long tempTime = System.currentTimeMillis();
-        long intervalTime = tempTime - backPressedTime;
-
-        if (0 <= intervalTime && FINSH_INTERVAL_TIME >= intervalTime) {
-            super.onBackPressed();
-        } else {
-            this.backPressedTime = tempTime;
-            Toast.makeText(getApplicationContext(), "뒤로 가기 키를 한번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT).show();
-        }
     }
 
     //이미지 crop

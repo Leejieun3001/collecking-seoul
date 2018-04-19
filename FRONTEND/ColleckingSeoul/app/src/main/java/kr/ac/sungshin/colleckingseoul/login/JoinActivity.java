@@ -8,6 +8,8 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -42,8 +44,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class JoinActivity extends AppCompatActivity {
-    @BindView(R.id.join_button_back)
-    Button buttonBack;
     @BindView(R.id.join_edittext_id)
     EditText editTextId;
     @BindView(R.id.join_button_duplication)
@@ -90,7 +90,6 @@ public class JoinActivity extends AppCompatActivity {
     String imgUrl = "";
     private Uri data;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,6 +99,7 @@ public class JoinActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         ActionBar actionBar = getSupportActionBar();
+
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         bindClickListener();

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="kr.ac.sungshin.colleckingseoul.Review.ReviewListActivity"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        class="com.google.android.gms.maps.SupportMapFragment"
+        android:id="@+id/reviewlist_fragment_map"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        map:cameraZoom="14">
+    </fragment>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/reviewlist_recyclerview_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:listitem="@layout/item_review">
+
+    </android.support.v7.widget.RecyclerView>
+</LinearLayout>

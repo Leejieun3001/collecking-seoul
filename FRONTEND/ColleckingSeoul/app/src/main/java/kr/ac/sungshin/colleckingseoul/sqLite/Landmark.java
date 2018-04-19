@@ -1,4 +1,4 @@
-package kr.ac.sungshin.colleckingseoul.home;
+package kr.ac.sungshin.colleckingseoul.sqLite;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -10,9 +10,18 @@ public class Landmark {
     private int idx;
     private String name;
     private LatLng latlng;
+    private String category;
 
-    public Landmark(String name, double lat, double lng) {
+    public Landmark(int idx, String name, double lat, double lng) {
+        this.idx = idx;
         this.name = name;
+        this.latlng = new LatLng(lat, lng);
+    }
+
+    public Landmark(int idx, String name, double lat, double lng, String category) {
+        this.idx = idx;
+        this.name = name;
+        this.category = category;
         this.latlng = new LatLng(lat, lng);
     }
 
@@ -50,5 +59,13 @@ public class Landmark {
 
     public void setLatLng (double lat, double lng) {
         latlng = new LatLng(lat, lng);
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

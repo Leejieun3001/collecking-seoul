@@ -44,6 +44,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class JoinActivity extends AppCompatActivity {
+
     @BindView(R.id.join_edittext_id)
     EditText editTextId;
     @BindView(R.id.join_button_duplication)

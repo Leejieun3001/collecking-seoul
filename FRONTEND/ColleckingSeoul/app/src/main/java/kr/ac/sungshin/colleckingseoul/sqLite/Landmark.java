@@ -20,9 +20,14 @@ public class Landmark {
 
     public Landmark(int idx, String name, double lat, double lng, String category) {
         this.idx = idx;
+    }
+
+    public Landmark(String name, double lat, double lng, String category) {
+
         this.name = name;
         this.category = category;
         this.latlng = new LatLng(lat, lng);
+        this.category = category;
     }
 
     public int getIdx() {
@@ -41,23 +46,23 @@ public class Landmark {
         this.name = name;
     }
 
-    public double getLat () {
+    public double getLat() {
         return latlng.latitude;
     }
 
-    public double getLng () {
+    public double getLng() {
         return latlng.longitude;
     }
 
-    public void setLat (double lat) {
+    public void setLat(double lat) {
         latlng = new LatLng(lat, latlng.longitude);
     }
 
-    public void setLng (double lng) {
+    public void setLng(double lng) {
         latlng = new LatLng(latlng.latitude, lng);
     }
 
-    public void setLatLng (double lat, double lng) {
+    public void setLatLng(double lat, double lng) {
         latlng = new LatLng(lat, lng);
     }
 
@@ -68,4 +73,10 @@ public class Landmark {
     public void setCategory(String category) {
         this.category = category;
     }
+
+    public void setLatlng(LatLng latlng) {
+        this.latlng = latlng;
+    }
+
+
 }

@@ -105,7 +105,7 @@ router.post('/', function (req, res) {
 router.get('/landmark_list', function (req, res) {
     var resultModelJson = {
         message: 'SUCCESS',
-        LandmarkList: []
+        landmarkList: []
     }
 
 
@@ -121,13 +121,13 @@ router.get('/landmark_list', function (req, res) {
             else {
                 if (data.length !== 0) {
                     for (var x in data) {
-                        var landmarkList = {}
-                        landmarkList.name = data[x].name;
-                        landmarkList.content = data[x].content;
-                        landmarkList.lat = data[x].lat;
-                        landmarkList.lng = data[x].lng;
-                        landmarkList.category = data[x].category;
-                        resultModelJson.LandmartList.push(landmarkList);
+                        var landmark = {}
+                        landmark.name = data[x].name;
+                        landmark.content = data[x].content;
+                        landmark.lat = data[x].lat;
+                        landmark.lng = data[x].lng;
+                        landmark.category = data[x].category;
+                        resultModelJson.landmarkList.push(landmark);
                     }
                 }
 

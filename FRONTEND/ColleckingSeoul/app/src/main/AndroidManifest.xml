@@ -7,10 +7,8 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     //인터넷, 위치정보
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-
-
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -70,7 +68,8 @@
             android:label="@string/activity_home_title" />
         <activity android:name=".login.ShowIdActivity" />
         <activity android:name=".Review.ReviewListActivity" />
-        <activity android:name=".Review.ReviewActivity"></activity>
+        <activity android:name=".Review.ReviewActivity" />
+        <activity android:name=".sqLite.InsertDataActivity"></activity>
     </application>
 
 </manifest>

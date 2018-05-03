@@ -122,7 +122,6 @@ router.post('/', function (req, res) {
 
         connection.query(insertQuery, function (err, data) {
             if (err) {
-                console.log("에러");
                 callback(err, connection, "insert query error : ", res);
             }
             else {
@@ -137,6 +136,7 @@ router.post('/', function (req, res) {
     var task = [globalModule.connect.bind(this), insertData, globalModule.releaseConnection.bind(this)];
     async.waterfall(task, globalModule.asyncCallback.bind(this));
 });
+
 
 router.get('/landmark_list', function (req, res) {
     var resultModelJson = {

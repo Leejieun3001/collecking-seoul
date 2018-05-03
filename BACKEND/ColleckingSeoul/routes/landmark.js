@@ -114,7 +114,8 @@ router.post('/', function (req, res) {
 router.post('/', function (req, res) {
 
     var resultJson = {
-        message: ''
+        message: '',
+        detail :''
     };
     let insertData = function (connection, callback) {
         let insertQuery = req.body.sql;

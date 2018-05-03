@@ -104,7 +104,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
 //        String[] ArtMuseum = data.getLandmarkArtName();
 //        String[] Landmark = data.getLandmarkLandmarkName();
         //안드로이드 SQLite3
-              helper = new DBHelper(
+        helper = new DBHelper(
                 this, dbName, null, dbVersion
         );
         try {
@@ -119,15 +119,15 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
         insertDatabase(TraditionalCulture);
-       // insertDatabase(HistoricSite);
-       // insertDatabase(Museum);
-       // insertDatabase(ArtMuseum);
+        // insertDatabase(HistoricSite);
+        // insertDatabase(Museum);
+        // insertDatabase(ArtMuseum);
         // insertDatabase(Landmark);
 
 
-      //  select();
+        //  select();
 
-        }
+    }
 
     void insertDatabase(String[] Data) {
 
@@ -169,11 +169,18 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     void insert(String name, double lat, double lng, String category) {
         String sql = "INSERT INTO Landmark (name, lat, lng, category) VALUES('" + name + "'," + lat + "," + lng + ",'" + category + "')";
-        Log.d("쿼리문",sql);
+        Log.d("쿼리문", sql);
         Call<BaseResult> insertResult = service.getInsertResult(sql);
         insertResult.enqueue(new Callback<BaseResult>() {
             @Override
             public void onResponse(Call<BaseResult> call, Response<BaseResult> response) {
+                if (response.isSuccessful()) {
+
+                    Log.d(TAG, response.body().toString());
+                    if (response.body().getMessage().equals("SUCCESS")) {
+                        Toast.makeText(getApplicationContext(), "insert 성공.", Toast.LENGTH_SHORT).show();
+                    }
+                }
 
             }
 
@@ -245,7 +252,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
 ////                        .defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
 //    }
 
-    private void loadLandmark () {
+    private void loadLandmark() {
         Call<LandmarkListResult> getLandmarkList = service.getLandmarkList();
         getLandmarkList.enqueue(new Callback<LandmarkListResult>() {
             @Override
@@ -255,7 +262,9 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                     String message = response.body().getMessage();
 
                     switch (message) {
-                        case "SUCCESS": list.addAll(response.body().getLandmarkList()); break;
+                        case "SUCCESS":
+                            list.addAll(response.body().getLandmarkList());
+                            break;
                     }
                 }
             }
@@ -267,7 +276,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
-    private void createMarkers () {
+    private void createMarkers() {
         int length = list.size();
         for (int i = 0; i < length; i++) {
             final Landmark landmark = list.get(i);

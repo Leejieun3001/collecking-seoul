@@ -89,6 +89,7 @@ public class JoinActivity extends AppCompatActivity {
 
 
     String imgUrl = "";
+    Uri imgUri;
     private Uri data;
 
     @Override
@@ -242,26 +243,20 @@ public class JoinActivity extends AppCompatActivity {
                 RequestBody id = RequestBody.create(MediaType.parse("multipart/form-data"), editTextId.getText().toString());
                 RequestBody password1 = RequestBody.create(MediaType.parse("multipart/form-data"), editTextPassword.getText().toString());
                 RequestBody password2 = RequestBody.create(MediaType.parse("multipart/form-data"), editTextRepassword.getText().toString());
-                RequestBody nikname = RequestBody.create(MediaType.parse("multipart/form-data"), editTextNikname.getText().toString());
+                RequestBody nickname = RequestBody.create(MediaType.parse("multipart/form-data"), editTextNikname.getText().toString());
                 RequestBody phone = RequestBody.create(MediaType.parse("multipart/form-data"), editTextPhone.getText().toString());
                 RequestBody birth = RequestBody.create(MediaType.parse("multipart/form-data"), Integer.toString(Datepickerbirth.getYear()) + Integer.toString(Datepickerbirth.getMonth()) + Integer.toString(Datepickerbirth.getDayOfMonth()));
                 RequestBody sex = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(intType));
 
-                File file = new File(imgUrl);
-
-//                RequestBody fileBody = RequestBody.create(MediaType.parse("image/*"), file);
-//                MultipartBody.Part photo = MultipartBody.Part.createFormData("image", file.getName(), fileBody);
-//                Log.d(TAG, photo.toString());
-                MultipartBody.Part profile;
-                if (imgUrl == null) {
-                    profile = null;
-
+                MultipartBody.Part body;
+                if (imgUrl.equals("")) {
+                    body = null;
                 } else {
-                    Log.d(TAG, "이미지 있음");
-                    BitmapFactory.Options options = new BitmapFactory.Options(); //사용자가 보기에 불편하지 않을 정도로 resizing 해준다
-                    InputStream in = null; // here, you need to get your context.
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inSampleSize = 4;
+                    InputStream in = null;
                     try {
-                        in = getContentResolver().openInputStream(data);
+                        in = getContentResolver().openInputStream(imgUri);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
@@ -269,49 +264,14 @@ public class JoinActivity extends AppCompatActivity {
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos); // 압축 옵션( JPEG, PNG ) , 품질 설정 ( 0 - 100까지의 int형 ),
 
-
-                    RequestBody photoBody = RequestBody.create(MediaType.parse("image/jpg"), baos.toByteArray());
-
                     File photo = new File(imgUrl); // 그저 블러온 파일의 이름을 알아내려고 사용.
-
-                    // MultipartBody.Part is used to send also the actual file name
-                    //이미지 이름을 서버로 보낼 때에에는 아무렇게나 보내줘도된다! 서버에서 자동변환된다 (보안의문제)
-                    profile = MultipartBody.Part.createFormData("image", photo.getName());
+                    RequestBody photoBody = RequestBody.create(MediaType.parse("image/jpg"), baos.toByteArray());
+                    body = MultipartBody.Part.createFormData("photo", photo.getName(), photoBody);
                 }
                 Log.d("id", editTextId.getText().toString()+"패스워드"+editTextPassword.getText().toString()+"패스워드" +editTextRepassword.getText().toString()+"별명"+ editTextNikname.getText().toString()+"폰"+editTextPhone.getText().toString()+"생일"+ Integer.toString(Datepickerbirth.getYear()) + Integer.toString(Datepickerbirth.getMonth()) + Integer.toString(Datepickerbirth.getDayOfMonth())+"생"+String.valueOf(intType));
 
-                if (id == null) {
-                    Log.d("id", " null");
-                }
-                if (password1 == null) {
-                    Log.d("password1", " null");
-                }
-                if (password2 == null) {
-                    Log.d("password2", " null");
-
-                }
-                if (nikname == null) {
-
-                    Log.d("nikname", " null");
-                }
-                if (phone == null) {
-
-                    Log.d("phone", " null");
-                }
-                if (birth == null) {
-
-                    Log.d("birth", " null");
-                }
-                if (profile == null) {
-
-                    Log.d("profile", " null");
-                }
-
-
-                Call<BaseResult> getJoinResult = service.getJoinResult(id, password1, password2, nikname, phone, birth, sex, profile);
-
+                Call<BaseResult> getJoinResult = service.getJoinResult(id, password1, password2, nickname, phone, birth, sex, body);
                 getJoinResult.enqueue(new Callback<BaseResult>() {
-
                     @Override
                     public void onResponse(Call<BaseResult> call, Response<BaseResult> response) {
 
@@ -412,14 +372,14 @@ public class JoinActivity extends AppCompatActivity {
                     //이미지 데이터를 비트맵으로 받아온다.
                     Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
                     imageProfile.setImageBitmap(image_bitmap);
+                    imgUri = data.getData();
+                    imgUrl = this.imgUri.getPath();
 
                     Log.d(TAG, "dd1" + imgUrl);
 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            } else {
-                imgUrl = "";
             }
         }
     }

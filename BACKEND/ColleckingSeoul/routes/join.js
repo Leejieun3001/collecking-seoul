@@ -38,9 +38,10 @@ const upload = multer({
  *                  }
  */
 router.post('/', upload.single('photo'), function (req, res) {
+    console.log(req.body);
+    console.log(req.file);
     let checkValid = function (connection, callback) {
         let result = globalModule.checkBasicValid(req.body);
-
         if (result !== "OK") {
             res.status(200).send(result);
             callback("ALREADY_SEND_MESSAGE", connection, "api : /login/join");

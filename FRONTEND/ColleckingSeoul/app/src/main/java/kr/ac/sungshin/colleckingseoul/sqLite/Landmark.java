@@ -9,6 +9,7 @@ import com.google.android.gms.maps.model.LatLng;
 public class Landmark {
     private int idx;
     private String name;
+    private String content;
     private LatLng latlng;
     private String category;
 
@@ -18,14 +19,17 @@ public class Landmark {
         this.latlng = new LatLng(lat, lng);
     }
 
-    public Landmark(int idx, String name, double lat, double lng, String category) {
+    public Landmark(int idx, String name, String content, double lat, double lng, String category) {
         this.idx = idx;
+        this.name = name;
+        this.content = content;
+        this.latlng = new LatLng(lat, lng);
+        this.category = category;
     }
 
     public Landmark(String name, double lat, double lng, String category) {
 
         this.name = name;
-        this.category = category;
         this.latlng = new LatLng(lat, lng);
         this.category = category;
     }
@@ -44,6 +48,14 @@ public class Landmark {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public double getLat() {

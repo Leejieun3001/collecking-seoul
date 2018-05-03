@@ -7,8 +7,10 @@ import kr.ac.sungshin.colleckingseoul.model.response.FindInfoResult;
 import kr.ac.sungshin.colleckingseoul.model.request.Login;
 import kr.ac.sungshin.colleckingseoul.model.response.BaseResult;
 import kr.ac.sungshin.colleckingseoul.model.request.FindId;
+import kr.ac.sungshin.colleckingseoul.model.response.LandmarkListResult;
 import kr.ac.sungshin.colleckingseoul.model.response.LoginResult;
 import kr.ac.sungshin.colleckingseoul.model.response.VerificationCodeResult;
+import kr.ac.sungshin.colleckingseoul.sqLite.Landmark;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -52,5 +54,8 @@ public interface NetworkService {
 
     @POST("/login/find_password")
     Call<FindInfoResult> getFindPwResult(@Body FindPassWord Info);
+
+    @GET("/landmark/landmark_list")
+    Call<LandmarkListResult> getLandmarkList();
 
 }

@@ -34,10 +34,10 @@ public class SqLiteController extends SQLiteOpenHelper {
         Cursor cursor = sqLiteDatabase.rawQuery("SELECT * from Landmark", null);
         ArrayList<Landmark> landmarks = new ArrayList<>();
 
-        while (cursor.moveToNext()) {
-            Landmark landmark = new Landmark(cursor.getInt(0), cursor.getString(1), cursor.getDouble(2), cursor.getDouble(3));
-            landmarks.add(landmark);
-        }
+//        while (cursor.moveToNext()) {
+//            Landmark landmark = new Landmark(cursor.getInt(0), cursor.getString(1), cursor.getDouble(2), cursor.getDouble(3));
+//            landmarks.add(landmark);
+//        }
 
         return landmarks;
     }

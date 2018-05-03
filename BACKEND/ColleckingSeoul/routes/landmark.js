@@ -122,6 +122,7 @@ router.get('/landmark_list', function (req, res) {
                 if (data.length !== 0) {
                     for (var x in data) {
                         var landmark = {}
+                        landmark.idx = data[x].idx;
                         landmark.name = data[x].name;
                         landmark.content = data[x].content;
                         landmark.lat = data[x].lat;

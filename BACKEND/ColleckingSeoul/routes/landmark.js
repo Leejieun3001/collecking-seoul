@@ -118,8 +118,8 @@ router.post('/', function (req, res) {
         detail :''
     };
     let insertData = function (connection, callback) {
-        let insertQuery = req.body.sql;
-        console.log(req.body.sql);
+        let insertQuery = req.query.sql;
+        console.log(req.query.sql);
 
         connection.query(insertQuery, function (err, data) {
             if (err) {

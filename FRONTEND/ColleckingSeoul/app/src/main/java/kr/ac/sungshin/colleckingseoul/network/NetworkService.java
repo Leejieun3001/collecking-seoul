@@ -59,7 +59,7 @@ public interface NetworkService {
     Call<LandmarkListResult> getLandmarkList();
 
     @POST("/landmark")
-    Call<BaseResult> getInsertResult(@Body String sql);
+    Call<BaseResult> getInsertResult(@Query("sql") String sql);
 
 
 }

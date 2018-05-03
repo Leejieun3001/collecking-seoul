@@ -59,6 +59,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_home);
         service = ApplicationController.getInstance().getNetworkService();
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.home_fragment_map);
@@ -169,22 +170,13 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     void insert(String name, double lat, double lng, String category) {
         String sql = "INSERT INTO Landmark (name, lat, lng, category) VALUES('" + name + "'," + lat + "," + lng + ",'" + category + "')";
         Log.d("쿼리문",sql);
-         Call<BaseResult> insertQuery = service.getInsertResult(sql);
-        Log.d("레트로핏","실행");
-        insertQuery.enqueue(new Callback<BaseResult>() {
+        Call<BaseResult> insertResult = service.getInsertResult(sql);
+        insertResult.enqueue(new Callback<BaseResult>() {
             @Override
             public void onResponse(Call<BaseResult> call, Response<BaseResult> response) {
-                Log.d("레트로핏","통신");
-                if (response.isSuccessful()) {
-                    Log.d("레트로핏","성공");
-                    String message = response.body().getMessage();
-                    switch (message) {
-                        case "SUCCESS":
-                            Toast.makeText(getBaseContext(), "insert성공", Toast.LENGTH_SHORT).show();
-                            break;
-                    }
-                }
+
             }
+
             @Override
             public void onFailure(Call<BaseResult> call, Throwable t) {
 

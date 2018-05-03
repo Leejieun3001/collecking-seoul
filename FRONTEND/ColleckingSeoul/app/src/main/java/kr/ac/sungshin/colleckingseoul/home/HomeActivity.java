@@ -29,13 +29,18 @@ import java.util.List;
 
 import kr.ac.sungshin.colleckingseoul.R;
 import kr.ac.sungshin.colleckingseoul.Review.ReviewListActivity;
+
 import kr.ac.sungshin.colleckingseoul.model.response.LandmarkListResult;
 import kr.ac.sungshin.colleckingseoul.network.ApplicationController;
 import kr.ac.sungshin.colleckingseoul.network.NetworkService;
 import kr.ac.sungshin.colleckingseoul.sqLite.Landmark;
 import retrofit2.Call;
 import retrofit2.Callback;
+
+import kr.ac.sungshin.colleckingseoul.model.response.BaseResult;
+
 import retrofit2.Response;
+
 
 public class HomeActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -46,6 +51,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     // 데이터 베이스 버전
     int dbVersion = 1;
     private SQLiteDatabase db;
+
     String TAG = "HomeActivity";
     private NetworkService service;
     private ArrayList<Landmark> list = new ArrayList<>();
@@ -60,41 +66,69 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .findFragmentById(R.id.home_fragment_map);
         mapFragment.getMapAsync(this);
 
+        LandmarkDataArry data = new LandmarkDataArry();
+        String[] TraditionalCulture = data.getLandmarkTraditionName();
+        String[] HistoricSite = data.getLandmarkHistoricName();
+        String[] Museum = data.getLandmarkMuseumName();
+        String[] ArtMuseum = data.getLandmarkArtName();
+        String[] Landmark = data.getLandmarkLandmarkName();
+        //안드로이드 SQLite3
+        helper = new DBHelper(this, dbName, null, dbVersion);
+        try {
+            // 읽고  쓸수 있는 DB
+            db = helper.getWritableDatabase();
+            Log.d(TAG, "데이터 베이스 읽어오기 성공");
+        } catch (SQLiteException e) {
+            e.printStackTrace();
+            Log.e(TAG, "데이터 베이스 읽어 올수 없음");
+            finish();
+        }
+
+//        /* 입력 완료
+        try {
+            insertDatabase(TraditionalCulture);
+            insertDatabase(HistoricSite);
+            insertDatabase(Museum);
+            insertDatabase(ArtMuseum);
+            insertDatabase(Landmark);
+        } catch (SQLiteException e) {
+            e.printStackTrace();
+        }
+
+        select();
+
+//
 //        LandmarkDataArry data = new LandmarkDataArry();
 //        String[] TraditionalCulture = data.getLandmarkTraditionName();
 //        String[] HistoricSite = data.getLandmarkHistoricName();
 //        String[] Museum = data.getLandmarkMuseumName();
 //        String[] ArtMuseum = data.getLandmarkArtName();
 //        String[] Landmark = data.getLandmarkLandmarkName();
-//        //안드로이드 SQLite3
-//        helper = new DBHelper(this, dbName, null, dbVersion);
-//        try {
-//            // 읽고  쓸수 있는 DB
-//            db = helper.getWritableDatabase();
-//            Log.d(TAG, "데이터 베이스 읽어오기 성공");
-//        } catch (SQLiteException e) {
-//            e.printStackTrace();
-//            Log.e(TAG, "데이터 베이스 읽어 올수 없음");
-//            finish();
-//        }
-//
-////        /* 입력 완료
-//        try{
-//            insertDatabase(TraditionalCulture);
-//            insertDatabase(HistoricSite);
-//            insertDatabase(Museum);
-//            insertDatabase(ArtMuseum);
-//            insertDatabase(Landmark);
-//        } catch (SQLiteException e) {
-//            e.printStackTrace();
-//        }
-
-//        */
-//        select();
+        //안드로이드 SQLite3
+              helper = new DBHelper(
+                this, dbName, null, dbVersion
+        );
+        try {
+            // 읽고  쓸수 있는 DB
+            db = helper.getWritableDatabase();
+            Log.d(TAG, "데이터 베이스 읽어오기 성공");
+        } catch (SQLiteException e) {
+            e.printStackTrace();
+            Log.e(TAG, "데이터 베이스 읽어 올수 없음");
+            finish();
+        }
 
 
+        insertDatabase(TraditionalCulture);
+       // insertDatabase(HistoricSite);
+       // insertDatabase(Museum);
+       // insertDatabase(ArtMuseum);
+        // insertDatabase(Landmark);
 
-    }
+
+      //  select();
+
+        }
 
     void insertDatabase(String[] Data) {
 
@@ -135,7 +169,30 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     void insert(String name, double lat, double lng, String category) {
-        db.execSQL("INSERT INTO Landmark (name, lat, lng, category) VALUES('" + name + "'," + lat + "," + lng + ",'" + category + "');");
+        String sql = "INSERT INTO Landmark (name, lat, lng, category) VALUES('" + name + "'," + lat + "," + lng + ",'" + category + "')";
+        Log.d("쿼리문",sql);
+         Call<BaseResult> insertQuery = service.getInsertResult(sql);
+        Log.d("레트로핏","실행");
+        insertQuery.enqueue(new Callback<BaseResult>() {
+            @Override
+            public void onResponse(Call<BaseResult> call, Response<BaseResult> response) {
+                Log.d("레트로핏","통신");
+                if (response.isSuccessful()) {
+                    Log.d("레트로핏","성공");
+                    String message = response.body().getMessage();
+                    switch (message) {
+                        case "SUCCESS":
+                            Toast.makeText(getBaseContext(), "insert성공", Toast.LENGTH_SHORT).show();
+                            break;
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<BaseResult> call, Throwable t) {
+
+            }
+        });
+        db.execSQL(sql);
         Log.d(TAG, "insert 완료");
     }
 

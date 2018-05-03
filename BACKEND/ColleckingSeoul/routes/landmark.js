@@ -10,38 +10,40 @@ const NodeGeocoder = require('node-geocoder');
 var parser = require('json-parser');
 /*
 var LandmarkTraditionName = [
-    "TraditionalCulture",
-    "한국문화의집 코우스(KOUS)",
-    "쌈지길 체험공방",
-    "서울김치문화체험관",
-    "청원산방",
-    "이종남 자연염색연구소",
-    "서울풍물시장 전통문화체험관",
-    "티 게스트하우스",
-    "결련택견 중앙본부 전수관",
-    "북촌한옥마을",
-    "안동교회 소허당",
-    "궁중음식연구원",
-    "서울놀이마당",
-    "아름지기",
-    "민속극장 풍류",
-    "하늘물빛(전통 천연 염색 연구소)",
-    "남산골 한옥마을",
-    "리기태전통연공방",
-    "삼청각",
-    "서울 무형문화재 교육전시장",
-    "금현국악원",
-    "한상수자수박물관",
-    "한국의집",
-    "옻칠공방",
-    "북촌문화센터",
-    "국기원",
-    "예지원",
-    "봉산재 (북촌아트센터)",
-    "한국 옛 인형일기 소연(素鉛)",
-    "서울남산국악당",
-    "락고재"
+    'TraditionalCulture',
+    '한국문화의집 코우스(KOUS)',
+    '쌈지길 체험공방',
+    '서울김치문화체험관',
+    '청원산방',
+    '이종남 자연염색연구소',
+    '서울풍물시장 전통문화체험관',
+    '티 게스트하우스',
+    '결련택견 중앙본부 전수관',
+    '북촌한옥마을',
+    '안동교회 소허당',
+    '궁중음식연구원',
+    '서울놀이마당',
+    '아름지기',
+    '민속극장 풍류',
+    '하늘물빛(전통 천연 염색 연구소)',
+    '남산골 한옥마을',
+    '리기태전통연공방',
+    '삼청각',
+    '서울 무형문화재 교육전시장',
+    '금현국악원',
+    '한상수자수박물관',
+    '한국의집',
+    '옻칠공방',
+    '북촌문화센터',
+    '국기원',
+    '예지원',
+    '봉산재 (북촌아트센터)',
+    '한국 옛 인형일기 소연(素鉛)',
+    '서울남산국악당',
+    '락고재'
 ];
+
+
 
 router.post('/', function (req, res) {
     var lat;
@@ -67,8 +69,6 @@ router.post('/', function (req, res) {
                 if (err) {
                     console.log('err geocode')
                 } else {
-                   // console.log(res[0].latitude);
-                    //console.log(res[0].longitude);
                     try {
                         let insertQuery =
                             "insert into Landmark" +
@@ -85,7 +85,10 @@ router.post('/', function (req, res) {
                                 callback(err, connection, "insert query error : ", res);
                             }
                             else {
-                                callback(null, connection, "api : /landmark");
+                                if(i == LandmarkTraditionName.length-1){
+                                 callback(null, connection, "api : /landmark");
+                                }
+                                
                             }
                         });
                     } catch (e) {
@@ -95,12 +98,45 @@ router.post('/', function (req, res) {
                 }
             });
         }
+        
     }
     var task = [globalModule.connect.bind(this), insertData, globalModule.releaseConnection.bind(this)];
     async.waterfall(task, globalModule.asyncCallback.bind(this));
 });
 
 */
+
+/**
+ * api 목적 : 서버에 데이터 저장
+ * requset { string :  sql (insert문)} 
+ */
+
+router.post('/', function (req, res) {
+
+    var resultJson = {
+        message: ''
+    };
+    let insertData = function (connection, callback) {
+        let insertQuery = req.body.sql;
+        console.log(req.body.sql);
+
+        connection.query(insertQuery, function (err, data) {
+            if (err) {
+                console.log("에러");
+                callback(err, connection, "insert query error : ", res);
+            }
+            else {
+                console.log("data");
+                resultJson.message = 'SUCCESS';
+                res.status(200).send(resultJson);
+                callback(null, connection, "api : /landmark");
+            }
+        });
+    }
+
+    var task = [globalModule.connect.bind(this), insertData, globalModule.releaseConnection.bind(this)];
+    async.waterfall(task, globalModule.asyncCallback.bind(this));
+});
 
 router.get('/landmark_list', function (req, res) {
     var resultModelJson = {

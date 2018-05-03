@@ -58,4 +58,8 @@ public interface NetworkService {
     @GET("/landmark/landmark_list")
     Call<LandmarkListResult> getLandmarkList();
 
+    @POST("/landmark")
+    Call<BaseResult> getInsertResult(@Body String sql);
+
+
 }

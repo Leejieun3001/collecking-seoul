@@ -125,13 +125,13 @@ public class JoinActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 Intent intent = new Intent(Intent.ACTION_PICK);
-                File tempFile = new File(Environment.getExternalStorageDirectory() + "/temp.jpg");
-                Uri tempUri = Uri.fromFile(tempFile);
-                intent.putExtra("crop", "true");
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
-                intent.setType("image/*");
+                //File tempFile = new File(Environment.getExternalStorageDirectory() + "/temp.jpg");
+                //Uri tempUri = Uri.fromFile(tempFile);
+                //intent.putExtra("crop", "true");
+                //intent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
+              //  intent.setType("image/*");
                 intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
-                intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+               // intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(intent, GALLERY_CODE);
             }
         });
@@ -229,8 +229,8 @@ public class JoinActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-             //   if (!checkValid(editTextId.getText().toString(), editTextPassword.getText().toString(), editTextRepassword.getText().toString(), editTextNikname.getText().toString(), editTextPhone.getText().toString(), Integer.toString(Datepickerbirth.getYear()) + Integer.toString(Datepickerbirth.getMonth()) + Integer.toString(Datepickerbirth.getDayOfMonth())))
-              //      return;
+                //   if (!checkValid(editTextId.getText().toString(), editTextPassword.getText().toString(), editTextRepassword.getText().toString(), editTextNikname.getText().toString(), editTextPhone.getText().toString(), Integer.toString(Datepickerbirth.getYear()) + Integer.toString(Datepickerbirth.getMonth()) + Integer.toString(Datepickerbirth.getDayOfMonth())))
+                //      return;
 
                 int typeId = radioGroupSex.getCheckedRadioButtonId();
 
@@ -291,7 +291,7 @@ public class JoinActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<BaseResult> call, Throwable t) {
-
+                        Log.d(TAG, "onFailure");
                     }
                 });
 
@@ -412,7 +412,3 @@ public class JoinActivity extends AppCompatActivity {
         return imgName;
     }
 }
-
-
-
-

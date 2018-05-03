@@ -154,7 +154,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<LoginResult> call, Throwable t) {
-                        Log.d("실패", "실패");
+                        Log.d(TAG, "실패");
                     }
                 });
 

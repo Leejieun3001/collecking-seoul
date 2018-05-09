@@ -100,4 +100,68 @@ router.post('/write_post', upload.single('photo'), function (req, res) {
     async.waterfall(task, globalModule.asyncCallback.bind(this));
 });
 
+
+
+/** 
+ * api 목적 :  서버 글 수정
+ * * request params : {
+ *                   int idx : "개시글 번호",
+ *                   string title: "글제목", 
+ *                   string content: "내용",
+ *                   int user_idx :"회원 인덱스",
+ *                   File photo : "글 사진" }
+*/
+
+router.post('/modify_post', upload.single('photo'), function (req, res) {
+    let resultJson = {
+        message: '',
+        code: "",
+        user: null
+    };
+    var boardIndex;
+
+
+    let modifyPost = function (connection, callback) {
+        let modifyQuery =
+            "update Board " +
+            "set title =?, content =?, date =?" +
+            "where idx =?";
+        let params = [
+            req.body.title,
+            req.body.content,
+            moment(new Date()).format('YYYY-MM-DD HH:MM:SS'),
+            req.body.idx
+        ];
+        connection.query(modifyQuery, params, function (err, data) {
+            if (err) callback(err, connection, "update query error : ", res);
+            else callback(null, connection);
+        });
+    }
+
+
+    let modifyPhoto = function (connection, callback) {
+        let updateQuery =
+            "update Photo " +
+            "set url =? "+
+            "where board_idx =?";
+        let params = [
+            req.file.location,
+            req.body.board_idx
+        ];
+
+        connection.query(updateQuery, params, function (err, data) {
+            if (err) {
+                callback(err, connection, "update query error : ", res);
+            }
+            else {
+                res.status(200).send({ message: "SUCCESS" });
+                callback(null, connection, "api : /post/modify_post");
+            }
+        });
+    }
+    var task = [globalModule.connect.bind(this), modifyPost, modifyPhoto, globalModule.releaseConnection.bind(this)];
+    async.waterfall(task, globalModule.asyncCallback.bind(this));
+});
+
+
 module.exports = router;

@@ -251,8 +251,6 @@ router.post('/find_id', function (req, res) {
         callback(null, connection, "api : find_id");
     }
 
-    
-
     var task = [globalModule.connect.bind(this), selectId, onSelectId, globalModule.releaseConnection.bind(this)];
     async.waterfall(task, globalModule.asyncCallback.bind(this));
 });

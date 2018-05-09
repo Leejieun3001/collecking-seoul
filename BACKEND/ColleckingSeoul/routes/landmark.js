@@ -78,7 +78,7 @@ router.get('/landmark_list', function (req, res) {
 });
 
 /**
- * api 목적 : 사용자 방분 landmark 데이터 조회
+ * api 목적 : 사용자 방문 landmark 데이터 조회
  * requset : token 
  */
 router.get('/landmark_userlist', function (req, res) {

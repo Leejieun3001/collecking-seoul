@@ -90,6 +90,22 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+
+        SharedPreferences userInfo = getSharedPreferences("user", MODE_PRIVATE);
+        String savedToken = userInfo.getString("token", "");
+        if (!savedToken.equals("")) {
+            ApplicationController.getInstance().setTokenOnHeader(savedToken);
+            User user = new User(userInfo.getString("idx", ""),
+                    userInfo.getString("id", ""),
+                    userInfo.getString("nickname", ""),
+                    userInfo.getString("phone", ""),
+                    userInfo.getString("birth", ""),
+                    userInfo.getString("url", ""),
+                    userInfo.getInt("set", 0));
+            InfoManager.getInstance().setUserInfo(user);
+            goHome();
+            return;
+        }
         service = ApplicationController.getInstance().getNetworkService();
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
@@ -100,13 +116,9 @@ public class LoginActivity extends AppCompatActivity {
                 String loginId = idEditText.getText().toString().trim();
                 String loginPassword = passwordEditText.getText().toString().trim();
 
-                final SharedPreferences userInfo = getSharedPreferences("user", MODE_PRIVATE);
-                final SharedPreferences.Editor editor = userInfo.edit();
-
                 if (!checkValid(loginId, loginPassword)) return;
                 BasicLogin info = new BasicLogin(loginId, loginPassword);
                 Call<LoginResult> checkLogin = service.getLoginResult(info);
-
 
                 checkLogin.enqueue(new Callback<LoginResult>() {
                     @Override
@@ -136,17 +148,9 @@ public class LoginActivity extends AppCompatActivity {
                                     break;
                                 case "SUCCESS":
                                     User user = response.body().getUser();
-
-                                    editor.putString("idx", user.getIdx());
-                                    editor.putString("id", user.getId());
-                                    editor.putString("nickname", user.getNickname());
-                                    editor.putString("phone", user.getPhone());
-                                    editor.putString("birth", user.getBirth());
-                                    editor.apply();
-
-                                    Intent intent = new Intent(getBaseContext(), HomeActivity.class);
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    startActivity(intent);
+                                    String token = response.body().getToken();
+                                    saveInfo(user, token);
+                                    goHome();
                                     break;
                             }
                         }
@@ -194,6 +198,30 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    public void saveInfo (User user, String token) {
+        final SharedPreferences userInfo = getSharedPreferences("user", MODE_PRIVATE);
+        final SharedPreferences.Editor editor = userInfo.edit();
+        editor.putString("idx", user.getIdx());
+        editor.putString("id", user.getId());
+        editor.putString("nickname", user.getNickname());
+        editor.putString("phone", user.getPhone());
+        editor.putString("birth", user.getBirth());
+        editor.putInt("sex", user.getSex());
+        editor.putString("url", user.getUrl());
+        editor.putString("token", token);
+        editor.apply();
+
+        InfoManager.getInstance().setUserInfo(user);
+        ApplicationController.getInstance().setTokenOnHeader(token);
+    }
+
+    public void goHome () {
+        Intent intent = new Intent(getBaseContext(), HomeActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 
     //유효성 체크
@@ -297,29 +325,9 @@ public class LoginActivity extends AppCompatActivity {
 
                                                 User user = response.body().getUser();
                                                 String token = response.body().getToken();
-                                                InfoManager.getInstance().setUserInfo(user);
-
-                                                SharedPreferences userInfo = getSharedPreferences("user", MODE_PRIVATE);
-                                                SharedPreferences.Editor editor = userInfo.edit();
-
-                                                editor.putString("idx", user.getIdx());
-                                                editor.putString("id", user.getId());
-                                                editor.putString("nickname", user.getNickname());
-                                                editor.putString("phone", user.getPhone());
-                                                editor.putString("birth", user.getBirth());
-                                                editor.putString("photo", user.getUrl());
-                                                editor.putInt("sex", user.getSex());
-                                                editor.putString("token", token);
-                                                editor.apply();
-
-                                                ApplicationController.getInstance().setTokenOnHeader(token);
-
+                                                saveInfo(user, token);
+                                                goHome();
                                                 setResult(RESULT_OK);
-
-                                                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                                startActivity(intent);
-                                                finish();
                                                 break;
 
                                         }
@@ -408,27 +416,8 @@ public class LoginActivity extends AppCompatActivity {
                                 case "SUCCESS":
                                     User user = response.body().getUser();
                                     String token = response.body().getToken();
-                                    InfoManager.getInstance().setUserInfo(user);
-
-                                    SharedPreferences userInfo = getSharedPreferences("user", MODE_PRIVATE);
-                                    SharedPreferences.Editor editor = userInfo.edit();
-
-                                    editor.putString("idx", user.getIdx());
-                                    editor.putString("id", user.getId());
-                                    editor.putString("nickname", user.getNickname());
-                                    editor.putString("phone", user.getPhone());
-                                    editor.putString("birth", user.getBirth());
-                                    editor.putString("photo", user.getUrl());
-                                    editor.putInt("sex", user.getSex());
-                                    editor.putString("token", token);
-                                    editor.apply();
-
-                                    ApplicationController.getInstance().setTokenOnHeader(token);
-
-                                    Intent intent = new Intent(getBaseContext(), HomeActivity.class);
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    startActivity(intent);
-                                    finish();
+                                    saveInfo(user, token);
+                                    goHome();
                                     break;
 
                             }

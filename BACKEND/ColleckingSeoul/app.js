@@ -12,6 +12,7 @@ var joinRouter = require('./routes/join');
 var postRouter = require('./routes/post');
 var landmarkRouter = require('./routes/landmark');
 var boardRouter = require('./routes/board');
+var rankRouter = require('./routes/rank');
 
 var app = express();
 
@@ -33,6 +34,7 @@ app.use('/join', joinRouter);
 app.use('/post', postRouter);
 app.use('/landmark', landmarkRouter);
 app.use('/board', boardRouter);
+app.use('/rank', rankRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

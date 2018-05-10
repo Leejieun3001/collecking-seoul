@@ -23,6 +23,99 @@ const upload = multer({
 });
 
 router.get('/', function (req, res) {
+    let resultJson = {
+        message: '',
+        isMine: 0,
+        board: null
+    };
+
+    let checkToken = function (connection, callback) {
+        var decodedToken = jwtModule.decodeToken(req.headers.token);
+        if (!decodedToken.hasOwnProperty('token')) {
+            res.status(200).send(decodedToken);
+            callback("ALREADY_SEND_MESSAGE", connection, "api : /board/");
+        } else {
+            callback(null, decodedToken.idx, connection);
+        }
+    };
+
+    let checkValid = function (connection, u_idx, callback) {
+        if (req.query.idx === "" || req.query.idx == null) {
+            res.status(200).send(errorConfig.NULL_VALUE);
+            callback("ALREADY_SEND_MESSAGE", connection, "api : /board/");
+        } else {
+            callback(null, u_idx, connection);
+        }
+    }
+
+    let selectBoard = function (connection, u_idx, callback) {
+        connection.query('select b.b_idx, title, b_content content, u_idx, nickname, date, p.url from BoardListView b '
+            + 'left join Photo p on b.b_idx = p.board_idx '
+            + 'where b.b_idx = ? ', 
+            req.query.idx, function (error, rows) {
+            if (error) callback(error, connection, "Selecet query Error : ");
+            else {
+                if (rows.length === 0) {
+                    res.status(200).send(errorConfig.NO_DATA);
+                    callback("ALREADY_SEND_MESSAGE", connection, "api : /board/");
+                } else {
+                    resultJson.message = "SUCCESS";
+                    resultJson.board = rows[0];
+                    if (rows[0].u_idx === u_idx) { resultJson.isMine = 1; }
+                    else { resultJson.isMine = 0; }
+                    res.status(200).send(resultJson);
+                    callback(null, connection);
+                }
+            }
+        });
+    }
+
+    var task = [globalModule.connect.bind(this), checkToken, checkValid, selectBoardList, globalModule.releaseConnection.bind(this)];
+    async.waterfall(task, globalModule.asyncCallback.bind(this));
+});
+
+router.get('/total', function (req, res) {
+    let resultJson = {
+        message: '',
+        boards: null
+    };
+
+    let checkToken = function (connection, callback) {
+        var decodedToken = jwtModule.decodeToken(req.headers.token);
+        if (!decodedToken.hasOwnProperty('token')) {
+            res.status(200).send(decodedToken);
+            callback("ALREADY_SEND_MESSAGE", connection, "api : /board/total");
+        } else {
+            callback(null, connection);
+        }
+    };
+
+    let checkValid = function (connection, callback) {
+        if (req.query.idx === "" || req.query.idx == null) {
+            res.status(200).send(errorConfig.NULL_VALUE);
+            callback("ALREADY_SEND_MESSAGE", connection, "api : /board/total");
+        } else {
+            callback(null, connection);
+        }
+    }
+
+    let selectBoardList = function (connection, callback) {
+        connection.query('select b.b_idx idx, title, b_content content, nickname, date, p.url from BoardListView b '
+            + 'left join Photo p on b.b_idx = p.board_idx '
+            + 'where b.l_idx = ?', 
+            req.query.idx, function (error, rows) {
+            if (error) callback(error, connection, "Selecet query Error : ");
+            else {
+                resultJson.message = "SUCCESS";
+                resultJson.boards = rows;
+                res.status(200).send(resultJson);
+                callback(null, connection);
+            }
+        });
+    }
+
+    var task = [globalModule.connect.bind(this), checkToken, checkValid, selectBoardList, globalModule.releaseConnection.bind(this)];
+    async.waterfall(task, globalModule.asyncCallback.bind(this));
 });
 
 /**
@@ -33,7 +126,7 @@ router.get('/', function (req, res) {
  *                   int landmark_idx : "랜드마크 인덱스",
  *                   File photo : "글 사진" }
  */
-router.post('/write_post', upload.single('photo'), function (req, res) {
+router.post('/write', upload.single('photo'), function (req, res) {
     let resultJson = {
         message: '',
         code: "",
@@ -112,7 +205,7 @@ router.post('/write_post', upload.single('photo'), function (req, res) {
  *                   File photo : "글 사진" }
 */
 
-router.post('/modify_post', upload.single('photo'), function (req, res) {
+router.post('/modify', upload.single('photo'), function (req, res) {
     let resultJson = {
         message: '',
         code: "",
@@ -162,53 +255,5 @@ router.post('/modify_post', upload.single('photo'), function (req, res) {
     var task = [globalModule.connect.bind(this), modifyPost, modifyPhoto, globalModule.releaseConnection.bind(this)];
     async.waterfall(task, globalModule.asyncCallback.bind(this));
 });
-
-
-
-
-router.get('/total_board', function (req, res) {
-    let resultJson = {
-        message: '',
-        boards: null
-    };
-
-    let checkToken = function (connection, callback) {
-        var decodedToken = jwtModule.decodeToken(req.headers.token);
-        if (!decodedToken.hasOwnProperty('token')) {
-            res.status(200).send(decodedToken);
-            callback("ALREADY_SEND_MESSAGE", connection, "api : /board/total_board");
-        } else {
-            callback(null, connection);
-        }
-    };
-
-    let checkValid = function (connection, callback) {
-        if (req.query.idx === "" || req.query.idx == null) {
-            res.status(200).send(errorConfig.NULL_VALUE);
-            callback("ALREADY_SEND_MESSAGE", connection, "api : /board/total_board");
-        } else {
-            callback(null, idx, connection);
-        }
-    }
-
-    let selectBoardList = function (connection, callback) {
-        connection.query('select * from BoardListView b '
-            + 'left join Photo p on b.b_idx = p.board_idx '
-            + 'where b.l_idx = ?', 
-            req.query.idx, function (error, rows) {
-            if (error) callback(error, connection, "Selecet query Error : ");
-            else {
-                resultJson.message = "SUCCESS";
-                resultJson.boards = rows;
-                res.status(200).send(resultJson);
-                callback(null, connection);
-            }
-        });
-    }
-
-    var task = [globalModule.connect.bind(this), checkToken, checkValid, selectBoardList, globalModule.releaseConnection.bind(this)];
-    async.waterfall(task, globalModule.asyncCallback.bind(this));
-});
-
 
 module.exports = router;

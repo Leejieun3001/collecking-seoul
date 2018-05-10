@@ -49,7 +49,7 @@ router.get('/', function (req, res) {
     }
 
     let selectBoard = function (connection, u_idx, callback) {
-        connection.query('select b.b_idx, title, b_content content, u_idx, nickname, date, p.url from BoardListView b '
+        connection.query('select b.b_idx bIdx, title, b_content content, u_idx uIdx, nickname, date, p.url from BoardListView b '
             + 'left join Photo p on b.b_idx = p.board_idx '
             + 'where b.b_idx = ? ', 
             req.query.idx, function (error, rows) {

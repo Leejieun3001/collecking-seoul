@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const jwtSecret = require('../config/secretKey');
+const errorConfig =  require('../config/error');
 const secretKey = jwtSecret.secret;
 
 //JWT 토큰 설정값
@@ -22,19 +23,23 @@ function makeToken (value) {
 
 //토큰 해석하기
 function decodeToken (token) {
-    //decoded.memberId 로 memberId를 참고할 수 있다.
-    var decoded = "";
+    //decoded.token.idx 로 idx를 구하기
+    var decodeInfo = {};
     if(!token) {
-      console.log("Token is not exist or expired");
-      decoded = 1;
-      return decoded;
+      decodeInfo = errorConfig.NOT_LOGIN;
+    } else {
+      let decoded = jwt.verify(token, secretKey);
+      decodeInfo.token = decoded;
     }
-    else{
-    //  console.log("Auto login Error");
-      decoded = jwt.verify(token, secretKey);
-      return decoded;
-    }
+    return decodeInfo;
+}
+
+function checkExpired (decodedToken) {
+  let now = new Date().getTime();
+  if (decodedToken.exp < now) { return false; } 
+  else { return true; }
 }
 
 module.exports.makeToken = makeToken;
 module.exports.decodeToken = decodeToken;
+module.exports.checkExpired = checkExpired;

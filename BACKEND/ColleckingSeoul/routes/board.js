@@ -1,14 +1,14 @@
 const pool = require('../config/dbPool');
 const router = require('express').Router();
-const bcrypt = require('bcrypt-nodejs');
 const async = require('async');
+const jwtModule = require('../module/jwtModule');
 const globalModule = require('../module/globalModule');
+const mailConfig = require('../config/mailAccount');
+const errorConfig =  require('../config/error');
 const moment = require('moment');
-const errorConfig = require('../config/error');
 const aws = require('aws-sdk');
 const multer = require('multer');
 const multerS3 = require('multer-s3');
-const jwtModule = require('../module/jwtModule');
 aws.config.loadFromPath('./config/aws_config.json')
 const s3 = new aws.S3();
 const upload = multer({
@@ -22,6 +22,8 @@ const upload = multer({
     })
 });
 
+router.get('/', function (req, res) {
+});
 
 /**
  * api 목적        : 글등록 
@@ -158,6 +160,53 @@ router.post('/modify_post', upload.single('photo'), function (req, res) {
         });
     }
     var task = [globalModule.connect.bind(this), modifyPost, modifyPhoto, globalModule.releaseConnection.bind(this)];
+    async.waterfall(task, globalModule.asyncCallback.bind(this));
+});
+
+
+
+
+router.get('/total_board', function (req, res) {
+    let resultJson = {
+        message: '',
+        boards: null
+    };
+
+    let checkToken = function (connection, callback) {
+        var decodedToken = jwtModule.decodeToken(req.headers.token);
+        if (!decodedToken.hasOwnProperty('token')) {
+            res.status(200).send(decodedToken);
+            callback("ALREADY_SEND_MESSAGE", connection, "api : /board/total_board");
+        } else {
+            callback(null, connection);
+        }
+    };
+
+    let checkValid = function (connection, callback) {
+        if (req.query.idx === "" || req.query.idx == null) {
+            res.status(200).send(errorConfig.NULL_VALUE);
+            callback("ALREADY_SEND_MESSAGE", connection, "api : /board/total_board");
+        } else {
+            callback(null, idx, connection);
+        }
+    }
+
+    let selectBoardList = function (connection, callback) {
+        connection.query('select * from BoardListView b '
+            + 'left join Photo p on b.b_idx = p.board_idx '
+            + 'where b.l_idx = ?', 
+            req.query.idx, function (error, rows) {
+            if (error) callback(error, connection, "Selecet query Error : ");
+            else {
+                resultJson.message = "SUCCESS";
+                resultJson.boards = rows;
+                res.status(200).send(resultJson);
+                callback(null, connection);
+            }
+        });
+    }
+
+    var task = [globalModule.connect.bind(this), checkToken, checkValid, selectBoardList, globalModule.releaseConnection.bind(this)];
     async.waterfall(task, globalModule.asyncCallback.bind(this));
 });
 

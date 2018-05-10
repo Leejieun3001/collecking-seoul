@@ -87,7 +87,7 @@ router.get('/landmark_userlist', function (req, res) {
         landmarkList: []
     }
     let selectLandmark = function (connection, callback) {
-        var decodedToken = jwtModule.decodeToken(req.headers.token);
+        var decodedToken = jwtModule.decodeToken(req.headers.token).token;
 
         connection.query("select Landmark.idx, Landmark.name from Landmark " +
             "join Tour on Tour.landmark_idx = Landmark.idx " +

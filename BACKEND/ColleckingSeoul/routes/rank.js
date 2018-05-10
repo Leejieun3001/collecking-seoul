@@ -27,22 +27,57 @@ const upload = multer({
  * requert params : 없음
  */
 
+router.get('/user_rank', function (req, res) {
+    var resultModelJson = {
+        message: 'SUCCESS',
+        userRankList: []
+    }
+    let selectUserRank = function (connection, callback) {
+        let selectQuery =
+              'SELECT  User.nickname, Photo.url FROM Tour, User, Photo '+
+              'where Photo.user_idx = User.idx '+
+              'and Tour.user_idx = User.idx '+ 
+              'group by Tour.user_idx '+
+              'order by count(*) DESC'
+        connection.query(selectQuery, function (err, data) {
+            if (err) {
+                callback(err, connection, "select query error : ", res);
+            }
+            else {
+                if (data.length !== 0) {
+                    for (var x in data) {
+                        var userRank = {}
+                        userRank.idx = data[x].nickname;
+                        userRank.name = data[x].url;
+                        resultModelJson.userRankList.push(userRank);
+                    }
+                }
+                res.status(200).send(resultModelJson);
+                callback(null, connection, "api : /rank/user_rank");
+            }
+        });
+    }
+    var task = [globalModule.connect.bind(this), selectUserRank, globalModule.releaseConnection.bind(this)];
+    async.waterfall(task, globalModule.asyncCallback.bind(this));
+
+});
 
 /**
  * api 목적 : 랜드마크 순위 조회
  * requset params : 없음
  */
 
-
-
 router.get('/landmark_rank', function (req, res) {
     var resultModelJson = {
         message: 'SUCCESS',
         landmarkRankList: []
     }
-    let selectLandmark = function (connection, callback) {
+    let selectLandmarkRank = function (connection, callback) {
         let selectQuery =
-          'SELECT  Landmark.name FROM Landmark, Tour where Tour.landmark_idx = Landmark.idx   group by landmark_idx order by count(*) DESC'
+          'SELECT  Landmark.name FROM Landmark, Tour '+ 
+          'where Tour.landmark_idx = Landmark.idx '+
+          'group by landmark_idx '+
+          'order by count(*) DESC'
         connection.query(selectQuery, function (err, data) {
             if (err) {
                 callback(err, connection, "select query error : ", res);
@@ -60,7 +95,7 @@ router.get('/landmark_rank', function (req, res) {
             }
         });
     }
-    var task = [globalModule.connect.bind(this), selectLandmark, globalModule.releaseConnection.bind(this)];
+    var task = [globalModule.connect.bind(this), selectLandmarkRank, globalModule.releaseConnection.bind(this)];
     async.waterfall(task, globalModule.asyncCallback.bind(this));
 
 });

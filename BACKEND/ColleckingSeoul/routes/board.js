@@ -134,8 +134,8 @@ router.post('/write', upload.single('photo'), function (req, res) {
     };
     var boardIndex;
 
-
-    let insertPost = function (connection, callback) {
+    let insertBoard = function (connection, callback) {
+      var decodedToken = jwtModule.decodeToken(req.headers.token).token;
         let insertQuery =
             "insert into Board" +
             "(title, content, date, user_idx, landmark_idx)" +
@@ -144,7 +144,7 @@ router.post('/write', upload.single('photo'), function (req, res) {
             req.body.title,
             req.body.content,
             moment(new Date()).format('YYYY-MM-DD HH:MM:SS'),
-            req.body.user_idx,
+            decodedToken.idx,
             req.body.landmark_idx
         ];
         connection.query(insertQuery, params, function (err, data) {
@@ -170,12 +170,13 @@ router.post('/write', upload.single('photo'), function (req, res) {
 
     }
     let insertPhoto = function (connection, callback) {
+    var decodedToken = jwtModule.decodeToken(req.headers.token).token;
         let insertQuery =
             "insert into Photo" +
             "(user_idx , board_idx, landmark_idx , url)" +
             "values (?,?,?,?)";
         let params = [
-            req.body.user_idx,
+            decodedToken.idx,
             boardIndex,
             req.body.landmark_idx,
             req.file.location
@@ -191,7 +192,7 @@ router.post('/write', upload.single('photo'), function (req, res) {
             }
         });
     }
-    var task = [globalModule.connect.bind(this), insertPost, selectPostId, insertPhoto, globalModule.releaseConnection.bind(this)];
+    var task = [globalModule.connect.bind(this), insertBoard, selectPostId, insertPhoto, globalModule.releaseConnection.bind(this)];
     async.waterfall(task, globalModule.asyncCallback.bind(this));
 });
 
@@ -214,7 +215,7 @@ router.post('/modify', upload.single('photo'), function (req, res) {
     var boardIndex;
 
 
-    let modifyPost = function (connection, callback) {
+    let modifyBoard = function (connection, callback) {
         let modifyQuery =
             "update Board " +
             "set title =?, content =?, date =?" +
@@ -233,6 +234,7 @@ router.post('/modify', upload.single('photo'), function (req, res) {
 
 
     let modifyPhoto = function (connection, callback) {
+
         let updateQuery =
             "update Photo " +
             "set url =? "+
@@ -252,7 +254,7 @@ router.post('/modify', upload.single('photo'), function (req, res) {
             }
         });
     }
-    var task = [globalModule.connect.bind(this), modifyPost, modifyPhoto, globalModule.releaseConnection.bind(this)];
+    var task = [globalModule.connect.bind(this), modifyBoard, modifyPhoto, globalModule.releaseConnection.bind(this)];
     async.waterfall(task, globalModule.asyncCallback.bind(this));
 });
 

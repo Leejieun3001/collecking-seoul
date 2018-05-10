@@ -29,7 +29,7 @@ public class ReviewListActivity extends AppCompatActivity implements OnMapReadyC
     @BindView(R.id.reviewlist_recyclerview_recyclerview)
     RecyclerView recyclerView;
 
-    private final String TAG = "JoinActivity";
+    private final String TAG = "ReviewActivity";
     private NetworkService service;
     private GoogleMap googleMap;
     private LatLng initPosition;

@@ -1,7 +1,5 @@
 package kr.ac.sungshin.colleckingseoul.sqLite;
 
-import com.google.android.gms.maps.model.LatLng;
-
 /**
  * Created by kwonhyeon-a on 2018. 4. 18..
  */
@@ -10,27 +8,30 @@ public class Landmark {
     private int idx;
     private String name;
     private String content;
-    private LatLng latlng;
+    private double lat;
+    private double lng;
     private String category;
 
     public Landmark(int idx, String name, double lat, double lng) {
         this.idx = idx;
         this.name = name;
-        this.latlng = new LatLng(lat, lng);
+        this.lat = lat;
+        this.lng = lng;
     }
 
     public Landmark(int idx, String name, String content, double lat, double lng, String category) {
         this.idx = idx;
         this.name = name;
         this.content = content;
-        this.latlng = new LatLng(lat, lng);
+        this.lat = lat;
+        this.lng = lng;
         this.category = category;
     }
 
     public Landmark(String name, double lat, double lng, String category) {
-
         this.name = name;
-        this.latlng = new LatLng(lat, lng);
+        this.lat = lat;
+        this.lng = lng;
         this.category = category;
     }
 
@@ -59,23 +60,19 @@ public class Landmark {
     }
 
     public double getLat() {
-        return latlng.latitude;
-    }
-
-    public double getLng() {
-        return latlng.longitude;
+        return lat;
     }
 
     public void setLat(double lat) {
-        latlng = new LatLng(lat, latlng.longitude);
+        this.lat = lat;
+    }
+
+    public double getLng() {
+        return lng;
     }
 
     public void setLng(double lng) {
-        latlng = new LatLng(latlng.latitude, lng);
-    }
-
-    public void setLatLng(double lat, double lng) {
-        latlng = new LatLng(lat, lng);
+        this.lng = lng;
     }
 
     public String getCategory() {
@@ -85,10 +82,4 @@ public class Landmark {
     public void setCategory(String category) {
         this.category = category;
     }
-
-    public void setLatlng(LatLng latlng) {
-        this.latlng = latlng;
-    }
-
-
 }

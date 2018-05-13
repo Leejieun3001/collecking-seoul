@@ -1,31 +1,24 @@
 package kr.ac.sungshin.colleckingseoul.home;
 
-import android.content.SharedPreferences;
-import android.support.v4.app.AppLaunchChecker;
 import android.support.v7.app.AppCompatActivity;
 
 import com.google.android.gms.maps.OnMapReadyCallback;
 
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.clustering.ClusterManager;
+
+import org.json.JSONException;
 
 import java.util.ArrayList;
-import java.io.IOException;
-import java.util.List;
 
 import kr.ac.sungshin.colleckingseoul.R;
 import kr.ac.sungshin.colleckingseoul.Review.ReviewListActivity;
@@ -36,19 +29,14 @@ import kr.ac.sungshin.colleckingseoul.network.NetworkService;
 import kr.ac.sungshin.colleckingseoul.sqLite.Landmark;
 import retrofit2.Call;
 import retrofit2.Callback;
-
-import kr.ac.sungshin.colleckingseoul.model.response.BaseResult;
-
 import retrofit2.Response;
 
 
 public class HomeActivity extends AppCompatActivity implements OnMapReadyCallback {
-
-    private GoogleMap googleMap;
-
-
     String TAG = "HomeActivity";
+    private GoogleMap googleMap;
     private NetworkService service;
+    private ClusterManager<MarkerItem> clusterManager;
     private ArrayList<Landmark> list = new ArrayList<>();
 
     @Override
@@ -70,21 +58,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
             public boolean onMarkerClick(Marker marker) {
                 marker.getTag();
                 Intent intent = new Intent(getBaseContext(), ReviewListActivity.class);
-                intent.putExtra("lat", 37.576183);
-                intent.putExtra("lng", 126.976926);
-                startActivity(intent);
-                return false;
-            }
-        });
-
-        LatLng latLng = new LatLng(37.576183, 126.976926);
-        googleMap.addMarker(new MarkerOptions().position(latLng).title("현아"));
-        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                marker.getTag();
-                Intent intent = new Intent(getBaseContext(), ReviewListActivity.class);
-                intent.putExtra("lat", 37.576183);
+                intent.putExtra("idx", marker.getTag().toString());
                 intent.putExtra("lng", 126.976926);
                 startActivity(intent);
                 return false;
@@ -92,7 +66,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
         loadLandmark();
-        createMarkers();
+
     }
 
 //    private void loadLandmark() {
@@ -128,10 +102,11 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Log.d(TAG, "onResponse");
                 if (response.isSuccessful()) {
                     String message = response.body().getMessage();
-
                     switch (message) {
                         case "SUCCESS":
                             list.addAll(response.body().getLandmarkList());
+//                            setUpClusterer();
+                            createMarkers();
                             break;
                     }
                 }
@@ -149,14 +124,16 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         for (int i = 0; i < length; i++) {
             final Landmark landmark = list.get(i);
             LatLng latLng = new LatLng(landmark.getLat(), landmark.getLng());
-            googleMap.addMarker(new MarkerOptions().position(latLng).title(landmark.getName()));
+            Marker marker = googleMap.addMarker(new MarkerOptions().position(latLng).title(landmark.getName()));
+            marker.setTag(landmark);
             googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
                 public boolean onMarkerClick(Marker marker) {
-                    marker.getTag();
+                    Landmark ld = (Landmark) marker.getTag();
                     Intent intent = new Intent(getBaseContext(), ReviewListActivity.class);
-                    intent.putExtra("lat", landmark.getLat());
-                    intent.putExtra("lng", landmark.getLat());
+                    intent.putExtra("lat", ld.getLat());
+                    intent.putExtra("lng", ld.getLng());
+                    intent.putExtra("idx", ld.getIdx());
                     startActivity(intent);
                     return false;
                 }
@@ -164,4 +141,31 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+    private void setUpClusterer() {
+        clusterManager = new ClusterManager<MarkerItem>(getBaseContext(), googleMap);
+
+        // Point the map's listeners at the listeners implemented by the cluster
+        // manager.
+        googleMap.setOnCameraIdleListener(clusterManager);
+        googleMap.setOnMarkerClickListener(clusterManager);
+
+        googleMap.setOnCameraIdleListener(clusterManager);
+
+        // Add cluster items (markers) to the cluster manager.
+        try {
+            addItems();
+        } catch (Exception e) {
+            e.getStackTrace();
+            Toast.makeText(this, "Problem reading list of markers.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void addItems() {
+        int length = list.size();
+        for (int i = 0; i < length; i++) {
+            final Landmark landmark = list.get(i);
+            MarkerItem offsetItem = new MarkerItem(landmark.getLat(), landmark.getLng());
+            clusterManager.addItem(offsetItem);
+        }
+    }
 }

@@ -11,8 +11,7 @@
         class="com.google.android.gms.maps.SupportMapFragment"
         android:id="@+id/reviewlist_fragment_map"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        map:cameraZoom="14">
+        android:layout_height="150dp" >
     </fragment>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/reviewlist_recyclerview_recyclerview"

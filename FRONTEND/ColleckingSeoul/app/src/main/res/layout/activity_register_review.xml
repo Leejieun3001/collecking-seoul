@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="kr.ac.sungshin.colleckingseoul.Review.RegisterReviewActivity"
+    android:orientation="vertical">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <EditText
+                android:id="@+id/registerreview_edittext_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="제목을 입력하세요."/>
+
+            <EditText
+                android:id="@+id/registerreview_edittext_content"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:hint="내용을 입력하세요"
+                android:gravity="left|top"
+                android:inputType="textMultiLine"/>
+
+            <ImageView
+                android:id="@+id/registerreview_imageview_photo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <Button
+                android:id="@+id/registerreview_button_findphoto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="사진 등록하기"/>
+
+            <Button
+                android:id="@+id/registerreview_button_write"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="글 등록하기"/>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

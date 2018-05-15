@@ -134,6 +134,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                     intent.putExtra("lat", ld.getLat());
                     intent.putExtra("lng", ld.getLng());
                     intent.putExtra("idx", ld.getIdx());
+                    intent.putExtra("title", ld.getName());
                     startActivity(intent);
                     return false;
                 }

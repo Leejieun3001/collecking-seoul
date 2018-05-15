@@ -1,13 +1,17 @@
 package kr.ac.sungshin.colleckingseoul.Review;
 
 import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -31,8 +35,11 @@ import kr.ac.sungshin.colleckingseoul.network.NetworkService;
 public class ReviewListActivity extends AppCompatActivity implements OnMapReadyCallback {
     @BindView(R.id.reviewlist_recyclerview_recyclerview)
     RecyclerView recyclerView;
+    @BindView(R.id.reviewlist_floatingbutton_fab)
+    FloatingActionButton floatingButton;
 
     private final String TAG = "ReviewActivity";
+    private final int REQUEST_FOR_BOARD = 1000;
     private NetworkService service;
     private GoogleMap googleMap;
     private LatLng initPosition;
@@ -50,14 +57,38 @@ public class ReviewListActivity extends AppCompatActivity implements OnMapReadyC
         ButterKnife.bind(this);
 
         Intent gettingIntent = getIntent();
+        Log.d(TAG, gettingIntent.getStringExtra("title"));
+        getSupportActionBar().setTitle(gettingIntent.getStringExtra("title"));
         idx = gettingIntent.getIntExtra("idx", 1);
         initPosition = new LatLng(gettingIntent.getDoubleExtra("lat", 37.581049), gettingIntent.getDoubleExtra("lng", 126.982533));
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.reviewlist_fragment_map);
         mapFragment.getMapAsync(this);
+        floatingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), RegisterReviewActivity.class);
+                intent.putExtra("idx", idx + "");
+                startActivityForResult(intent, REQUEST_FOR_BOARD);
+            }
+        });
         initRecyclerView();
         getReview();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode != RESULT_OK) {
+            Toast.makeText(getBaseContext(), "결과가 올바르게 수행되지 못했습니다.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (requestCode == REQUEST_FOR_BOARD) {
+            // 리스트 갱신 필요
+        }
     }
 
     @Override

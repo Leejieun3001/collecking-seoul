@@ -22,6 +22,10 @@ const upload = multer({
     })
 });
 
+/**
+ * api 목적        : 상세글 조회
+ * request params : {string idx: "글 아이디"}
+ */
 router.get('/', function (req, res) {
     let resultJson = {
         message: '',
@@ -74,6 +78,10 @@ router.get('/', function (req, res) {
     async.waterfall(task, globalModule.asyncCallback.bind(this));
 });
 
+/**
+ * api 목적        : 전체글 조회
+ * request params : {string idx: "랜드마크 아이디"}
+ */
 router.get('/total', function (req, res) {
     let resultJson = {
         message: '',
@@ -138,26 +146,25 @@ router.post('/write', upload.single('photo'), function (req, res) {
       var decodedToken = jwtModule.decodeToken(req.headers.token).token;
         let insertQuery =
             "insert into Board" +
-            "(title, content, date, user_idx, landmark_idx)" +
-            "values (?,?,?,?,?)";
+            "(title, content, user_idx, landmark_idx)" +
+            "values (?,?,?,?)";
         let params = [
             req.body.title,
             req.body.content,
-            moment(new Date()).format('YYYY-MM-DD HH:MM:SS'),
             decodedToken.idx,
             req.body.landmark_idx
         ];
         connection.query(insertQuery, params, function (err, data) {
             if (err) callback(err, connection, "insert query error : ", res);
-            else callback(null, connection);
+            else callback(null, connection, decodedToken.idx);
         });
     }
 
-    let selectPostId = function (connection, callback) {
+    let selectPostId = function (connection, userIdx, callback) {
         let selectQuery =
-            "select idx from Board where user_idx= ? and landmark_idx = ? ";
+            "select idx from Board where user_idx = ? and landmark_idx = ? ";
         let params = [
-            req.body.user_idx,
+            userIdx,
             req.body.landmark_idx
         ];
         connection.query(selectQuery, params, function (err, data) {
@@ -167,10 +174,9 @@ router.post('/write', upload.single('photo'), function (req, res) {
                 callback(null, connection);
             }
         });
-
     }
     let insertPhoto = function (connection, callback) {
-    var decodedToken = jwtModule.decodeToken(req.headers.token).token;
+        var decodedToken = jwtModule.decodeToken(req.headers.token).token;
         let insertQuery =
             "insert into Photo" +
             "(user_idx , board_idx, landmark_idx , url)" +

@@ -395,6 +395,8 @@ public class LoginActivity extends AppCompatActivity {
                 photo = userProfile.getProfileImagePath();
                 snsCategory = 2;
 
+                Log.d(TAG, "kakao onSuccess");
+
                 Login info = new Login(id, accessToken, nickname, photo, snsCategory);
                 Call<LoginResult> checkLogin = service.getSnsLoginResult(info);
                 checkLogin.enqueue(new Callback<LoginResult>() {

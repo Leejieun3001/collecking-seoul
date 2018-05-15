@@ -3,6 +3,7 @@ package kr.ac.sungshin.colleckingseoul.network;
 
 import kr.ac.sungshin.colleckingseoul.model.request.BasicLogin;
 import kr.ac.sungshin.colleckingseoul.model.request.FindPassWord;
+import kr.ac.sungshin.colleckingseoul.model.response.DefaultResult;
 import kr.ac.sungshin.colleckingseoul.model.response.FindInfoResult;
 import kr.ac.sungshin.colleckingseoul.model.request.Login;
 import kr.ac.sungshin.colleckingseoul.model.response.BaseResult;
@@ -51,7 +52,6 @@ public interface NetworkService {
     @POST("/login/find_id")
     Call<FindInfoResult> getFindIdResult(@Body FindId Info);
 
-
     @POST("/login/find_password")
     Call<FindInfoResult> getFindPwResult(@Body FindPassWord Info);
 
@@ -60,6 +60,13 @@ public interface NetworkService {
 
     @POST("/landmark")
     Call<BaseResult> getInsertResult(@Query("sql") String sql);
+
+    @POST("/board/write")
+    @Multipart
+    Call<DefaultResult> getWritingBoardResult(@Part("title") RequestBody title,
+                                              @Part("content") RequestBody content,
+                                              @Part("landmark_idx") RequestBody landmark_idx,
+                                              @Part MultipartBody.Part photo);
 
 
 }

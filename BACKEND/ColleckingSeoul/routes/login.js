@@ -111,14 +111,15 @@ router.post('/sns', function (req, res) {
     };
 
     let selectUserInfo = function (connection, callback) {
-        connection.query('select * from User ' + 
-                    'left outer join Photo ' + 
-                    'on User.idx=Photo.user_idx ' + 
-                    'where id = ?', req.body.id, function (error, rows) {
+        connection.query('select u.idx, u.id, u.password, u.nickname, u.birth, u.sex, u.phone, u.snsCategory, p.url from User u ' + 
+                    'left outer join Photo p ' + 
+                    'on u.idx=p.user_idx ' + 
+                    'where u.id = ? and p.board_idx is null', req.body.id, function (error, rows) {
             if (error) callback(error, connection, "Selecet query Error : ");
             else {
-                if (rows.length === 0) joinForSns(connection, callback);
-                else {
+                if (rows.length === 0) {
+                    joinForSns(connection, callback);
+                } else {
                     if (rows[0].snsCategory === req.body.snsCategory) {
                         callback(null, connection, rows);
                     } else {
@@ -196,6 +197,7 @@ router.post('/sns', function (req, res) {
             url: row.url,
             sex: row.sex
         };
+        console.log('login', row);
         resultJson.token = jwtModule.makeToken(row);
     }
 

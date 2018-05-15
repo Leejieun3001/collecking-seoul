@@ -78,13 +78,13 @@ router.get('/landmark_list', function (req, res) {
 });
 
 /**
- * api 목적 : 사용자 방문 landmark 데이터 조회
- * requset : token 
+ * api 목적 : 사용자 방문 여부 포함된 랜드마크 리스트 조회
+ * request : 
  */
 router.get('/landmark_userlist', function (req, res) {
     var resultModelJson = {
         message: 'SUCCESS',
-        landmarkList: []
+        landmarkList: null
     }
     let selectLandmark = function (connection, callback) {
         var decodedToken = jwtModule.decodeToken(req.headers.token).token;

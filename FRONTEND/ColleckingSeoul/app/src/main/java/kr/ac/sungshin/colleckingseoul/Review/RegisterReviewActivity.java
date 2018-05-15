@@ -164,6 +164,11 @@ public class RegisterReviewActivity extends AppCompatActivity {
             return false;
         }
 
+        if (imgUrl.equals("")) {
+            Toast.makeText(getBaseContext(), "사진을 선택해주세요.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
         return true;
     }
 }

@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:map="http://schemas.android.com/apk/res-auto">
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_centerInParent="true"
-        android:id="@+id/home_fragment_map"
-        class="com.google.android.gms.maps.SupportMapFragment"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+    <android.support.v4.view.ViewPager
+        android:id="@+id/home_viewpager_viewpager"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
-        map:cameraTargetLat="37.581049"
-        map:cameraTargetLng="126.982533"
-        map:cameraZoom="13">
-    </fragment>
-</RelativeLayout>
+        android:layout_height="0dp"
+        android:layout_weight="9">
+    </android.support.v4.view.ViewPager>
+    <android.support.design.widget.TabLayout
+        android:id="@+id/home_tablayout_tablayout"
+        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:background="@color/colorWhite"
+        android:layout_weight="1"
+        >
+    </android.support.design.widget.TabLayout>
+</LinearLayout>

@@ -94,6 +94,7 @@ public class LoginActivity extends AppCompatActivity {
         SharedPreferences userInfo = getSharedPreferences("user", MODE_PRIVATE);
         String savedToken = userInfo.getString("token", "");
         if (!savedToken.equals("")) {
+            Log.d(TAG, savedToken);
             ApplicationController.getInstance().setTokenOnHeader(savedToken);
             User user = new User(userInfo.getString("idx", ""),
                     userInfo.getString("id", ""),

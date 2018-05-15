@@ -74,7 +74,7 @@ router.get('/', function (req, res) {
         });
     }
 
-    var task = [globalModule.connect.bind(this), checkToken, checkValid, selectBoardList, globalModule.releaseConnection.bind(this)];
+    var task = [globalModule.connect.bind(this), checkToken, checkValid, selectBoard, globalModule.releaseConnection.bind(this)];
     async.waterfall(task, globalModule.asyncCallback.bind(this));
 });
 
@@ -103,7 +103,7 @@ router.get('/total', function (req, res) {
             res.status(200).send(errorConfig.NULL_VALUE);
             callback("ALREADY_SEND_MESSAGE", connection, "api : /board/total");
         } else {
-            callback(null, connection);
+            callback(null, connection, "api : /board/total");
         }
     }
 
@@ -115,9 +115,9 @@ router.get('/total', function (req, res) {
             if (error) callback(error, connection, "Selecet query Error : ");
             else {
                 resultJson.message = "SUCCESS";
-                resultJson.boards = rows;
+                resultJson.boards = rows[0];
                 res.status(200).send(resultJson);
-                callback(null, connection);
+                callback(null, connection, "api : /board/total");
             }
         });
     }

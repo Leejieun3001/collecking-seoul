@@ -79,12 +79,14 @@ public class HomeActivity extends AppCompatActivity {
     private void setupTabIcons() {
         Log.d(TAG, tabLayout.getTabCount() + "");
         tabLayout.getTabAt(0).setIcon(R.drawable.marker);
-        tabLayout.getTabAt(1).setIcon(R.drawable.person);
+        tabLayout.getTabAt(1).setIcon(R.drawable.crown);
+        tabLayout.getTabAt(2).setIcon(R.drawable.person);
     }
 
     private void setupViewPager() {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFrag(new MapFragment(), "메인");
+        adapter.addFrag(new RankFragment(), "랭킹");
         adapter.addFrag(new MyPageFragment(), "마이페이지");
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));

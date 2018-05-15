@@ -3,6 +3,7 @@ package kr.ac.sungshin.colleckingseoul.network;
 
 import kr.ac.sungshin.colleckingseoul.model.request.BasicLogin;
 import kr.ac.sungshin.colleckingseoul.model.request.FindPassWord;
+import kr.ac.sungshin.colleckingseoul.model.response.BoardResult;
 import kr.ac.sungshin.colleckingseoul.model.response.DefaultResult;
 import kr.ac.sungshin.colleckingseoul.model.response.FindInfoResult;
 import kr.ac.sungshin.colleckingseoul.model.request.Login;
@@ -10,9 +11,8 @@ import kr.ac.sungshin.colleckingseoul.model.response.BaseResult;
 import kr.ac.sungshin.colleckingseoul.model.request.FindId;
 import kr.ac.sungshin.colleckingseoul.model.response.LandmarkListResult;
 import kr.ac.sungshin.colleckingseoul.model.response.LoginResult;
-import kr.ac.sungshin.colleckingseoul.model.response.ReviewListResult;
+import kr.ac.sungshin.colleckingseoul.model.response.BoardListResult;
 import kr.ac.sungshin.colleckingseoul.model.response.VerificationCodeResult;
-import kr.ac.sungshin.colleckingseoul.sqLite.Landmark;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -44,6 +44,7 @@ public interface NetworkService {
 
     @GET("/join/check_dupplicate")
     Call<BaseResult> getDuplicatedResult(@Query("id") String id);
+
     @POST("/login/sns")
     Call<LoginResult> getSnsLoginResult(@Body Login login);
 
@@ -68,8 +69,12 @@ public interface NetworkService {
                                               @Part("content") RequestBody content,
                                               @Part("landmark_idx") RequestBody landmark_idx,
                                               @Part MultipartBody.Part photo);
+
     @GET("/board/total/")
-    Call<ReviewListResult> getReviewListResult(@Query("idx") int idx);
+    Call<BoardListResult> getBoardListResult(@Query("idx") int idx);
+
+    @GET("/board/")
+    Call<BoardResult> getBoardResult(@Query("idx") int idx);
 
 
 }

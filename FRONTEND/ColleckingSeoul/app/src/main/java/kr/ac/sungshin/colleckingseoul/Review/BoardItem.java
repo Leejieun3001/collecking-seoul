@@ -4,7 +4,7 @@ package kr.ac.sungshin.colleckingseoul.Review;
  * Created by LG on 2018-05-16.
  */
 
-public class ReviewListItem {
+public class BoardItem {
     private int idx;
     private String title;
     private String content;
@@ -60,7 +60,7 @@ public class ReviewListItem {
         this.url = photo;
     }
 
-    public ReviewListItem(int idx, String title, String content, String date, String nickname, String url) {
+    public BoardItem(int idx, String title, String content, String date, String nickname, String url) {
         this.idx = idx;
         this.title = title;
         this.content = content;

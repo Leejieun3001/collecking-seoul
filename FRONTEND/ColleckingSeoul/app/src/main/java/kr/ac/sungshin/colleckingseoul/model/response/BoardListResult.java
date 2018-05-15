@@ -2,21 +2,21 @@ package kr.ac.sungshin.colleckingseoul.model.response;
 
 import java.util.ArrayList;
 
-import kr.ac.sungshin.colleckingseoul.Review.ReviewListItem;
+import kr.ac.sungshin.colleckingseoul.Review.BoardItem;
 
 /**
  * Created by LG on 2018-05-16.
  */
 
-public class ReviewListResult {
+public class BoardListResult {
     private String message;
-    private ArrayList<ReviewListItem> boards;
+    private ArrayList<BoardItem> boards;
 
     public void setMessage(String message) {
         this.message = message;
     }
 
-    public void setBoards(ArrayList<ReviewListItem> boards) {
+    public void setBoards(ArrayList<BoardItem> boards) {
         this.boards = boards;
     }
 
@@ -25,11 +25,11 @@ public class ReviewListResult {
         return message;
     }
 
-    public ArrayList<ReviewListItem> getBoards() {
+    public ArrayList<BoardItem> getBoards() {
         return boards;
     }
 
-    public ReviewListResult(String message, ArrayList<ReviewListItem> boards) {
+    public BoardListResult(String message, ArrayList<BoardItem> boards) {
 
         this.message = message;
         this.boards = boards;

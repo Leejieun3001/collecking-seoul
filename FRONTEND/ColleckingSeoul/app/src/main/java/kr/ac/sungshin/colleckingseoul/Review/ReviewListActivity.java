@@ -1,17 +1,13 @@
 package kr.ac.sungshin.colleckingseoul.Review;
 
 import android.content.Intent;
-import android.nfc.Tag;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -19,18 +15,14 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.maps.android.clustering.ClusterManager;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import kr.ac.sungshin.colleckingseoul.R;
-import kr.ac.sungshin.colleckingseoul.home.MarkerItem;
-import kr.ac.sungshin.colleckingseoul.model.response.ReviewListResult;
+import kr.ac.sungshin.colleckingseoul.model.response.BoardListResult;
 import kr.ac.sungshin.colleckingseoul.network.ApplicationController;
 import kr.ac.sungshin.colleckingseoul.network.NetworkService;
 import retrofit2.Call;
@@ -52,7 +44,7 @@ public class ReviewListActivity extends AppCompatActivity implements OnMapReadyC
 
     private LinearLayoutManager layoutManager;
     private ReviewListAdapter adapter;
-    private ArrayList<ReviewListItem> itemList;
+    private ArrayList<BoardItem> itemList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,10 +111,10 @@ public class ReviewListActivity extends AppCompatActivity implements OnMapReadyC
         Log.d(TAG, "리스트 불러오기 성공");
         Log.d(TAG, String.valueOf(idx));
 
-        Call<ReviewListResult> getReviewList = service.getReviewListResult(idx);
-        getReviewList.enqueue(new Callback<ReviewListResult>() {
+        Call<BoardListResult> getReviewList = service.getBoardListResult(idx);
+        getReviewList.enqueue(new Callback<BoardListResult>() {
             @Override
-            public void onResponse(Call<ReviewListResult> call, Response<ReviewListResult> response) {
+            public void onResponse(Call<BoardListResult> call, Response<BoardListResult> response) {
 
                 if (response.isSuccessful()) {
                     if (response.body().getMessage().equals("SUCCESS")) {
@@ -142,7 +134,7 @@ public class ReviewListActivity extends AppCompatActivity implements OnMapReadyC
             }
 
             @Override
-            public void onFailure(Call<ReviewListResult> call, Throwable t) {
+            public void onFailure(Call<BoardListResult> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), "서버 오류입니다. 빠른 시일내에 개선하겠습니다. 죄송합니다", Toast.LENGTH_SHORT).show();
 
             }
@@ -154,12 +146,13 @@ public class ReviewListActivity extends AppCompatActivity implements OnMapReadyC
             int itemPosition = recyclerView.getChildPosition(v);
             int tempId = itemList.get(itemPosition).getIdx();
             Intent intent = new Intent(getApplicationContext(), ReviewActivity.class);
-            intent.putExtra("idx", String.valueOf(tempId));
+
+            intent.putExtra("idx", tempId);
             startActivity(intent);
         }
     };
 
-    private void setAdapter(ArrayList<ReviewListItem> itemList) {
+    private void setAdapter(ArrayList<BoardItem> itemList) {
         adapter = new ReviewListAdapter(getApplicationContext(), itemList, clickEvent);
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();

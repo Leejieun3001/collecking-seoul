@@ -82,6 +82,7 @@ public class ReviewListActivity extends AppCompatActivity implements OnMapReadyC
         getReview(idx);
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -148,8 +149,18 @@ public class ReviewListActivity extends AppCompatActivity implements OnMapReadyC
         });
     }
 
+    public View.OnClickListener clickEvent = new View.OnClickListener() {
+        public void onClick(View v) {
+            int itemPosition = recyclerView.getChildPosition(v);
+            int tempId = itemList.get(itemPosition).getIdx();
+            Intent intent = new Intent(getApplicationContext(), ReviewActivity.class);
+            intent.putExtra("idx", String.valueOf(tempId));
+            startActivity(intent);
+        }
+    };
+
     private void setAdapter(ArrayList<ReviewListItem> itemList) {
-        adapter = new ReviewListAdapter(getApplicationContext(), itemList);
+        adapter = new ReviewListAdapter(getApplicationContext(), itemList, clickEvent);
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }

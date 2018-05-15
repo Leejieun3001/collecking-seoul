@@ -29,23 +29,21 @@ public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.Vi
     private ArrayList<ReviewListItem> listDatas;
     View.OnClickListener mOnClickListener;
 
-
-    //생성자
-    public ReviewListAdapter(Context context, ArrayList<ReviewListItem> listDatas) {
+    public ReviewListAdapter(Context context, ArrayList<ReviewListItem> listDatas, View.OnClickListener mOnClickListener) {
         this.context = context;
         this.listDatas = listDatas;
+        this.mOnClickListener = mOnClickListener;
     }
 
     public void setAdapter(ArrayList<ReviewListItem> listDatas) {
         this.listDatas = listDatas;
         notifyDataSetChanged();
-
     }
 
-    // 레이아웃을 만들어서 Holderdp wjwkd
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_review, parent, false);
+        view.setOnClickListener(mOnClickListener);
         return new ViewHolder(view);
     }
 
@@ -57,14 +55,6 @@ public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.Vi
         Glide.with(context)
                 .load(item.getUrl())
                 .into(holder.imageviewImage);
-
-        holder.layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, ReviewActivity.class);
-                intent.putExtra("idx", 1);
-            }
-        });
     }
 
     @Override

@@ -1,6 +1,7 @@
 package kr.ac.sungshin.colleckingseoul.Review;
 
 import android.content.Intent;
+import android.nfc.Tag;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
@@ -29,8 +30,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import kr.ac.sungshin.colleckingseoul.R;
 import kr.ac.sungshin.colleckingseoul.home.MarkerItem;
+import kr.ac.sungshin.colleckingseoul.model.response.ReviewListResult;
 import kr.ac.sungshin.colleckingseoul.network.ApplicationController;
 import kr.ac.sungshin.colleckingseoul.network.NetworkService;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ReviewListActivity extends AppCompatActivity implements OnMapReadyCallback {
     @BindView(R.id.reviewlist_recyclerview_recyclerview)
@@ -47,7 +52,7 @@ public class ReviewListActivity extends AppCompatActivity implements OnMapReadyC
 
     private LinearLayoutManager layoutManager;
     private ReviewListAdapter adapter;
-    private List<ReviewItem> itemList;
+    private ArrayList<ReviewListItem> itemList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +79,7 @@ public class ReviewListActivity extends AppCompatActivity implements OnMapReadyC
             }
         });
         initRecyclerView();
-        getReview();
+        getReview(idx);
     }
 
     @Override
@@ -99,20 +104,52 @@ public class ReviewListActivity extends AppCompatActivity implements OnMapReadyC
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initPosition, 15));
     }
 
-    private void initRecyclerView () {
+    private void initRecyclerView() {
+        itemList = new ArrayList<>();
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
+
     }
 
     // 해당 랜드마크의 리뷰 리스트를 불러온다.
-    private void getReview () {
+    private void getReview(int idx) {
+        Log.d(TAG, "리스트 불러오기 성공");
+        Log.d(TAG, String.valueOf(idx));
 
+        Call<ReviewListResult> getReviewList = service.getReviewListResult(idx);
+        getReviewList.enqueue(new Callback<ReviewListResult>() {
+            @Override
+            public void onResponse(Call<ReviewListResult> call, Response<ReviewListResult> response) {
+
+                if (response.isSuccessful()) {
+                    if (response.body().getMessage().equals("SUCCESS")) {
+                        itemList = response.body().getBoards();
+                    }
+                    if (response.body().getMessage().equals("NULL_VALUE")) {
+                        Toast.makeText(getApplicationContext(), "값을 입력해 주세요.", Toast.LENGTH_SHORT).show();
+
+                    }
+                    if (response.body().getMessage().equals("NOT_LOGIN")) {
+                        Toast.makeText(getApplicationContext(), "로그인 하지 않은 사용자입니다.", Toast.LENGTH_SHORT).show();
+
+                    }
+                    setAdapter(itemList);
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ReviewListResult> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "서버 오류입니다. 빠른 시일내에 개선하겠습니다. 죄송합니다", Toast.LENGTH_SHORT).show();
+
+            }
+        });
     }
 
-    private void setAdapter(ArrayList<ReviewItem> itemList) {
-        adapter = new ReviewListAdapter(ReviewListActivity.this, itemList);
+    private void setAdapter(ArrayList<ReviewListItem> itemList) {
+        adapter = new ReviewListAdapter(getApplicationContext(), itemList);
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }

@@ -10,6 +10,7 @@ import kr.ac.sungshin.colleckingseoul.model.response.BaseResult;
 import kr.ac.sungshin.colleckingseoul.model.request.FindId;
 import kr.ac.sungshin.colleckingseoul.model.response.LandmarkListResult;
 import kr.ac.sungshin.colleckingseoul.model.response.LoginResult;
+import kr.ac.sungshin.colleckingseoul.model.response.ReviewListResult;
 import kr.ac.sungshin.colleckingseoul.model.response.VerificationCodeResult;
 import kr.ac.sungshin.colleckingseoul.sqLite.Landmark;
 import okhttp3.MultipartBody;
@@ -67,6 +68,8 @@ public interface NetworkService {
                                               @Part("content") RequestBody content,
                                               @Part("landmark_idx") RequestBody landmark_idx,
                                               @Part MultipartBody.Part photo);
+    @GET("/board/total/")
+    Call<ReviewListResult> getReviewListResult(@Query("idx") int idx);
 
 
 }

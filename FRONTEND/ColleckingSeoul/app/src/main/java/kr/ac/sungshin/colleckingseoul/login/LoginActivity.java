@@ -150,6 +150,7 @@ public class LoginActivity extends AppCompatActivity {
                                 case "SUCCESS":
                                     User user = response.body().getUser();
                                     String token = response.body().getToken();
+                                    Log.d(TAG, "토큰" + token);
                                     saveInfo(user, token);
                                     goHome();
                                     break;
@@ -201,7 +202,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    public void saveInfo (User user, String token) {
+    public void saveInfo(User user, String token) {
         final SharedPreferences userInfo = getSharedPreferences("user", MODE_PRIVATE);
         final SharedPreferences.Editor editor = userInfo.edit();
         editor.putString("idx", user.getIdx());
@@ -218,7 +219,7 @@ public class LoginActivity extends AppCompatActivity {
         ApplicationController.getInstance().setTokenOnHeader(token);
     }
 
-    public void goHome () {
+    public void goHome() {
         Intent intent = new Intent(getBaseContext(), HomeActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);

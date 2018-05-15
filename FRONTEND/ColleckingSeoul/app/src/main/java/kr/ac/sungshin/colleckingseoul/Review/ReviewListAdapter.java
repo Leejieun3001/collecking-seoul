@@ -7,6 +7,7 @@ import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -16,6 +17,7 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import kr.ac.sungshin.colleckingseoul.R;
 
 /**
@@ -24,28 +26,37 @@ import kr.ac.sungshin.colleckingseoul.R;
 
 public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.ViewHolder> {
     private Context context;
-    private ArrayList<ReviewItem> list;
+    private ArrayList<ReviewListItem> listDatas;
+    View.OnClickListener mOnClickListener;
 
-    public ReviewListAdapter(Context context, ArrayList<ReviewItem> list) {
+
+    //생성자
+    public ReviewListAdapter(Context context, ArrayList<ReviewListItem> listDatas) {
         this.context = context;
-        this.list = list;
+        this.listDatas = listDatas;
     }
 
+    public void setAdapter(ArrayList<ReviewListItem> listDatas) {
+        this.listDatas = listDatas;
+        notifyDataSetChanged();
+
+    }
+
+    // 레이아웃을 만들어서 Holderdp wjwkd
     @Override
-    public ReviewListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_review, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view);
-        return viewHolder;
+        return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ReviewListAdapter.ViewHolder holder, int position) {
-        ReviewItem item = list.get(position);
-        holder.title.setText(item.getTitle());
-        holder.content.setText(item.getContent());
+        ReviewListItem item = listDatas.get(position);
+        holder.textViewTitle.setText(item.getTitle());
+        holder.textViewContent.setText(item.getContent());
         Glide.with(context)
                 .load(item.getUrl())
-                .into(holder.image);
+                .into(holder.imageviewImage);
 
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,21 +69,21 @@ public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.Vi
 
     @Override
     public int getItemCount() {
-        return 0;
+        return (listDatas != null) ? listDatas.size() : 0;
     }
 
-    protected class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.itemreview_textview_title)
-        TextView title;
-        @BindView(R.id.itemreview_textview_content)
-        TextView content;
-        @BindView(R.id.itemreview_imageview_image)
-        ImageView image;
-        @BindView(R.id.itemreview_layout_layout)
-        LinearLayout layout;
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        private ImageView imageviewImage;
+        private TextView textViewContent;
+        private TextView textViewTitle;
+        private LinearLayout layout;
 
-        public ViewHolder(View v) {
-            super(v);
+        public ViewHolder(View itemView) {
+            super(itemView);
+            imageviewImage = (ImageView) itemView.findViewById(R.id.itemreview_imageview_image);
+            textViewContent = (TextView) itemView.findViewById(R.id.itemreview_textview_content);
+            textViewTitle = (TextView) itemView.findViewById(R.id.itemreview_textview_title);
+            layout = (LinearLayout) itemView.findViewById(R.id.itemreview_layout_layout);
         }
     }
 }

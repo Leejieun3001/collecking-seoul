@@ -103,7 +103,7 @@ router.get('/total', function (req, res) {
             res.status(200).send(errorConfig.NULL_VALUE);
             callback("ALREADY_SEND_MESSAGE", connection, "api : /board/total");
         } else {
-            callback(null, connection, "api : /board/total");
+            callback(null, connection);
         }
     }
 

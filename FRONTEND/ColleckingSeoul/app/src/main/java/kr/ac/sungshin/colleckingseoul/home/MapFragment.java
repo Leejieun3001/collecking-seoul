@@ -56,6 +56,7 @@ public class MapFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_maps, container, false);
         service = ApplicationController.getInstance().getNetworkService();
+        Log.d(TAG, "onCreateView실행");
 
         mMapView = (MapView) view.findViewById(R.id.maps_mapView_mapView);
         mMapView.onCreate(savedInstanceState);

@@ -6,11 +6,39 @@ package kr.ac.sungshin.colleckingseoul.Review;
 
 public class BoardItem {
     private int idx;
+    private int bidx;
+    private int uidx;
     private String title;
     private String content;
     private String date;
     private String nickname;
     private String url;
+
+    public BoardItem(int idx, int bidx, int uidx, String title, String content, String date, String nickname, String url) {
+        this.idx = idx;
+        this.bidx = bidx;
+        this.uidx = uidx;
+        this.title = title;
+        this.content = content;
+        this.date = date;
+        this.nickname = nickname;
+        this.url = url;
+    }
+
+    public void setBidx(int bidx) {
+        this.bidx = bidx;
+    }
+
+    public int getBidx() {
+
+        return bidx;
+    }
+
+    public BoardItem(int bidx) {
+
+        this.bidx = bidx;
+    }
+
 
     public int getIdx() {
         return idx;
@@ -60,12 +88,12 @@ public class BoardItem {
         this.url = photo;
     }
 
-    public BoardItem(int idx, String title, String content, String date, String nickname, String url) {
-        this.idx = idx;
-        this.title = title;
-        this.content = content;
-        this.date = date;
-        this.nickname = nickname;
-        this.url = url;
+    public void setUidx(int uidx) {
+        this.uidx = uidx;
+    }
+
+    public int getUidx() {
+
+        return uidx;
     }
 }

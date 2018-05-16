@@ -10,19 +10,30 @@ import kr.ac.sungshin.colleckingseoul.Review.BoardItem;
 
 public class BoardResult {
     private String message;
-    private int isMine;
-    private ArrayList<BoardItem> board;
+    private String isMine;
+    private BoardItem board;
+
+    public BoardResult(String message, String isMine, BoardItem board) {
+        this.message = message;
+        this.isMine = isMine;
+        this.board = board;
+    }
 
     public void setMessage(String message) {
         this.message = message;
     }
 
-    public void setIsMine(int isMine) {
+    public void setIsMine(String isMine) {
         this.isMine = isMine;
     }
 
-    public void setBoard(ArrayList<BoardItem> board) {
+    public void setBoard(BoardItem board) {
         this.board = board;
+    }
+
+    public BoardItem getBoard() {
+
+        return board;
     }
 
     public String getMessage() {
@@ -30,18 +41,9 @@ public class BoardResult {
         return message;
     }
 
-    public int getIsMine() {
+    public String getIsMine() {
         return isMine;
     }
 
-    public ArrayList<BoardItem> getBoard() {
-        return board;
-    }
 
-    public BoardResult(String message, int isMine, ArrayList<BoardItem> board) {
-
-        this.message = message;
-        this.isMine = isMine;
-        this.board = board;
-    }
 }

@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.Adapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -56,22 +57,23 @@ public class ReviewActivity extends AppCompatActivity {
         Intent intent = getIntent();
         idx = intent.getIntExtra("idx", 0);
 
-        Call<BoardResult> getBoardResult = service.getBoardResult(idx);
-        getBoardResult.enqueue(new Callback<BoardResult>() {
+        Call<BoardResult> boardResult = service.getBoardResult(idx);
+        boardResult.enqueue(new Callback<BoardResult>() {
             @Override
             public void onResponse(Call<BoardResult> call, Response<BoardResult> response) {
                 if (response.isSuccessful()) {
-                    textViewTitle.setText(response.body().getBoard().get(0).getTitle());
-                    textViewNickname.setText(response.body().getBoard().get(0).getNickname());
-                    textViewdate.setText(response.body().getBoard().get(0).getDate());
-                    textViewIdx.setText(idx);
-                    textViewContent.setText(response.body().getBoard().get(0).getContent());
+                    if (response.body().getMessage().equals("SUCCESS")) {
+                        textViewTitle.setText(response.body().getBoard().getTitle());
+                        textViewNickname.setText(response.body().getBoard().getNickname());
+                        textViewdate.setText(response.body().getBoard().getDate());
+                        textViewIdx.setText(String.valueOf(idx));
+                        textViewContent.setText(response.body().getBoard().getContent());
 
-                    if (response.body().getBoard().get(0).getUrl() != "") {
-                        Glide.with(getApplicationContext())
-                                .load(response.body().getBoard().get(0).getUrl())
-                                .into(imageViewPhoto);
-
+                        if (response.body().getBoard().getUrl() != "") {
+                            Glide.with(getApplicationContext())
+                                    .load(response.body().getBoard().getUrl())
+                                    .into(imageViewPhoto);
+                        }
                     }
                     if (response.body().getMessage().equals("NULL_VALUE")) {
                         Toast.makeText(getApplicationContext(), "값을 입력해 주세요.", Toast.LENGTH_SHORT).show();
@@ -86,11 +88,7 @@ public class ReviewActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<BoardResult> call, Throwable t) {
-
-
             }
         });
-
-
     }
 }

@@ -27,7 +27,7 @@ const upload = multer({
  * requert params : 없음
  */
 
-router.get('/user_rank', function (req, res) {
+router.get('/user', function (req, res) {
     var resultModelJson = {
         message: 'SUCCESS',
         userRankList: []
@@ -70,17 +70,18 @@ router.get('/user_rank', function (req, res) {
  * requset params : 없음
  */
 
-router.get('/landmark_rank', function (req, res) {
+router.get('/landmark', function (req, res) {
     var resultModelJson = {
         message: 'SUCCESS',
         landmarkRankList: []
     }
     let selectLandmarkRank = function (connection, callback) {
         let selectQuery =
-          'SELECT  Landmark.name FROM Landmark, Tour '+ 
-          'where Tour.landmark_idx = Landmark.idx '+
-          'group by landmark_idx '+
-          'order by count(*) DESC'
+            "SELECT  Landmark.name FROM Tour left join Landmark "+
+            "on Tour.landmark_idx = Landmark.idx "+
+            "group by landmark_idx "+
+            "order by count(*) DESC "+
+            "limit 5"
         connection.query(selectQuery, function (err, data) {
             if (err) {
                 callback(err, connection, "select query error : ", res);

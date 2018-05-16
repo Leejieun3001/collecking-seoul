@@ -34,7 +34,7 @@ router.get('/user_rank', function (req, res) {
     }
     let selectUserRank = function (connection, callback) {
         let selectQuery =
-              'SELECT  User.nickname, Photo.url FROM Tour, User, Photo '+
+              'SELECT  User.nickname, Photo.url, User.id FROM Tour, User, Photo '+
               'where Photo.user_idx = User.idx '+
               'and Tour.user_idx = User.idx '+ 
               'group by Tour.user_idx '+
@@ -49,6 +49,7 @@ router.get('/user_rank', function (req, res) {
                         var userRank = {}
                         userRank.nickname = data[x].nickname;
                         userRank.url = data[x].url;
+                        userRank.id = data[x].id;
                         resultModelJson.userRankList.push(userRank);
                     }
                 }
@@ -61,6 +62,7 @@ router.get('/user_rank', function (req, res) {
     async.waterfall(task, globalModule.asyncCallback.bind(this));
 
 });
+
 
 /**
  * api 목적 : 랜드마크 순위 조회

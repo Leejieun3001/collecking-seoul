@@ -13,6 +13,8 @@ import kr.ac.sungshin.colleckingseoul.model.response.LandmarkListResult;
 import kr.ac.sungshin.colleckingseoul.model.response.LoginResult;
 import kr.ac.sungshin.colleckingseoul.model.response.BoardListResult;
 import kr.ac.sungshin.colleckingseoul.model.response.VerificationCodeResult;
+import kr.ac.sungshin.colleckingseoul.model.response.rank.LandmarkRankResult;
+import kr.ac.sungshin.colleckingseoul.model.response.rank.UserRankResult;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -76,5 +78,9 @@ public interface NetworkService {
     @GET("/board/")
     Call<BoardResult> getBoardResult(@Query("idx") int idx);
 
+    @GET("rank/user_rank")
+    Call<UserRankResult> getUserRankList();
 
+    @GET("/rank/landmark_rank")
+    Call<LandmarkRankResult> getLandmarkRankList();
 }

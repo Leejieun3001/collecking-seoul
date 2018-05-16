@@ -47,8 +47,8 @@ router.get('/user_rank', function (req, res) {
                 if (data.length !== 0) {
                     for (var x in data) {
                         var userRank = {}
-                        userRank.idx = data[x].nickname;
-                        userRank.name = data[x].url;
+                        userRank.nickname = data[x].nickname;
+                        userRank.url = data[x].url;
                         resultModelJson.userRankList.push(userRank);
                     }
                 }

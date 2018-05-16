@@ -68,7 +68,7 @@ router.get('/', function (req, res) {
                     if (rows[0].u_idx === u_idx) { resultJson.isMine = 1; }
                     else { resultJson.isMine = 0; }
                     res.status(200).send(resultJson);
-                    callback(null, connection);
+                    callback(null, connection, "api : /board/");
                 }
             }
         });
@@ -115,7 +115,7 @@ router.get('/total', function (req, res) {
             if (error) callback(error, connection, "Selecet query Error : ");
             else {
                 resultJson.message = "SUCCESS";
-                resultJson.boards = rows[0];
+                resultJson.boards = rows;
                 res.status(200).send(resultJson);
                 callback(null, connection, "api : /board/total");
             }

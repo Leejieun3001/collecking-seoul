@@ -1,7 +1,9 @@
 package kr.ac.sungshin.colleckingseoul.home;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -40,6 +42,7 @@ import retrofit2.Response;
 
 public class MapFragment extends Fragment {
     String TAG = "MapFragment";
+    private boolean isFirst = true;
     private GoogleMap googleMap;
     private NetworkService service;
     private ClusterManager<MarkerItem> clusterManager;
@@ -51,13 +54,23 @@ public class MapFragment extends Fragment {
         super();
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        View view = getView();
+        service = ApplicationController.getInstance().getNetworkService();
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_maps, container, false);
-        service = ApplicationController.getInstance().getNetworkService();
-        Log.d(TAG, "onCreateView실행");
+        initMap(view, savedInstanceState);
 
+        return view;
+    }
+
+    private void initMap(View view, Bundle savedInstanceState) {
         mMapView = (MapView) view.findViewById(R.id.maps_mapView_mapView);
         mMapView.onCreate(savedInstanceState);
 
@@ -77,7 +90,6 @@ public class MapFragment extends Fragment {
                 CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(37.581049, 126.982533)).zoom(14).build();
                 googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
-                // For showing a move to my location button
                 googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
@@ -90,13 +102,15 @@ public class MapFragment extends Fragment {
                     }
                 });
 
-                loadLandmark();
+                if (isFirst) {
+                    loadLandmark();
+                    isFirst = !isFirst;
+                } else {
+                    createMarkers();
+                }
+
             }
         });
-//        SupportMapFragment mapFragment = (SupportMapFragment) getFragmentManager()
-//                .findFragmentById(R.id.home_fragment_map);
-//        mapFragment.getMapAsync(this);
-        return view;
     }
 
     private void loadLandmark() {
@@ -104,7 +118,6 @@ public class MapFragment extends Fragment {
         getLandmarkList.enqueue(new Callback<LandmarkListResult>() {
             @Override
             public void onResponse(Call<LandmarkListResult> call, Response<LandmarkListResult> response) {
-                Log.d(TAG, "onResponse");
                 if (response.isSuccessful()) {
                     String message = response.body().getMessage();
                     switch (message) {

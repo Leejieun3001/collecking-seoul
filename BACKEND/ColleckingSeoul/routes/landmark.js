@@ -14,7 +14,7 @@ var parser = require('json-parser');
  * requset { string :  sql (insert문)} 
  */
 
-router.post('/', function (req, res) {
+router.post('/store_data', function (req, res) {
     var resultJson = {
         message: '',
         detail: ''
@@ -42,15 +42,18 @@ router.post('/', function (req, res) {
  * api 목적 : 전제 landmark 조회
  * requset : 없음 
  */
-router.get('/landmark_list', function (req, res) {
+router.get('/', function (req, res) {
     var resultModelJson = {
         message: 'SUCCESS',
         landmarkList: []
     }
     let selectLandmark = function (connection, callback) {
+      var decoded = jwtModule.decodeToken(req.headers.token);
         let selectQuery =
-            "select * from Landmark"
-        connection.query(selectQuery, function (err, data) {
+            "select Landmark.idx,Landmark.name, Landmark.content, Landmark.category, "+
+            "Landmark.lat ,Landmark.lng, Tour.landmark_idx as isVisit from Landmark "+  
+            "left join Tour on  Landmark.idx = Tour.landmark_idx and Tour.user_idx= ? "
+        connection.query(selectQuery, decoded.token.idx  ,function (err, data) {
             if (err) {
                 callback(err, connection, "select query error : ", res);
             }
@@ -64,6 +67,13 @@ router.get('/landmark_list', function (req, res) {
                         landmark.lat = data[x].lat;
                         landmark.lng = data[x].lng;
                         landmark.category = data[x].category;
+                        if(data[x].isVisit == null ||data[x].isVisit =="" ){
+                            landmark.isVisit =0;
+
+                        }else{
+                            landmark.isVisit =1;
+                                      
+                    }
                         resultModelJson.landmarkList.push(landmark);
                     }
                 }
@@ -77,41 +87,6 @@ router.get('/landmark_list', function (req, res) {
 
 });
 
-/**
- * api 목적 : 사용자 방문 여부 포함된 랜드마크 리스트 조회
- * request : 
- */
-router.get('/landmark_userlist', function (req, res) {
-    var resultModelJson = {
-        message: 'SUCCESS',
-        landmarkList: null
-    }
-    let selectLandmark = function (connection, callback) {
-        var decodedToken = jwtModule.decodeToken(req.headers.token).token;
-
-        connection.query("select Landmark.idx, Landmark.name from Landmark " +
-            "join Tour on Tour.landmark_idx = Landmark.idx " +
-            "where Tour.user_idx = ?  ", decodedToken.idx, function (err, data) {
-                if (err) {
-                    callback(err, connection, "select query error : ", res);
-                }
-                else {
-                    if (data.length !== 0) {
-                        for (var x in data) {
-                            var userlandmarkList = {}
-                            userlandmarkList.idx = data[x].name;
-                            userlandmarkList.name = data[x].name;
-                            resultModelJson.landmarkList.push(userlandmarkList);
-                        }
-                    }
-                    res.status(200).send(resultModelJson);
-                    callback(null, connection, "api : /landmark/landmark_userlist");
-                }
-            });
-    }
-    var task = [globalModule.connect.bind(this), selectLandmark, globalModule.releaseConnection.bind(this)];
-    async.waterfall(task, globalModule.asyncCallback.bind(this));
-});
 
 module.exports = router;
 

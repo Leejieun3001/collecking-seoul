@@ -34,11 +34,12 @@ router.get('/user_rank', function (req, res) {
     }
     let selectUserRank = function (connection, callback) {
         let selectQuery =
-              'SELECT  User.nickname, Photo.url, User.id FROM Tour, User, Photo '+
-              'where Photo.user_idx = User.idx '+
-              'and Tour.user_idx = User.idx '+ 
-              'group by Tour.user_idx '+
-              'order by count(*) DESC'
+            "SELECT User.nickname , User.id, Photo.url  FROM "+  
+			"Tour left join User on Tour.user_idx = User.idx "+ 
+			"left join Photo on Photo.user_idx = User.idx and Photo.board_idx is null "+		
+              "group by Tour.user_idx "+ 
+              "order by count(*) DESC "+ 
+              "limit 5"
         connection.query(selectQuery, function (err, data) {
             if (err) {
                 callback(err, connection, "select query error : ", res);

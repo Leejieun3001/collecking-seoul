@@ -1,4 +1,4 @@
-package kr.ac.sungshin.colleckingseoul.home;
+package kr.ac.sungshin.colleckingseoul.rank;
 
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -45,7 +45,6 @@ public class RankFragment extends Fragment {
         getUserRankList.enqueue(new Callback<UserRankResult>() {
             @Override
             public void onResponse(Call<UserRankResult> call, Response<UserRankResult> response) {
-                Log.d(TAG, "onResponse");
                 if (response.isSuccessful()) {
                     String message = response.body().getMessage();
                     switch (message) {
@@ -66,7 +65,6 @@ public class RankFragment extends Fragment {
         getLandmarkRankList.enqueue(new Callback<LandmarkRankResult>() {
             @Override
             public void onResponse(Call<LandmarkRankResult> call, Response<LandmarkRankResult> response) {
-                Log.d(TAG, "onResponse");
                 if (response.isSuccessful()) {
                     String message = response.body().getMessage();
                     switch (message) {

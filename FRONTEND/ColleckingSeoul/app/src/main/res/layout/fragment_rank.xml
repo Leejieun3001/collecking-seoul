@@ -4,5 +4,27 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="랜드마크 랭킹"/>
+    <TableLayout
+        android:id="@+id/rank_tablelayout_landmarkrank"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </TableLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="유저 랭킹"/>
+    <TableLayout
+        android:id="@+id/rank_tablelayout_userrank"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </TableLayout>
+
+
 </LinearLayout>

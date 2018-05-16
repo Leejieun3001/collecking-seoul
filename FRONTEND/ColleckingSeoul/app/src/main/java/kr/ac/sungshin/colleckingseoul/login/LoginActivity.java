@@ -12,6 +12,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -70,6 +71,8 @@ public class LoginActivity extends AppCompatActivity {
     EditText passwordEditText;
     @BindView(R.id.login_TextView_findInfo)
     TextView findInfoTextView;
+    @BindView(R.id.login_checkbox_autologin)
+    CheckBox autoLoginCheckBox;
 
 
     private NetworkService service;
@@ -78,7 +81,7 @@ public class LoginActivity extends AppCompatActivity {
     SessionCallback callbackForKakao;
 
     //Back 키 두번 클릭 여부 확인
-    private final long FINSH_INTERVAL_TIME = 2000;
+    private final long FINISH_INTERVAL_TIME = 2000;
     private long backPressedTime = 0;
 
     private String id, password, accessToken, nickname, photo;
@@ -93,7 +96,7 @@ public class LoginActivity extends AppCompatActivity {
 
         SharedPreferences userInfo = getSharedPreferences("user", MODE_PRIVATE);
         String savedToken = userInfo.getString("token", "");
-        if (!savedToken.equals("")) {
+        if (userInfo.getBoolean("autoLogin", false) && !savedToken.equals("")) {
             Log.d(TAG, savedToken);
             ApplicationController.getInstance().setTokenOnHeader(savedToken);
             User user = new User(userInfo.getString("idx", ""),
@@ -118,6 +121,7 @@ public class LoginActivity extends AppCompatActivity {
                 String loginPassword = passwordEditText.getText().toString().trim();
 
                 if (!checkValid(loginId, loginPassword)) return;
+
                 BasicLogin info = new BasicLogin(loginId, loginPassword);
                 Call<LoginResult> checkLogin = service.getLoginResult(info);
 
@@ -213,6 +217,7 @@ public class LoginActivity extends AppCompatActivity {
         editor.putInt("sex", user.getSex());
         editor.putString("url", user.getUrl());
         editor.putString("token", token);
+        editor.putBoolean("autoLogin", autoLoginCheckBox.isChecked());
         editor.apply();
 
         InfoManager.getInstance().setUserInfo(user);
@@ -465,7 +470,7 @@ public class LoginActivity extends AppCompatActivity {
         long tempTime = System.currentTimeMillis();
         long intervalTime = tempTime - backPressedTime;
 
-        if (0 <= intervalTime && FINSH_INTERVAL_TIME >= intervalTime) {
+        if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime) {
             super.onBackPressed();
         } else {
             this.backPressedTime = tempTime;

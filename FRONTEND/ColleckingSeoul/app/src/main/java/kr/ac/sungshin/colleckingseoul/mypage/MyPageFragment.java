@@ -1,4 +1,4 @@
-package kr.ac.sungshin.colleckingseoul.home;
+package kr.ac.sungshin.colleckingseoul.mypage;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

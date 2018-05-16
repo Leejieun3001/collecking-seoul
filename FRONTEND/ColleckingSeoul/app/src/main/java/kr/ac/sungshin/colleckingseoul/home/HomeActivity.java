@@ -7,21 +7,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
-import com.google.android.gms.maps.OnMapReadyCallback;
-
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
-
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.maps.android.clustering.ClusterManager;
-
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,15 +16,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import kr.ac.sungshin.colleckingseoul.R;
-import kr.ac.sungshin.colleckingseoul.Review.ReviewListActivity;
 
-import kr.ac.sungshin.colleckingseoul.model.response.LandmarkListResult;
-import kr.ac.sungshin.colleckingseoul.network.ApplicationController;
-import kr.ac.sungshin.colleckingseoul.network.NetworkService;
-import kr.ac.sungshin.colleckingseoul.sqLite.Landmark;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import kr.ac.sungshin.colleckingseoul.mypage.MyPageFragment;
+import kr.ac.sungshin.colleckingseoul.rank.RankFragment;
 
 
 public class HomeActivity extends AppCompatActivity {

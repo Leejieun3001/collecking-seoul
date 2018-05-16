@@ -9,7 +9,7 @@ const aws = require('aws-sdk');
 const multer = require('multer');
 const multerS3 = require('multer-s3');
 const jwtModule = require('../module/jwtModule');
-aws.config.loadFromPath('./config/aws_config.json')
+aws.config.loadFromPath('./config/aws_config.json');
 const s3 = new aws.S3();
 const upload = multer({
     storage: multerS3({

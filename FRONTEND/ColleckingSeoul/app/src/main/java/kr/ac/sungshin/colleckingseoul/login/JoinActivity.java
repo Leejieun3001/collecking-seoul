@@ -34,6 +34,7 @@ import butterknife.ButterKnife;
 import kr.ac.sungshin.colleckingseoul.R;
 import kr.ac.sungshin.colleckingseoul.model.response.BaseResult;
 import kr.ac.sungshin.colleckingseoul.model.response.VerificationCodeResult;
+import kr.ac.sungshin.colleckingseoul.mypage.LogoutFragmentDialog;
 import kr.ac.sungshin.colleckingseoul.network.ApplicationController;
 import kr.ac.sungshin.colleckingseoul.network.NetworkService;
 import okhttp3.MediaType;
@@ -44,7 +45,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class JoinActivity extends AppCompatActivity {
-
     @BindView(R.id.join_edittext_id)
     EditText editTextId;
     @BindView(R.id.join_button_duplication)
@@ -81,16 +81,13 @@ public class JoinActivity extends AppCompatActivity {
     private boolean isCheckEmail = false;
     private String verificationCode = "";
 
-
-    private static final int GALLERY_CODE = 1112;
+    private static final int REQ_CODE_SELECT_IMAGE = 100;
     private static final String TYPE_IMAGE = "image/*";
 
     private static final String TEMP_FILE_NAME = "profileImageTemp.jpg";
 
-
     String imgUrl = "";
-    Uri imgUri;
-    private Uri data;
+    Uri data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,10 +126,10 @@ public class JoinActivity extends AppCompatActivity {
                 //Uri tempUri = Uri.fromFile(tempFile);
                 //intent.putExtra("crop", "true");
                 //intent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
-              //  intent.setType("image/*");
+                //  intent.setType("image/*");
                 intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
-               // intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, GALLERY_CODE);
+                intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, REQ_CODE_SELECT_IMAGE);
             }
         });
 
@@ -174,6 +171,7 @@ public class JoinActivity extends AppCompatActivity {
                 }
             }
         });
+
         //이메일 인증번호 요청
         buttonRequestCode.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -228,15 +226,14 @@ public class JoinActivity extends AppCompatActivity {
         buttonJoin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                //   if (!checkValid(editTextId.getText().toString(), editTextPassword.getText().toString(), editTextRepassword.getText().toString(), editTextNikname.getText().toString(), editTextPhone.getText().toString(), Integer.toString(Datepickerbirth.getYear()) + Integer.toString(Datepickerbirth.getMonth()) + Integer.toString(Datepickerbirth.getDayOfMonth())))
-                //      return;
+                if (!checkValid(editTextId.getText().toString(), editTextPassword.getText().toString(), editTextRepassword.getText().toString(), editTextNikname.getText().toString(), editTextPhone.getText().toString(), Integer.toString(Datepickerbirth.getYear()) + Integer.toString(Datepickerbirth.getMonth()) + Integer.toString(Datepickerbirth.getDayOfMonth())))
+                    return;
 
                 int typeId = radioGroupSex.getCheckedRadioButtonId();
 
                 RadioButton radionbuttonSex = (RadioButton) findViewById(typeId);
                 String type = radionbuttonSex.getText().toString();
-                int  intType= 1;
+                int intType = 1;
                 if (type.equals("남자")) intType = 0;
                 else if (type.equals("여자")) intType = 1;
 
@@ -249,14 +246,17 @@ public class JoinActivity extends AppCompatActivity {
                 RequestBody sex = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(intType));
 
                 MultipartBody.Part body;
-                if (imgUrl.equals("")) {
+
+                if (imgUrl == "") {
+
+                    Bitmap Img = BitmapFactory.decodeResource(getResources(), R.drawable.avatar_male);
                     body = null;
                 } else {
                     BitmapFactory.Options options = new BitmapFactory.Options();
                     options.inSampleSize = 4;
                     InputStream in = null;
                     try {
-                        in = getContentResolver().openInputStream(imgUri);
+                        in = getContentResolver().openInputStream(data);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
@@ -268,7 +268,6 @@ public class JoinActivity extends AppCompatActivity {
                     RequestBody photoBody = RequestBody.create(MediaType.parse("image/jpg"), baos.toByteArray());
                     body = MultipartBody.Part.createFormData("photo", photo.getName(), photoBody);
                 }
-                Log.d("id", editTextId.getText().toString()+"패스워드"+editTextPassword.getText().toString()+"패스워드" +editTextRepassword.getText().toString()+"별명"+ editTextNikname.getText().toString()+"폰"+editTextPhone.getText().toString()+"생일"+ Integer.toString(Datepickerbirth.getYear()) + Integer.toString(Datepickerbirth.getMonth()) + Integer.toString(Datepickerbirth.getDayOfMonth())+"생"+String.valueOf(intType));
 
                 Call<BaseResult> getJoinResult = service.getJoinResult(id, password1, password2, nickname, phone, birth, sex, body);
                 getJoinResult.enqueue(new Callback<BaseResult>() {
@@ -294,7 +293,6 @@ public class JoinActivity extends AppCompatActivity {
                         Log.d(TAG, "onFailure");
                     }
                 });
-
             }
         });
 
@@ -350,32 +348,16 @@ public class JoinActivity extends AppCompatActivity {
         return true;
     }
 
-    //이미지 crop
-    private File getTempFile() {
-
-        File file = new File(Environment.getExternalStorageDirectory(), TEMP_FILE_NAME);
-        try {
-            file.createNewFile();
-        } catch (Exception e) {
-            Log.e(TAG, "fileCreation fail");
-        }
-        return file;
-    }
-
     // 선택된 이미지 데이터 받아오기
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == GALLERY_CODE) {
+        if (requestCode == REQ_CODE_SELECT_IMAGE) {
             //이미지를 성공적으로 가져왔을 경우
             if (resultCode == Activity.RESULT_OK) {
                 try {
-                    this.data = data.getData();
-                    //이미지 데이터를 비트맵으로 받아온다.
                     Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
                     imageProfile.setImageBitmap(image_bitmap);
-                    imgUri = data.getData();
-                    imgUrl = this.imgUri.getPath();
-
-                    Log.d(TAG, "dd1" + imgUrl);
+                    getImageNameToUri(data.getData());
+                    this.data = data.getData();
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -384,29 +366,14 @@ public class JoinActivity extends AppCompatActivity {
         }
     }
 
-    //사진의 절대 경로 구하기
-    private String getRealPathFromURI(Uri contentUri) {
-        int column_index = 0;
-        String[] proj = {MediaStore.Images.Media.DATA};
-        Cursor cursor = getContentResolver().query(contentUri, proj, null, null, null);
-        if (cursor.moveToFirst()) {
-            column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        }
-
-        return cursor.getString(column_index);
-    }
-
     // 선택된 이미지 파일명 가져오기 나중에 코드를 재활용 해서 사용하 면 된다
     public String getImageNameToUri(Uri data) {
         String[] proj = {MediaStore.Images.Media.DATA};
         Cursor cursor = managedQuery(data, proj, null, null, null);
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-
         cursor.moveToFirst();
-
         String imgPath = cursor.getString(column_index);
         String imgName = imgPath.substring(imgPath.lastIndexOf("/") + 1);
-
         imgUrl = imgPath;
 
         return imgName;

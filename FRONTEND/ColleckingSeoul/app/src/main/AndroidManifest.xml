@@ -70,7 +70,8 @@
         <activity android:name=".Review.ReviewListActivity" />
         <activity android:name=".Review.ReviewActivity" />
         <activity android:name=".sqLite.InsertDataActivity" />
-        <activity android:name=".Review.RegisterReviewActivity"></activity>
+        <activity android:name=".Review.RegisterReviewActivity" />
+        <activity android:name=".mypage.MyPageModifyActivity"></activity>
     </application>
 
 </manifest>

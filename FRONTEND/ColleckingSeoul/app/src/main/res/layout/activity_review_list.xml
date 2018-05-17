@@ -21,7 +21,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:listitem="@layout/item_review">
-
         </android.support.v7.widget.RecyclerView>
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/reviewlist_floatingbutton_fab"

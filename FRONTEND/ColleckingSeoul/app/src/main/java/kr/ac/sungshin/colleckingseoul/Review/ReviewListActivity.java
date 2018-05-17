@@ -108,8 +108,6 @@ public class ReviewListActivity extends AppCompatActivity implements OnMapReadyC
 
     // 해당 랜드마크의 리뷰 리스트를 불러온다.
     private void getReview(int idx) {
-        Log.d(TAG, "리스트 불러오기 성공");
-        Log.d(TAG, String.valueOf(idx));
 
         Call<BoardListResult> getReviewList = service.getBoardListResult(idx);
         getReviewList.enqueue(new Callback<BoardListResult>() {
@@ -118,7 +116,14 @@ public class ReviewListActivity extends AppCompatActivity implements OnMapReadyC
 
                 if (response.isSuccessful()) {
                     if (response.body().getMessage().equals("SUCCESS")) {
+
                         itemList = response.body().getBoards();
+                        if(itemList.isEmpty()){
+                            BoardItem d = new BoardItem(0,0,0,"","","","","");
+                            d.setContent("아직 등록된 리뷰가 없습니다.");
+                            itemList.add(d);
+                        }
+
                     }
                     if (response.body().getMessage().equals("NULL_VALUE")) {
                         Toast.makeText(getApplicationContext(), "값을 입력해 주세요.", Toast.LENGTH_SHORT).show();

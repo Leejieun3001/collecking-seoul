@@ -23,7 +23,6 @@ public class MyPageFragment extends android.support.v4.app.Fragment {
     TextView textViewLogout;
     @BindView(R.id.mypage_textview_leave)
     TextView textLeave;
-
     public MyPageFragment() {
         super();
     }
@@ -45,7 +44,6 @@ public class MyPageFragment extends android.support.v4.app.Fragment {
             @Override
             public void onClick(View v) {
                 Bundle args = new Bundle();
-
                 args.putString("key", "value");
                 LogoutFragmentDialog dialog = new LogoutFragmentDialog();
                 dialog.setArguments(args);
@@ -57,16 +55,12 @@ public class MyPageFragment extends android.support.v4.app.Fragment {
             @Override
             public void onClick(View v) {
                 Bundle args = new Bundle();
-
                 args.putString("key", "value");
                 MemberLeaveFragmentDialog dialog = new MemberLeaveFragmentDialog();
                 dialog.setArguments(args);
                 dialog.show(getActivity().getSupportFragmentManager(), "leave");
-
-
             }
         });
-
         return view;
     }
 }

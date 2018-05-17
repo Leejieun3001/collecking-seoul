@@ -34,10 +34,7 @@ public class BoardItem {
         return bidx;
     }
 
-    public BoardItem(int bidx) {
 
-        this.bidx = bidx;
-    }
 
 
     public int getIdx() {

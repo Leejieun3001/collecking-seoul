@@ -1,9 +1,10 @@
 package kr.ac.sungshin.colleckingseoul.mypage;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,7 @@ import kr.ac.sungshin.colleckingseoul.home.HomeActivity;
  * Created by kwonhyeon-a on 2018. 5. 15..
  */
 
-public class MyPageFragment extends Fragment {
+public class MyPageFragment extends android.support.v4.app.Fragment {
     @BindView(R.id.mypage_textview_modify)
     TextView textViewModify;
     @BindView(R.id.mypage_textview_logout)
@@ -39,7 +40,19 @@ public class MyPageFragment extends Fragment {
         textViewModify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), MyPageModifyActivity.class);
+                startActivity(intent);
+            }
+        });
+        textViewLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle args = new Bundle();
 
+                args.putString("key", "value");
+                LogoutFragmentDialog dialog = new LogoutFragmentDialog();
+                dialog.setArguments(args);
+                dialog.show(getActivity().getFragmentManager(), "logout");
 
             }
         });

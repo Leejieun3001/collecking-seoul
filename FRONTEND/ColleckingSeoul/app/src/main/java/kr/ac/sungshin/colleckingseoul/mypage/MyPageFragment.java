@@ -1,10 +1,8 @@
 package kr.ac.sungshin.colleckingseoul.mypage;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +11,6 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import kr.ac.sungshin.colleckingseoul.R;
-import kr.ac.sungshin.colleckingseoul.home.HomeActivity;
 
 /**
  * Created by kwonhyeon-a on 2018. 5. 15..
@@ -24,8 +21,8 @@ public class MyPageFragment extends android.support.v4.app.Fragment {
     TextView textViewModify;
     @BindView(R.id.mypage_textview_logout)
     TextView textViewLogout;
-    @BindView(R.id.mypage_textview_secession)
-    TextView textSecession;
+    @BindView(R.id.mypage_textview_leave)
+    TextView textLeave;
 
     public MyPageFragment() {
         super();
@@ -52,7 +49,20 @@ public class MyPageFragment extends android.support.v4.app.Fragment {
                 args.putString("key", "value");
                 LogoutFragmentDialog dialog = new LogoutFragmentDialog();
                 dialog.setArguments(args);
-                dialog.show(getActivity().getFragmentManager(), "logout");
+                dialog.show(getActivity().getSupportFragmentManager(), "logout");
+
+            }
+        });
+        textLeave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle args = new Bundle();
+
+                args.putString("key", "value");
+                MemberLeaveFragmentDialog dialog = new MemberLeaveFragmentDialog();
+                dialog.setArguments(args);
+                dialog.show(getActivity().getSupportFragmentManager(), "leave");
+
 
             }
         });

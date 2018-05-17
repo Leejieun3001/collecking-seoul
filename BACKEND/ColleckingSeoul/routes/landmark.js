@@ -84,9 +84,50 @@ router.get('/', function (req, res) {
     }
     var task = [globalModule.connect.bind(this), selectLandmark, globalModule.releaseConnection.bind(this)];
     async.waterfall(task, globalModule.asyncCallback.bind(this));
-
 });
 
+
+
+
+/**
+ * api 목적 : 전제 landmark 조회 (이전 코드 나중에 안드로이드 고쳐지면 지우기)
+ * requset : 없음 
+ */
+router.get('/landmark_list', function (req, res) {
+    var resultModelJson = {
+        message: 'SUCCESS',
+        landmarkList: []
+    }
+    let selectLandmark = function (connection, callback) {
+      var decoded = jwtModule.decodeToken(req.headers.token);
+        let selectQuery =
+            "select * from Landmark"
+        connection.query(selectQuery,function (err, data) {
+            if (err) {
+                callback(err, connection, "select query error : ", res);
+            }
+            else {
+                if (data.length !== 0) {
+                    for (var x in data) {
+                        var landmark = {}
+                        landmark.idx = data[x].idx;
+                        landmark.name = data[x].name;
+                        landmark.content = data[x].content;
+                        landmark.lat = data[x].lat;
+                        landmark.lng = data[x].lng;
+                        landmark.category = data[x].category;
+                      
+                        resultModelJson.landmarkList.push(landmark);
+                    }
+                }
+                res.status(200).send(resultModelJson);
+                callback(null, connection, "api : /landmark/landmark_list");
+            }
+        });
+    }
+    var task = [globalModule.connect.bind(this), selectLandmark, globalModule.releaseConnection.bind(this)];
+    async.waterfall(task, globalModule.asyncCallback.bind(this));
+});
 
 module.exports = router;
 

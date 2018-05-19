@@ -3,7 +3,6 @@ const router = require('express').Router();
 const bcrypt = require('bcrypt-nodejs');
 const async = require('async');
 const globalModule = require('../module/globalModule');
-const sqlController = require('../controller/sqlController');
 const nodemailer = require('nodemailer');
 const mailConfig = require('../config/mailAccount');
 const errorConfig =  require('../config/error');
@@ -38,8 +37,6 @@ const upload = multer({
  *                  }
  */
 router.post('/', upload.single('photo'), function (req, res) {
-    console.log(req.body);
-    console.log(req.file);
     let checkValid = function (connection, callback) {
         let result = globalModule.checkBasicValid(req.body);
         if (result !== "OK") {

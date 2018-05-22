@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="kr.ac.sungshin.colleckingseoul.mypage.MypageModifyPwActivity"
+    android:orientation="vertical">
+
+    <LinearLayout
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="현재 비밀번호 : "  />
+
+        <EditText
+            android:id="@+id/mypage_pw_edittext_now_password"
+            android:layout_width="150dp"
+            android:layout_height="35dp"
+            android:hint="   비밀번호"
+            android:inputType="textPassword"
+            android:text="1111qqqqq!"
+            android:textSize="12dp" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="새 비밀 번호  : "  />
+        <EditText
+            android:id="@+id/mypage_edittext_new_password"
+            android:layout_width="150dp"
+            android:layout_height="35dp"
+            android:hint="   비밀번호 확인"
+            android:inputType="textPassword"
+            android:text="1111qqqqq!"
+            android:textSize="12dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="새 비밀번호 확인 : "  />
+        <EditText
+            android:id="@+id/mypage_pw_edittext_new_repassword"
+            android:layout_width="150dp"
+            android:layout_height="35dp"
+            android:hint="   비밀번호 확인"
+            android:inputType="textPassword"
+            android:text="1111qqqqq!"
+            android:textSize="12dp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/mypage_pw_button_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="4dp"
+            android:padding="15dp"
+            android:text="취소" />
+
+        <Button
+            android:id="@+id/mypage_pw_button_store"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="4dp"
+            android:padding="15dp"
+            android:text="저장하기" />
+    </LinearLayout>
+
+</LinearLayout>

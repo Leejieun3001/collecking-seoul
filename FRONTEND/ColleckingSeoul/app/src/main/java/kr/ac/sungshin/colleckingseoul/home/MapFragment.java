@@ -18,6 +18,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -142,7 +143,9 @@ public class MapFragment extends Fragment {
         for (int i = 0; i < length; i++) {
             final Landmark landmark = list.get(i);
             LatLng latLng = new LatLng(landmark.getLat(), landmark.getLng());
-            Marker marker = googleMap.addMarker(new MarkerOptions().position(latLng).title(landmark.getName()));
+            float color = (landmark.getIsVisit() == 1) ? BitmapDescriptorFactory.HUE_RED : BitmapDescriptorFactory.HUE_BLUE;
+            Marker marker = googleMap.addMarker(new MarkerOptions().position(latLng).title(landmark.getName()).icon(BitmapDescriptorFactory
+                        .defaultMarker(color)));
             marker.setTag(landmark);
             googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override

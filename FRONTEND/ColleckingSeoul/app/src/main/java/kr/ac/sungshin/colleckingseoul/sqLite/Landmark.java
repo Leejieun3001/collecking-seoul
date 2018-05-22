@@ -11,6 +11,7 @@ public class Landmark {
     private double lat;
     private double lng;
     private String category;
+    private int isVisit;
 
     public Landmark(int idx, String name, double lat, double lng) {
         this.idx = idx;
@@ -33,6 +34,16 @@ public class Landmark {
         this.lat = lat;
         this.lng = lng;
         this.category = category;
+    }
+
+    public Landmark(int idx, String name, String content, double lat, double lng, String category, int isVisit) {
+        this.idx = idx;
+        this.name = name;
+        this.content = content;
+        this.lat = lat;
+        this.lng = lng;
+        this.category = category;
+        this.isVisit = isVisit;
     }
 
     public int getIdx() {
@@ -81,5 +92,13 @@ public class Landmark {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public int getIsVisit() {
+        return isVisit;
+    }
+
+    public void setIsVisit(int isVisit) {
+        this.isVisit = isVisit;
     }
 }

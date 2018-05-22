@@ -226,8 +226,8 @@ public class JoinActivity extends AppCompatActivity {
         buttonJoin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!checkValid(editTextId.getText().toString(), editTextPassword.getText().toString(), editTextRepassword.getText().toString(), editTextNikname.getText().toString(), editTextPhone.getText().toString(), Integer.toString(Datepickerbirth.getYear()) + Integer.toString(Datepickerbirth.getMonth()) + Integer.toString(Datepickerbirth.getDayOfMonth())))
-                    return;
+               // if (!checkValid(editTextId.getText().toString(), editTextPassword.getText().toString(), editTextRepassword.getText().toString(), editTextNikname.getText().toString(), editTextPhone.getText().toString(), Integer.toString(Datepickerbirth.getYear()) + Integer.toString(Datepickerbirth.getMonth()) + Integer.toString(Datepickerbirth.getDayOfMonth())))
+                //    return;
 
                 int typeId = radioGroupSex.getCheckedRadioButtonId();
 
@@ -248,9 +248,14 @@ public class JoinActivity extends AppCompatActivity {
                 MultipartBody.Part body;
 
                 if (imgUrl == "") {
-
                     Bitmap Img = BitmapFactory.decodeResource(getResources(), R.drawable.avatar_male);
-                    body = null;
+
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    Img.compress(Bitmap.CompressFormat.JPEG, 20, baos);
+                    //imgUrl = "temp";
+                   // File photo = new File(imgUrl);
+                    RequestBody photoBody = RequestBody.create(MediaType.parse("image/jpg"), baos.toByteArray());
+                    body = MultipartBody.Part.createFormData("photo",Img.toString(), photoBody);
                 } else {
                     BitmapFactory.Options options = new BitmapFactory.Options();
                     options.inSampleSize = 4;

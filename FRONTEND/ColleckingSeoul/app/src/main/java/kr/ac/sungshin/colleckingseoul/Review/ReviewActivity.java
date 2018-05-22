@@ -1,12 +1,15 @@
 package kr.ac.sungshin.colleckingseoul.Review;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.Adapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -41,6 +44,8 @@ public class ReviewActivity extends AppCompatActivity {
     TextView textViewContent;
     @BindView(R.id.review_imageview_photo)
     ImageView imageViewPhoto;
+    @BindView(R.id.review_button_modify)
+    Button buttonModify;
 
     private NetworkService service;
     private final String TAG = "ReviewActivity";
@@ -53,6 +58,7 @@ public class ReviewActivity extends AppCompatActivity {
 
         service = ApplicationController.getInstance().getNetworkService();
         ButterKnife.bind(this);
+        buttonModify.setVisibility(View.GONE);
 
         Intent intent = getIntent();
         idx = intent.getIntExtra("idx", 0);
@@ -73,6 +79,11 @@ public class ReviewActivity extends AppCompatActivity {
                             Glide.with(getApplicationContext())
                                     .load(response.body().getBoard().getUrl())
                                     .into(imageViewPhoto);
+                        }
+                        SharedPreferences userInfo = getSharedPreferences("user", MODE_PRIVATE);
+                        String userIdx = userInfo.getString("idx", "0");
+                        if (String.valueOf(response.body().getBoard().getuIdx()).equals(userIdx)){
+                            buttonModify.setVisibility(View.VISIBLE);
                         }
                     }
                     if (response.body().getMessage().equals("NULL_VALUE")) {

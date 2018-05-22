@@ -155,6 +155,7 @@ public class LoginActivity extends AppCompatActivity {
                                     User user = response.body().getUser();
                                     String token = response.body().getToken();
                                     Log.d(TAG, "토큰" + token);
+                                    Log.d(TAG, "토큰" + user.getIdx());
                                     saveInfo(user, token);
                                     goHome();
                                     break;

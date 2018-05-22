@@ -59,7 +59,7 @@ public interface NetworkService {
     @POST("/login/find_password")
     Call<FindInfoResult> getFindPwResult(@Body FindPassWord Info);
 
-    @GET("/landmark/landmark_list")
+    @GET("/landmark/")
     Call<LandmarkListResult> getLandmarkList();
 
     @POST("/landmark")

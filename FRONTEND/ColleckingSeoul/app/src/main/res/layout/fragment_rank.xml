@@ -7,24 +7,30 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="랜드마크 랭킹"/>
-    <TableLayout
-        android:id="@+id/rank_tablelayout_landmarkrank"
+        android:textSize="20dp"
+        android:text="유저 랭킹"/>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rank_recyclerView_userrecyclerview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    </TableLayout>
+    </android.support.v7.widget.RecyclerView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="유저 랭킹"/>
-    <TableLayout
-        android:id="@+id/rank_tablelayout_userrank"
+        android:textSize="20dp"
+        android:text="랜드마크 랭킹"/>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rank_recyclerView_landmarkrecyclerview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    </TableLayout>
+    </android.support.v7.widget.RecyclerView>
 
 
 </LinearLayout>

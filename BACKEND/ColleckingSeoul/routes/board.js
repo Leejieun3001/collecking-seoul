@@ -39,7 +39,7 @@ router.get('/', function (req, res) {
             res.status(200).send(decodedToken);
             callback("ALREADY_SEND_MESSAGE", connection, "api : /board/");
         } else {
-            callback(null, decodedToken.idx, connection);
+            callback(null, decodedToken.token.idx, connection);
         }
     };
 

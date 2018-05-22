@@ -4,8 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
-    android:background="#5D5D5D"
     tools:context="kr.ac.sungshin.colleckingseoul.Review.ReviewActivity">
 
     <ScrollView
@@ -19,8 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/big_margin"
-            android:orientation="vertical"
-            android:background="#FFFFFF">
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -41,9 +38,9 @@
             </LinearLayout>
 
             <TextView
-                android:layout_margin="@dimen/small_margin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="@dimen/small_margin"
                 android:text="제목 : " />
 
             <TextView
@@ -52,9 +49,9 @@
                 android:layout_height="wrap_content" />
 
             <LinearLayout
-                android:layout_margin="@dimen/small_margin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="@dimen/small_margin"
                 android:orientation="vertical">
 
                 <TextView
@@ -63,7 +60,6 @@
                     android:text="작성자 : " />
 
                 <TextView
-
                     android:id="@+id/review_textview_nickname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
@@ -89,23 +85,24 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="상세내용 : " />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="상세내용 : " />
 
-            <TextView
-                android:id="@+id/review_textview_content"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:gravity="left|top"
-                android:inputType="textMultiLine" />
+                <TextView
+                    android:id="@+id/review_textview_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:gravity="left|top"
+                    android:inputType="textMultiLine" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_margin="@dimen/small_margin">
+                android:layout_margin="@dimen/small_margin"
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"

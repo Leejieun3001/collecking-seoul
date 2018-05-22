@@ -77,7 +77,7 @@ router.get('/landmark', function (req, res) {
     }
     let selectLandmarkRank = function (connection, callback) {
         let selectQuery =
-            "SELECT  Landmark.name FROM Tour left join Landmark "+
+            "SELECT Landmark.idx,  Landmark.name FROM Tour left join Landmark "+
             "on Tour.landmark_idx = Landmark.idx "+
             "group by landmark_idx "+
             "order by count(*) DESC "+
@@ -89,7 +89,8 @@ router.get('/landmark', function (req, res) {
             else {
                 if (data.length !== 0) {
                     for (var x in data) {
-                        var landmarkRank = {}              
+                        var landmarkRank = {}
+                        landmarkRank.idx = data[x].idx;              
                         landmarkRank.name = data[x].name;                     
                         resultModelJson.landmarkRankList.push(landmarkRank);
                     }

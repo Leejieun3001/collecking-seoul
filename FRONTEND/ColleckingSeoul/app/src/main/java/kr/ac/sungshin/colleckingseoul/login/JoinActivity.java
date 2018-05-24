@@ -274,7 +274,7 @@ public class JoinActivity extends AppCompatActivity {
                     body = MultipartBody.Part.createFormData("photo", photo.getName(), photoBody);
                 }
 
-                Call<BaseResult> getJoinResult = service.getJoinResult(id, password1, password2, nickname, phone, birth, sex, body);
+                Call<BaseResult> getJoinResult = service.getJoinResult(id, password1, password2, phone, nickname, birth, sex, body);
                 getJoinResult.enqueue(new Callback<BaseResult>() {
                     @Override
                     public void onResponse(Call<BaseResult> call, Response<BaseResult> response) {

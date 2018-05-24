@@ -17,8 +17,10 @@ import kr.ac.sungshin.colleckingseoul.R;
  */
 
 public class MyPageFragment extends android.support.v4.app.Fragment {
-    @BindView(R.id.mypage_textview_modify)
-    TextView textViewModify;
+    @BindView(R.id.mypage_textview_modify_info)
+    TextView textViewModifyInfo;
+    @BindView(R.id.mypage_textview_modify_pw)
+    TextView TextViewModifyPw;
     @BindView(R.id.mypage_textview_logout)
     TextView textViewLogout;
     @BindView(R.id.mypage_textview_leave)
@@ -33,13 +35,21 @@ public class MyPageFragment extends android.support.v4.app.Fragment {
 
         View view = inflater.inflate(R.layout.fragment_mypage, container, false);
         ButterKnife.bind(this, view);
-        textViewModify.setOnClickListener(new View.OnClickListener() {
+        textViewModifyInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), MyPageModifyActivity.class);
                 startActivity(intent);
             }
         });
+        TextViewModifyPw.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), MypageModifyPwActivity.class);
+                startActivity(intent);
+            }
+        });
+
         textViewLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

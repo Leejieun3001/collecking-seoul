@@ -29,12 +29,21 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/mypage_textview_modify"
+            android:id="@+id/mypage_textview_modify_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:textSize="20dp"
             android:text="정보 수정하기" />
+
+
+        <TextView
+            android:id="@+id/mypage_textview_modify_pw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="20dp"
+            android:text="비밀번호 수정하기" />
 
         <TextView
             android:id="@+id/mypage_textview_logout"

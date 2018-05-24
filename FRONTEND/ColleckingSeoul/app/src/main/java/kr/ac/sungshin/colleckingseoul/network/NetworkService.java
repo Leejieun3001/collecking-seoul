@@ -3,6 +3,7 @@ package kr.ac.sungshin.colleckingseoul.network;
 
 import kr.ac.sungshin.colleckingseoul.model.request.BasicLogin;
 import kr.ac.sungshin.colleckingseoul.model.request.FindPassWord;
+import kr.ac.sungshin.colleckingseoul.model.request.RefreshToken;
 import kr.ac.sungshin.colleckingseoul.model.response.BoardResult;
 import kr.ac.sungshin.colleckingseoul.model.response.DefaultResult;
 import kr.ac.sungshin.colleckingseoul.model.response.FindInfoResult;
@@ -49,6 +50,9 @@ public interface NetworkService {
 
     @POST("/login/sns")
     Call<LoginResult> getSnsLoginResult(@Body Login login);
+
+    @POST("/user/refresh_token")
+    Call<LoginResult> getRefreshTokenResult(@Body RefreshToken refreshToken);
 
     @GET("/join/verificationCode")
     Call<VerificationCodeResult> getVerifiCodeResult(@Query("tempEmail") String id);

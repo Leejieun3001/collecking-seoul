@@ -10,6 +10,7 @@ import android.util.Log;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -36,16 +37,7 @@ public class MainActivity extends AppCompatActivity {
 //                e.printStackTrace();
 //            }
 
-        Log.d("MainActivity", new Date().toString());
-        Log.d("MainActivity", new Date(new Date().toString()).getMonth() + "");
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd", Locale.getDefault());
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_MONTH, -6);
-        Date date1 = simpleDateFormat.format(calendar.getTime());
-        Date date2 = new Date("2018-05-17");
-
-        Log.d("MainActivity", date1 < date2 ? "yes":"no");
 
     }
 

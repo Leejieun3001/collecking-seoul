@@ -23,16 +23,7 @@ const upload = multer({
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-    var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHgiOjIsImlkIjoiZ3VzZGs3NjU2QG5hdmVyLmNvbSIsImlhdCI6MTUyNjM1MjMwMSwiZXhwIjoxNTI2OTU3MTAxfQ.aQpPbzIpYYxTQjm9tTg3ECafG1833WqVw6JbhyjN_kY";
-    
-    try{
-        var decodedToken = jwtModule.decodeToken(token);
-        console.log(decodedToken);
-    } catch (e) {
-        console.log(e.message);
-    }
-  
-  res.status(200).send("hyeona");
+    res.status(200).send("hi");
 });
 
 /**

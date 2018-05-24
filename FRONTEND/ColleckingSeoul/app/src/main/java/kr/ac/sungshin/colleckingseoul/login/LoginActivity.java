@@ -39,6 +39,7 @@ import org.json.JSONObject;
 
 import java.security.MessageDigest;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 
 import butterknife.BindView;
@@ -52,7 +53,6 @@ import kr.ac.sungshin.colleckingseoul.model.response.LoginResult;
 import kr.ac.sungshin.colleckingseoul.model.singleton.InfoManager;
 import kr.ac.sungshin.colleckingseoul.network.ApplicationController;
 import kr.ac.sungshin.colleckingseoul.network.NetworkService;
-import okhttp3.internal.Util;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -92,25 +92,12 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        FacebookSdk.sdkInitialize(getBaseContext());
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+        facebookCallbackManager = CallbackManager.Factory.create();
 
-        SharedPreferences userInfo = getSharedPreferences("user", MODE_PRIVATE);
-        String savedToken = userInfo.getString("token", "");
-        if (userInfo.getBoolean("autoLogin", false) && !savedToken.equals("")) {
-            Log.d(TAG, savedToken);
-            ApplicationController.getInstance().setTokenOnHeader(savedToken);
-            User user = new User(userInfo.getString("idx", ""),
-                    userInfo.getString("id", ""),
-                    userInfo.getString("nickname", ""),
-                    userInfo.getString("phone", ""),
-                    userInfo.getString("birth", ""),
-                    userInfo.getString("url", ""),
-                    userInfo.getInt("set", 0));
-            InfoManager.getInstance().setUserInfo(user);
-            goHome();
-            return;
-        }
         service = ApplicationController.getInstance().getNetworkService();
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
@@ -267,17 +254,14 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "requestCode : " + requestCode);
+        Log.d(TAG, "resultCode : " + resultCode);
+        Log.d(TAG, "data : " + data.getDataString());
         facebookCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     //facebook Login
     public void loginOnFacebook(View v) {
-
-        boolean loggedIn = AccessToken.getCurrentAccessToken() == null;
-
-        FacebookSdk.sdkInitialize(v.getContext());
-        facebookCallbackManager = CallbackManager.Factory.create();
-
         LoginManager.getInstance().logInWithReadPermissions(LoginActivity.this,
                 Arrays.asList("public_profile", "email"));
         LoginManager.getInstance().registerCallback(facebookCallbackManager, new FacebookCallback<com.facebook.login.LoginResult>() {
@@ -294,17 +278,14 @@ public class LoginActivity extends AppCompatActivity {
                         if (response.getError() != null) {
 
                         } else {
-                            Log.i("TAG", "user: " + user.toString());
-
-                            Log.i("TAG", "AccessToken: " + result.getAccessToken().getToken());
                             snsCategory = 1;
 
                             Profile profile = Profile.getCurrentProfile();
                             final String link = profile.getProfilePictureUri(200, 200).toString();
 
                             try {
-                                id = user.getString("email").toString();
-                                nickname = user.getString("name").toString();
+                                id = user.getString("email");
+                                nickname = user.getString("name");
 
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -388,7 +369,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (ErrorCode == ClientErrorCode) {
                     Toast.makeText(getApplicationContext(), "카카오톡 서버의 네트워크가 불안정합니다. 잠시 후 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
                 } else {
-                    Log.d("TAG", "오류로 카카오로그인 실패 ");
+                    Log.d(TAG, "오류로 카카오로그인 실패 ");
                 }
             }
 
@@ -454,7 +435,7 @@ public class LoginActivity extends AppCompatActivity {
     private class SessionCallback implements ISessionCallback {
         @Override
         public void onSessionOpened() {
-            Log.d("TAG", "세션 오픈됨 : ");
+            Log.d(TAG, "세션 오픈됨 : ");
             // 사용자 정보를 가져옴, 회원가입 미가입시 자동가입 시킴
             requestMeOnKakao();
         }
@@ -462,7 +443,7 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         public void onSessionOpenFailed(KakaoException exception) {
             if (exception != null) {
-                Log.d("TAG", exception.getMessage());
+                Log.d(TAG, exception.getMessage());
             }
         }
     }

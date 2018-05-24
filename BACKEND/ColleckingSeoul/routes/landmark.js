@@ -96,12 +96,12 @@ router.get('/mine', function (req, res) {
     };
 
     let checkToken = function (connection, callback) {
-        var decodedToken = jwtModule.decodeToken(req.headers.token).token;
+        var decodedToken = jwtModule.decodeToken(req.headers.token);
         if (!decodedToken.hasOwnProperty('token')) {
             res.status(200).send(decodedToken);
             callback("ALREADY_SEND_MESSAGE", connection, "api : /landmark/mine");
         } else {
-            callback(null, connection, decodedToken.idx);
+            callback(null, connection, decodedToken.token.idx);
         }
     };
 

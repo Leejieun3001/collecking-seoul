@@ -96,26 +96,20 @@ router.get('/mine', function (req, res) {
     };
 
     let checkToken = function (connection, callback) {
-        var decodedToken = jwtModule.decodeToken(req.headers.token);
+        var decodedToken = jwtModule.decodeToken(req.headers.token).token;
         if (!decodedToken.hasOwnProperty('token')) {
             res.status(200).send(decodedToken);
             callback("ALREADY_SEND_MESSAGE", connection, "api : /landmark/mine");
         } else {
-            console.log('idx는: ' + decodedToken.idx);
             callback(null, connection, decodedToken.idx);
         }
     };
 
     let selectMyLandmark = function (connection, u_idx, callback) {
-        console.log('idx는: ' + decodedToken.u_idx);
-        console.log("query는 : ", 'select l.idx, l.name from Tour t left join Landmark l on t.landmark_idx=l.idx where t.user_idx = ', u_idx);
         connection.query('select l.idx, l.name from Tour t left join Landmark l on t.landmark_idx=l.idx '
             + 'where t.user_idx = ? ', 
             u_idx, function (error, rows) {
-            if (error) {
-                console.log(error.message);
-                callback(error, connection, "Select query Error : ", res);
-            }
+            if (error)  callback(error, connection, "Select query Error : ", res);
             else {
                 resultJson.message = "SUCCESS";
                 resultJson.landmarks = rows;

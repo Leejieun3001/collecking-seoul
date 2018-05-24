@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Rating;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
@@ -46,6 +48,8 @@ public class RegisterReviewActivity extends AppCompatActivity {
     Button photoButton;
     @BindView(R.id.registerreview_button_write)
     Button writeButton;
+    @BindView(R.id.registerreview_ratingbar_ratingbar)
+    RatingBar ratingBar;
 
     private NetworkService service;
     private final String TAG = "RegisterReviewActivity";
@@ -66,6 +70,16 @@ public class RegisterReviewActivity extends AppCompatActivity {
         Intent gettingIntent = getIntent();
         idx = gettingIntent.getStringExtra("idx");
 
+        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                Log.d(TAG, "star count : " + ratingBar.getNumStars());
+                Log.d(TAG, "rating: " + ratingBar.getRating());
+                Log.d(TAG, "rating: " + rating);
+                Log.d(TAG, "fromUser: " + fromUser);
+            }
+        });
+
         bindClickListeners();
     }
 
@@ -84,6 +98,7 @@ public class RegisterReviewActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (!checkValid()) return;
 
+                float reviewRating = ratingBar.getRating();
                 RequestBody title = RequestBody.create(MediaType.parse("multipart/form-data"), titleEditText.getText().toString());
                 RequestBody content = RequestBody.create(MediaType.parse("multipart/form-data"), titleEditText.getText().toString());
                 RequestBody landmark_idx = RequestBody.create(MediaType.parse("multipart/form-data"), idx);

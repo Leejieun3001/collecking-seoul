@@ -4,7 +4,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.ClusterItem;
 
 /**
- * Created by gwonhyeon-a on 2018. 5. 14..
+ * Created by kwonhyeon-a on 2018. 5. 14..
  */
 
 public class MarkerItem implements ClusterItem {
@@ -16,6 +16,6 @@ public class MarkerItem implements ClusterItem {
 
     @Override
     public LatLng getPosition() {
-        return null;
+        return position;
     }
 }

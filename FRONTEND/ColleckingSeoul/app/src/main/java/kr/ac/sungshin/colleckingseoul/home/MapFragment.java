@@ -1,10 +1,13 @@
 package kr.ac.sungshin.colleckingseoul.home;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,8 +24,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.clustering.Cluster;
+import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
 
 import java.util.ArrayList;
@@ -71,7 +77,7 @@ public class MapFragment extends Fragment {
         return view;
     }
 
-    private void initMap(View view, Bundle savedInstanceState) {
+    private void initMap(final View view, Bundle savedInstanceState) {
         mMapView = (MapView) view.findViewById(R.id.maps_mapView_mapView);
         mMapView.onCreate(savedInstanceState);
 
@@ -103,11 +109,18 @@ public class MapFragment extends Fragment {
                     }
                 });
 
+                try {
+                    MapsInitializer.initialize(getActivity());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
                 if (isFirst) {
                     loadLandmark();
                     isFirst = !isFirst;
                 } else {
-                    createMarkers();
+//                    createMarkers();
+                    addItemsOnCluster();
                 }
 
             }
@@ -124,8 +137,7 @@ public class MapFragment extends Fragment {
                     switch (message) {
                         case "SUCCESS":
                             list.addAll(response.body().getLandmarkList());
-//                            setUpClusterer();
-                            createMarkers();
+                            setUpClusterer();
                             break;
                     }
                 }
@@ -190,30 +202,38 @@ public class MapFragment extends Fragment {
 
 
     private void setUpClusterer() {
-        clusterManager = new ClusterManager<MarkerItem>(getContext(), googleMap);
-
-        // Point the map's listeners at the listeners implemented by the cluster
-        // manager.
+        clusterManager = new ClusterManager<MarkerItem>(getActivity(), googleMap);
         googleMap.setOnCameraIdleListener(clusterManager);
         googleMap.setOnMarkerClickListener(clusterManager);
 
-        googleMap.setOnCameraIdleListener(clusterManager);
+        clusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<MarkerItem>() {
+            @Override
+            public boolean onClusterClick(Cluster<MarkerItem> cluster) {
+                LatLngBounds.Builder builder_c = LatLngBounds.builder();
+                for (ClusterItem item : cluster.getItems()) {
+                    builder_c.include(item.getPosition());
+                }
+                LatLngBounds bounds_c = builder_c.build();
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds_c, 15));
+                float zoom = googleMap.getCameraPosition().zoom - 0.5f;
+                googleMap.animateCamera(CameraUpdateFactory.zoomTo(zoom));
+                return true;
+            }
+        });
+    }
 
-        // Add cluster items (markers) to the cluster manager.
+    private void addItemsOnCluster() {
         try {
-            addItems();
+            int length = list.size();
+
+            for (int i = 0; i < length; i++) {
+                final Landmark landmark = list.get(i);
+                MarkerItem offsetItem = new MarkerItem(landmark.getLat(), landmark.getLng());
+                clusterManager.addItem(offsetItem);
+            }
         } catch (Exception e) {
             e.getStackTrace();
             Toast.makeText(getContext(), "Problem reading list of markers.", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private void addItems() {
-        int length = list.size();
-        for (int i = 0; i < length; i++) {
-            final Landmark landmark = list.get(i);
-            MarkerItem offsetItem = new MarkerItem(landmark.getLat(), landmark.getLng());
-            clusterManager.addItem(offsetItem);
         }
     }
 }

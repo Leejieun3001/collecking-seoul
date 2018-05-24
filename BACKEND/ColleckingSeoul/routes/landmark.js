@@ -106,10 +106,14 @@ router.get('/mine', function (req, res) {
     };
 
     let selectMyLandmark = function (connection, u_idx, callback) {
+        console.log("query는 : ", 'select l.idx, l.name from Tour t left join Landmark l on t.landmark_idx=l.idx where t.user_idx = ', u_idx);
         connection.query('select l.idx, l.name from Tour t left join Landmark l on t.landmark_idx=l.idx '
             + 'where t.user_idx = ? ', 
             u_idx, function (error, rows) {
-            if (error) callback(error, connection, "Select query Error : ");
+            if (error) {
+                console.log(error.message);
+                callback(error, connection, "Select query Error : ", res);
+            }
             else {
                 resultJson.message = "SUCCESS";
                 resultJson.landmarks = rows;

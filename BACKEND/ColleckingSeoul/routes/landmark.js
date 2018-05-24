@@ -101,7 +101,7 @@ router.get('/mine', function (req, res) {
             res.status(200).send(decodedToken);
             callback("ALREADY_SEND_MESSAGE", connection, "api : /landmark/mine");
         } else {
-            callback(null, decodedToken.idx, connection);
+            callback(null, connection, decodedToken.idx);
         }
     };
 

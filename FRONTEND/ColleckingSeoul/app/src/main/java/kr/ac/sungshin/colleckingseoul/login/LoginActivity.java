@@ -39,6 +39,7 @@ import org.json.JSONObject;
 
 import java.security.MessageDigest;
 import java.util.Arrays;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -218,6 +219,7 @@ public class LoginActivity extends AppCompatActivity {
         editor.putString("url", user.getUrl());
         editor.putString("token", token);
         editor.putBoolean("autoLogin", autoLoginCheckBox.isChecked());
+        editor.putString("loginDate", new Date().toString());
         editor.apply();
 
         InfoManager.getInstance().setUserInfo(user);

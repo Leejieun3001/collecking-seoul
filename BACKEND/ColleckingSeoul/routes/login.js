@@ -40,11 +40,14 @@ router.post('/', function (req, res) {
     }
 
     let selectUserInfo = function (connection, callback) {
-        connection.query('select * from User left outer join Photo ' + 
-                        'on User.idx=Photo.user_idx ' + 
-                        'where id = ?', req.body.id, function (error, rows) {
+        connection.query("select u.idx, u.id, u.password, u.snsCategory, u.nickname, u.phone, u.birth, u.sex, (case when p.board_idx is null then '' else p.url end) url " +
+                        "from User u left outer join Photo p " + 
+                        "on u.idx=p.user_idx " + 
+                        "where u.id = ?", req.body.id, function (error, rows) {
             if (error) callback(error, connection, "Selecet query Error : ");
             else {
+                console.log(rows);
+                console.log(rows.length);
                 if (rows.length === 0) {
                     // 존재하는 아이디가 없는 경우
                     res.status(200).send(errorConfig.NOT_SIGN_UP);
@@ -66,7 +69,7 @@ router.post('/', function (req, res) {
             // isCorrect === true : 일치, isCorrect === false : 불일치
             if (err) {
                 res.status(200).send(errorConfig.NOT_SIGN_UP);
-                callback(err, connection, "Bcrypt Error : ");
+                callback(err, connection, "Bcrypt Error : ", res);
             }
 
             if (!isCorrect) {
@@ -111,10 +114,10 @@ router.post('/sns', function (req, res) {
     };
 
     let selectUserInfo = function (connection, callback) {
-        connection.query('select u.idx, u.id, u.password, u.nickname, u.birth, u.sex, u.phone, u.snsCategory, p.url from User u ' + 
-                    'left outer join Photo p ' + 
-                    'on u.idx=p.user_idx ' + 
-                    'where u.id = ? and p.board_idx is null', req.body.id, function (error, rows) {
+        connection.query("select u.idx, u.id, u.password, u.snsCategory, u.nickname, u.phone, u.birth, u.sex, (case when p.board_idx is null then '' else p.url end) url " +
+                        "from User u left outer join Photo p " + 
+                        "on u.idx=p.user_idx " + 
+                        "where u.id = ?", req.body.id, function (error, rows) {
             if (error) callback(error, connection, "Selecet query Error : ");
             else {
                 if (rows.length === 0) {
@@ -204,7 +207,6 @@ router.post('/sns', function (req, res) {
     var task = [globalModule.connect.bind(this), selectUserInfo, updatePW, globalModule.releaseConnection.bind(this)];
     async.waterfall(task, globalModule.asyncCallback.bind(this));
 });
-
 
 /**
  * api 목적        : 아이디 찾기

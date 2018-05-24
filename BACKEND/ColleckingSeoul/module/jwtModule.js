@@ -28,13 +28,21 @@ function decodeToken (token) {
     if(!token) {
       decodeInfo = errorConfig.NOT_LOGIN;
     } else {
-      let decoded = jwt.verify(token, secretKey);
-      decodeInfo.token = decoded;
+      try{
+        let decoded = jwt.verify(token, secretKey);
+        decodeInfo.token = decoded;
+      } catch(e) {
+        console.log(e.message);
+        if (e.message == "jwt expired") {
+          decodeInfo = errorConfig.EXPIRED_TOKEN;
+        }
+      }
     }
     return decodeInfo;
 }
 
-function checkExpired (decodedToken) {
+function checkExpired (token) {
+  let decodedToken = jwt.verify(token, secretKey);
   let now = new Date().getTime();
   if (decodedToken.exp < now) { return false; } 
   else { return true; }

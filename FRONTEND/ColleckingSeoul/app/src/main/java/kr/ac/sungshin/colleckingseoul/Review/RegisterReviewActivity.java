@@ -116,7 +116,7 @@ public class RegisterReviewActivity extends AppCompatActivity {
                         if (response.isSuccessful()) {
                             if (response.body().getMessage().equals("SUCCESS")) {
                                 Toast.makeText(getApplicationContext(), "후기 등록이 완료되었습니다.", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent();
+                                Intent intent = new Intent(getBaseContext(), ReviewListActivity.class);
                                 setResult(RESULT_OK, intent);
                                 finish();
                             } else {

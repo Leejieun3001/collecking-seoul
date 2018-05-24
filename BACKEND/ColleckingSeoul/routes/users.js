@@ -23,7 +23,75 @@ const upload = multer({
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+    var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHgiOjIsImlkIjoiZ3VzZGs3NjU2QG5hdmVyLmNvbSIsImlhdCI6MTUyNjM1MjMwMSwiZXhwIjoxNTI2OTU3MTAxfQ.aQpPbzIpYYxTQjm9tTg3ECafG1833WqVw6JbhyjN_kY";
+    
+    try{
+        var decodedToken = jwtModule.decodeToken(token);
+        console.log(decodedToken);
+    } catch (e) {
+        console.log(e.message);
+    }
+  
+  res.status(200).send("hyeona");
+});
+
+/**
+ * api 목적        : 토큰 갱신
+ * request params : { idx: 유저 인덱스 }
+ */
+router.post('/refresh_token', function (req, res) {
+    var resultJson = {
+        token: '',
+        message: ''
+    };
+
+    let checkValid = function (connection, callback) {
+        if (req.body.idx == "" || req.body.idx == null) {
+            res.status(200).send(errorConfig.NULL_VALUE);
+            callback("ALREADY_SEND_MESSAGE", connection, "api : /user/refresh_token");
+        } else {
+            callback(null, connection);
+        }
+    }
+
+    let selectUserInfo = function (connection, callback) {
+        connection.query("select u.idx, u.id, u.nickname, u.phone, u.birth, u.sex, (case when p.board_idx is null then '' else p.url end) url "
+                        + "from colleckingDB.User u "
+                        + "left outer join colleckingDB.Photo p "
+                        + "on u.idx=p.user_idx "
+                        + "where u.idx = ?", req.body.idx, function (error, rows) {
+            if (error) callback(error, connection, "Selecet query Error : ");
+            else {
+                if (rows.length === 0) {
+                    // 존재하는 아이디가 없는 경우
+                    res.status(200).send(errorConfig.NOT_SIGN_UP);
+                    callback("ALREADY_SEND_MESSAGE", connection, "api : /user/refresh_token");
+                } else {
+                    callback(null, connection, rows[0]);
+                }
+            }
+        });
+    }
+
+    let setResultInfo = function (connection, row, callback) {
+        resultJson.message = "SUCCESS";
+        resultJson.user = {
+            idx: row.idx,
+            id: row.id,
+            nickname: row.nickname,
+            phone: row.phone,
+            birth: row.birth,
+            url: row.url,
+            sex: row.sex
+        };
+        console.log('login', row);
+        resultJson.token = jwtModule.makeToken(row);
+        res.status(200).send(resultJson);
+        callback(null, connection, "api : /user/refresh_token");
+    }
+
+    var task = [globalModule.connect.bind(this), checkValid, selectUserInfo, setResultInfo, globalModule.releaseConnection.bind(this)];
+    async.waterfall(task, globalModule.asyncCallback.bind(this));
 });
 
 /**

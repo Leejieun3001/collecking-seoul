@@ -50,6 +50,7 @@ public class ReviewActivity extends AppCompatActivity {
     private NetworkService service;
     private final String TAG = "ReviewActivity";
     private int idx;
+    private String url = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,10 +75,11 @@ public class ReviewActivity extends AppCompatActivity {
                         textViewdate.setText(response.body().getBoard().getDate());
                         textViewIdx.setText(String.valueOf(idx));
                         textViewContent.setText(response.body().getBoard().getContent());
+                        url = response.body().getBoard().getUrl();
 
-                        if (response.body().getBoard().getUrl() != "") {
+                        if (!url.equals("")) {
                             Glide.with(getApplicationContext())
-                                    .load(response.body().getBoard().getUrl())
+                                    .load(url)
                                     .into(imageViewPhoto);
                         }
                         SharedPreferences userInfo = getSharedPreferences("user", MODE_PRIVATE);
@@ -101,5 +103,25 @@ public class ReviewActivity extends AppCompatActivity {
             public void onFailure(Call<BoardResult> call, Throwable t) {
             }
         });
+
+        buttonModify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), RegisterReviewActivity.class);
+                intent.putExtra("idx", idx + "");
+                intent.putExtra("title", textViewTitle.getText().toString());
+                intent.putExtra("content", textViewContent.getText().toString());
+                intent.putExtra("photo", url);
+                intent.putExtra("purpose", "edit");
+
+                startActivity(intent);
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
     }
 }

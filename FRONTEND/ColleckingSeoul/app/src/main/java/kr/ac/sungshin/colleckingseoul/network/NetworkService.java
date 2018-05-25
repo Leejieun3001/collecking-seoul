@@ -23,6 +23,7 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Query;
 
@@ -75,6 +76,13 @@ public interface NetworkService {
                                               @Part("content") RequestBody content,
                                               @Part("landmark_idx") RequestBody landmark_idx,
                                               @Part MultipartBody.Part photo);
+
+    @PUT("/board/modify")
+    @Multipart
+    Call<DefaultResult> getModifyBoardResult(@Part("title") RequestBody title,
+                                             @Part("content") RequestBody content,
+                                             @Part("idx") RequestBody idx,
+                                             @Part MultipartBody.Part photo);
 
     @GET("/board/total/")
     Call<BoardListResult> getBoardListResult(@Query("idx") int idx);

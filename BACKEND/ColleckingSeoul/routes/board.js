@@ -212,7 +212,7 @@ router.post('/write', upload.single('photo'), function (req, res) {
  *                   File photo : "글 사진" }
 */
 
-router.post('/modify', upload.single('photo'), function (req, res) {
+router.put('/modify', upload.single('photo'), function (req, res) {
     let resultJson = {
         message: '',
         code: "",

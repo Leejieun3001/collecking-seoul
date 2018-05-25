@@ -62,7 +62,6 @@ public class MapFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        View view = getView();
         service = ApplicationController.getInstance().getNetworkService();
     }
 
@@ -70,6 +69,7 @@ public class MapFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_maps, container, false);
+
         initMap(view, savedInstanceState);
 
         return view;
@@ -82,7 +82,7 @@ public class MapFragment extends Fragment {
         mMapView.onResume(); // needed to get the map to display immediately
 
         try {
-            MapsInitializer.initialize(getActivity().getApplicationContext());
+            MapsInitializer.initialize(view.getContext());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -95,29 +95,11 @@ public class MapFragment extends Fragment {
                 CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(37.581049, 126.982533)).zoom(14).build();
                 googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
-                googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                    @Override
-                    public boolean onMarkerClick(Marker marker) {
-                        marker.getTag();
-                        Intent intent = new Intent(getContext(), ReviewListActivity.class);
-                        intent.putExtra("idx", marker.getTag().toString());
-                        intent.putExtra("lng", 126.976926);
-                        startActivity(intent);
-                        return false;
-                    }
-                });
-
-                try {
-                    MapsInitializer.initialize(getActivity());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
                 if (isFirst) {
                     loadLandmark();
                     isFirst = !isFirst;
                 } else {
-//                    createMarkers();
+                    setUpClusterer();
                     addItemsOnCluster();
                 }
 
@@ -149,33 +131,8 @@ public class MapFragment extends Fragment {
         });
     }
 
-    private void createMarkers() {
-        int length = list.size();
-        for (int i = 0; i < length; i++) {
-            final Landmark landmark = list.get(i);
-            LatLng latLng = new LatLng(landmark.getLat(), landmark.getLng());
-            float color = (landmark.getIsVisit() == 1) ? BitmapDescriptorFactory.HUE_RED : BitmapDescriptorFactory.HUE_BLUE;
-            Marker marker = googleMap.addMarker(new MarkerOptions().position(latLng).title(landmark.getName()).icon(BitmapDescriptorFactory
-                        .defaultMarker(color)));
-            marker.setTag(landmark);
-            googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                @Override
-                public boolean onMarkerClick(Marker marker) {
-                    Landmark ld = (Landmark) marker.getTag();
-                    Intent intent = new Intent(getContext(), ReviewListActivity.class);
-                    intent.putExtra("lat", ld.getLat());
-                    intent.putExtra("lng", ld.getLng());
-                    intent.putExtra("idx", ld.getIdx());
-                    intent.putExtra("title", ld.getName());
-                    startActivity(intent);
-                    return false;
-                }
-            });
-        }
-    }
-
     private void setUpClusterer() {
-        clusterManager = new ClusterManager<MarkerItem>(getActivity(), googleMap);
+        clusterManager = new ClusterManager<>(getActivity(), googleMap);
         googleMap.setOnCameraIdleListener(clusterManager);
         googleMap.setOnMarkerClickListener(clusterManager);
         googleMap.setInfoWindowAdapter(clusterManager.getMarkerManager());

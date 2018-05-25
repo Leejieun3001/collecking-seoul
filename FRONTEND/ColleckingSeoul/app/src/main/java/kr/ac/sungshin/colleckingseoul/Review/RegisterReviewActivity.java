@@ -17,10 +17,13 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.concurrent.ExecutionException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -55,10 +58,11 @@ public class RegisterReviewActivity extends AppCompatActivity {
     private final String TAG = "RegisterReviewActivity";
     private static final int GALLERY_CODE = 1112;
     private String idx = "";
+    private String photo = "";
+    private String purpose = "";
 
     String imgUrl = "";
     Uri imgUri;
-    private Uri data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +73,15 @@ public class RegisterReviewActivity extends AppCompatActivity {
         service = ApplicationController.getInstance().getNetworkService();
         Intent gettingIntent = getIntent();
         idx = gettingIntent.getStringExtra("idx");
+        purpose = gettingIntent.getStringExtra("purpose");
+
+        if (purpose.equals("edit")) {
+            titleEditText.setText(gettingIntent.getStringExtra("title"));
+            contentEditText.setText(gettingIntent.getStringExtra("content"));
+            Glide.with(getApplicationContext())
+                    .load(gettingIntent.getStringExtra("photo"))
+                    .into(photoImageView);
+        }
 
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
@@ -77,6 +90,7 @@ public class RegisterReviewActivity extends AppCompatActivity {
                 Log.d(TAG, "rating: " + ratingBar.getRating());
                 Log.d(TAG, "rating: " + rating);
                 Log.d(TAG, "fromUser: " + fromUser);
+                writeButton.setText("글 수정");
             }
         });
 
@@ -104,8 +118,20 @@ public class RegisterReviewActivity extends AppCompatActivity {
                 RequestBody landmark_idx = RequestBody.create(MediaType.parse("multipart/form-data"), idx);
 
                 MultipartBody.Part body;
+                Bitmap bitmap = Bitmap.createBitmap(0, 0, Bitmap.Config.ARGB_4444);
                 if (imgUrl.equals("")) {
-                    body = null;
+                    try {
+                        bitmap = Glide.
+                            with(getBaseContext()).
+                            load(photo).
+                            asBitmap().
+                            into(photoImageView.getWidth(), photoImageView.getHeight()). // Width and height
+                            get();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     BitmapFactory.Options options = new BitmapFactory.Options();
                     options.inSampleSize = 4;
@@ -115,36 +141,19 @@ public class RegisterReviewActivity extends AppCompatActivity {
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
-                    Bitmap bitmap = BitmapFactory.decodeStream(in, null, options); // InputStream 으로부터 Bitmap 을 만들어 준다.
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos); // 압축 옵션( JPEG, PNG ) , 품질 설정 ( 0 - 100까지의 int형 ),
-
-                    File photo = new File(imgUrl); // 그저 블러온 파일의 이름을 알아내려고 사용.
-                    RequestBody photoBody = RequestBody.create(MediaType.parse("image/jpg"), baos.toByteArray());
-                    body = MultipartBody.Part.createFormData("photo", photo.getName(), photoBody);
+                    bitmap = BitmapFactory.decodeStream(in, null, options); // InputStream 으로부터 Bitmap 을 만들어 준다
                 }
 
-                Call<DefaultResult> getWritingBoardResult = service.getWritingBoardResult(title, content, landmark_idx, body);
-                getWritingBoardResult.enqueue(new Callback<DefaultResult>() {
-                    @Override
-                    public void onResponse(Call<DefaultResult> call, Response<DefaultResult> response) {
-                        if (response.isSuccessful()) {
-                            if (response.body().getMessage().equals("SUCCESS")) {
-                                Toast.makeText(getApplicationContext(), "후기 등록이 완료되었습니다.", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(getBaseContext(), ReviewListActivity.class);
-                                setResult(RESULT_OK, intent);
-                                finish();
-                            } else {
-                                Toast.makeText(getBaseContext(), "후기 등록에 에러가 발생했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    }
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos); // 압축 옵션( JPEG, PNG ) , 품질 설정 ( 0 - 100까지의 int형 ),
 
-                    @Override
-                    public void onFailure(Call<DefaultResult> call, Throwable t) {
-                        Log.d(TAG, "onFailure");
-                    }
-                });
+                File photo = new File(imgUrl); // 그저 블러온 파일의 이름을 알아내려고 사용.
+                RequestBody photoBody = RequestBody.create(MediaType.parse("image/jpg"), baos.toByteArray());
+                body = MultipartBody.Part.createFormData("photo", photo.getName(), photoBody);
+
+                if (purpose.equals("edit")) { edit(title, content, landmark_idx, body); }
+                else if (purpose.equals("register")) { register(title, content, landmark_idx, body); }
+
             }
         });
     }
@@ -155,7 +164,6 @@ public class RegisterReviewActivity extends AppCompatActivity {
             //이미지를 성공적으로 가져왔을 경우
             if (resultCode == Activity.RESULT_OK) {
                 try {
-                    this.data = data.getData();
                     //이미지 데이터를 비트맵으로 받아온다.
                     Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
                     photoImageView.setImageBitmap(image_bitmap);
@@ -166,6 +174,54 @@ public class RegisterReviewActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    private void edit (RequestBody title, RequestBody content, RequestBody idx, MultipartBody.Part body) {
+        Call<DefaultResult> getModifyBoardResult = service.getModifyBoardResult(title, content, idx, body);
+        getModifyBoardResult.enqueue(new Callback<DefaultResult>() {
+            @Override
+            public void onResponse(Call<DefaultResult> call, Response<DefaultResult> response) {
+                if (response.isSuccessful()) {
+                    if (response.body().getMessage().equals("SUCCESS")) {
+                        Toast.makeText(getBaseContext(), "후기 수정이 완료되었습니다.", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getBaseContext(), ReviewActivity.class);
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    } else {
+                        Toast.makeText(getBaseContext(), "후기 수정에 에러가 발생했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DefaultResult> call, Throwable t) {
+                Log.d(TAG, "onFailure");
+            }
+        });
+    }
+
+    private void register (RequestBody title, RequestBody content, RequestBody landmark_idx, MultipartBody.Part body) {
+        Call<DefaultResult> getWritingBoardResult = service.getWritingBoardResult(title, content, landmark_idx, body);
+        getWritingBoardResult.enqueue(new Callback<DefaultResult>() {
+            @Override
+            public void onResponse(Call<DefaultResult> call, Response<DefaultResult> response) {
+                if (response.isSuccessful()) {
+                    if (response.body().getMessage().equals("SUCCESS")) {
+                        Toast.makeText(getApplicationContext(), "후기 등록이 완료되었습니다.", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getBaseContext(), ReviewListActivity.class);
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    } else {
+                        Toast.makeText(getBaseContext(), "후기 등록에 에러가 발생했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DefaultResult> call, Throwable t) {
+                Log.d(TAG, "onFailure");
+            }
+        });
     }
 
     private boolean checkValid() {

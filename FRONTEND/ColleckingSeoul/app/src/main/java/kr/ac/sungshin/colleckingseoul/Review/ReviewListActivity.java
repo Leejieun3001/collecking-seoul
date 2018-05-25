@@ -67,6 +67,7 @@ public class ReviewListActivity extends AppCompatActivity implements OnMapReadyC
             public void onClick(View v) {
                 Intent intent = new Intent(getBaseContext(), RegisterReviewActivity.class);
                 intent.putExtra("idx", idx + "");
+                intent.putExtra("purpose", "register");
                 startActivityForResult(intent, REQUEST_FOR_BOARD);
             }
         });
@@ -86,6 +87,7 @@ public class ReviewListActivity extends AppCompatActivity implements OnMapReadyC
 
         if (requestCode == REQUEST_FOR_BOARD) {
             // 리스트 갱신 필요
+            adapter.setAdapter(itemList);
         }
     }
 
@@ -150,7 +152,7 @@ public class ReviewListActivity extends AppCompatActivity implements OnMapReadyC
         public void onClick(View v) {
             int itemPosition = recyclerView.getChildPosition(v);
             int tempId = itemList.get(itemPosition).getIdx();
-            Intent intent = new Intent(getApplicationContext(), ReviewActivity.class);
+            Intent intent = new Intent(getBaseContext(), ReviewActivity.class);
 
             intent.putExtra("idx", tempId);
             startActivity(intent);

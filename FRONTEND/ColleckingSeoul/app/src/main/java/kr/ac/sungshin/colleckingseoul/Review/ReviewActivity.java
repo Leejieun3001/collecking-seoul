@@ -49,6 +49,7 @@ public class ReviewActivity extends AppCompatActivity {
 
     private NetworkService service;
     private final String TAG = "ReviewActivity";
+    private final int REQUEST_CODE_EDIT = 10000;
     private int idx;
     private String url = "";
 
@@ -64,6 +65,11 @@ public class ReviewActivity extends AppCompatActivity {
         Intent intent = getIntent();
         idx = intent.getIntExtra("idx", 0);
 
+        loadReviewInfo();
+        bindClickListener();
+    }
+
+    private void loadReviewInfo () {
         Call<BoardResult> boardResult = service.getBoardResult(idx);
         boardResult.enqueue(new Callback<BoardResult>() {
             @Override
@@ -103,7 +109,9 @@ public class ReviewActivity extends AppCompatActivity {
             public void onFailure(Call<BoardResult> call, Throwable t) {
             }
         });
+    }
 
+    private void bindClickListener () {
         buttonModify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,7 +122,7 @@ public class ReviewActivity extends AppCompatActivity {
                 intent.putExtra("photo", url);
                 intent.putExtra("purpose", "edit");
 
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_CODE_EDIT);
             }
         });
     }
@@ -123,5 +131,8 @@ public class ReviewActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        if (requestCode == REQUEST_CODE_EDIT && resultCode == RESULT_OK) {
+            loadReviewInfo();
+        }
     }
 }

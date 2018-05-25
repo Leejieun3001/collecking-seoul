@@ -79,15 +79,10 @@ public class ReviewListActivity extends AppCompatActivity implements OnMapReadyC
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode != RESULT_OK) {
-            Toast.makeText(getBaseContext(), "결과가 올바르게 수행되지 못했습니다.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (requestCode == REQUEST_FOR_BOARD) {
+        if (requestCode == REQUEST_FOR_BOARD && resultCode == RESULT_OK) {
             // 리스트 갱신 필요
-            adapter.setAdapter(itemList);
+            getReview(idx);
+            adapter.notifyDataSetChanged();
         }
     }
 
@@ -101,11 +96,11 @@ public class ReviewListActivity extends AppCompatActivity implements OnMapReadyC
 
     private void initRecyclerView() {
         itemList = new ArrayList<>();
+        adapter = new ReviewListAdapter(getBaseContext(), itemList, clickEvent);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
-
     }
 
     // 해당 랜드마크의 리뷰 리스트를 불러온다.
@@ -160,7 +155,7 @@ public class ReviewListActivity extends AppCompatActivity implements OnMapReadyC
     };
 
     private void setAdapter(ArrayList<BoardItem> itemList) {
-        adapter = new ReviewListAdapter(getApplicationContext(), itemList, clickEvent);
+        adapter.setAdapter(itemList);
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }

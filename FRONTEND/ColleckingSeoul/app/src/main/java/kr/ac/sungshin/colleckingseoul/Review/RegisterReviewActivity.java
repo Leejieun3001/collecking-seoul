@@ -125,7 +125,7 @@ public class RegisterReviewActivity extends AppCompatActivity {
 
                 float reviewRating = ratingBar.getRating();
                 RequestBody title = RequestBody.create(MediaType.parse("multipart/form-data"), titleEditText.getText().toString());
-                RequestBody content = RequestBody.create(MediaType.parse("multipart/form-data"), titleEditText.getText().toString());
+                RequestBody content = RequestBody.create(MediaType.parse("multipart/form-data"), contentEditText.getText().toString());
                 RequestBody landmark_idx = RequestBody.create(MediaType.parse("multipart/form-data"), idx);
 
                 MultipartBody.Part body;
@@ -179,7 +179,7 @@ public class RegisterReviewActivity extends AppCompatActivity {
         }
     }
 
-    private void edit (RequestBody title, RequestBody content, RequestBody idx, MultipartBody.Part body) {
+    private void edit (final RequestBody title, final RequestBody content, RequestBody idx, MultipartBody.Part body) {
         Call<DefaultResult> getModifyBoardResult = service.getModifyBoardResult(title, content, idx, body);
         getModifyBoardResult.enqueue(new Callback<DefaultResult>() {
             @Override

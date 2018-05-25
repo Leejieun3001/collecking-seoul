@@ -96,7 +96,26 @@ public class LoginActivity extends AppCompatActivity {
         FacebookSdk.sdkInitialize(getBaseContext());
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+
         facebookCallbackManager = CallbackManager.Factory.create();
+
+        getAppKeyHash();
+        SharedPreferences userInfo = getSharedPreferences("user", MODE_PRIVATE);
+        String savedToken = userInfo.getString("token", "");
+        if (userInfo.getBoolean("autoLogin", false) && !savedToken.equals("")) {
+            Log.d(TAG, savedToken);
+            ApplicationController.getInstance().setTokenOnHeader(savedToken);
+            User user = new User(userInfo.getString("idx", ""),
+                    userInfo.getString("id", ""),
+                    userInfo.getString("nickname", ""),
+                    userInfo.getString("phone", ""),
+                    userInfo.getString("birth", ""),
+                    userInfo.getString("url", ""),
+                    userInfo.getInt("sex", 0));
+            InfoManager.getInstance().setUserInfo(user);
+            goHome();
+            return;
+        }
 
         service = ApplicationController.getInstance().getNetworkService();
         ActionBar actionBar = getSupportActionBar();

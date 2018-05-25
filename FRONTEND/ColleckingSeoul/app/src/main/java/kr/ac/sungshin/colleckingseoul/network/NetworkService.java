@@ -4,6 +4,8 @@ package kr.ac.sungshin.colleckingseoul.network;
 import kr.ac.sungshin.colleckingseoul.model.request.BasicLogin;
 import kr.ac.sungshin.colleckingseoul.model.request.FindPassWord;
 import kr.ac.sungshin.colleckingseoul.model.request.RefreshToken;
+import kr.ac.sungshin.colleckingseoul.model.request.MyInfo;
+import kr.ac.sungshin.colleckingseoul.model.request.PassWordInfo;
 import kr.ac.sungshin.colleckingseoul.model.response.BoardResult;
 import kr.ac.sungshin.colleckingseoul.model.response.DefaultResult;
 import kr.ac.sungshin.colleckingseoul.model.response.FindInfoResult;
@@ -13,6 +15,7 @@ import kr.ac.sungshin.colleckingseoul.model.request.FindId;
 import kr.ac.sungshin.colleckingseoul.model.response.LandmarkListResult;
 import kr.ac.sungshin.colleckingseoul.model.response.LoginResult;
 import kr.ac.sungshin.colleckingseoul.model.response.BoardListResult;
+import kr.ac.sungshin.colleckingseoul.model.response.MyLandmarkResult;
 import kr.ac.sungshin.colleckingseoul.model.response.VerificationCodeResult;
 import kr.ac.sungshin.colleckingseoul.model.response.rank.LandmarkRankResult;
 import kr.ac.sungshin.colleckingseoul.model.response.rank.UserRankResult;
@@ -20,6 +23,7 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -95,4 +99,20 @@ public interface NetworkService {
 
     @GET("/rank/landmark_rank")
     Call<LandmarkRankResult> getLandmarkRankList();
+
+    @GET("landmark/mine")
+    Call<MyLandmarkResult> getMyLandmarkList();
+
+    @PUT("user/update_photo")
+    Call<BaseResult> getUpdatePhotoReult();
+
+    @PUT("user/update_info")
+    Call<BaseResult> getUpdateUserInfoResult(@Body MyInfo info);
+
+    @PUT("/user/update_pw")
+    Call<BaseResult> getUpdatePWResult(@Body PassWordInfo info);
+
+    @DELETE("user/withdraw")
+    Call<BaseResult> getwithdrawResult();
+
 }

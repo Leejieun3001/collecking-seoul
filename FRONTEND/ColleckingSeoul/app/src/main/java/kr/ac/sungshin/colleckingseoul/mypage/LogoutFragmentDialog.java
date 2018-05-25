@@ -1,6 +1,7 @@
 package kr.ac.sungshin.colleckingseoul.mypage;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import java.util.zip.Inflater;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import kr.ac.sungshin.colleckingseoul.R;
+import kr.ac.sungshin.colleckingseoul.login.LoginActivity;
 import kr.ac.sungshin.colleckingseoul.model.response.User;
 import kr.ac.sungshin.colleckingseoul.model.singleton.InfoManager;
 import kr.ac.sungshin.colleckingseoul.network.ApplicationController;
@@ -72,7 +74,7 @@ public class LogoutFragmentDialog extends DialogFragment {
                 //정보 지우기
                 deleteInfo();
                 //login 화면으로
-
+                goLogin();
                 // 스택에 있는거 비우기
 
             }
@@ -80,7 +82,10 @@ public class LogoutFragmentDialog extends DialogFragment {
     }
 
     public void goLogin() {
-
+        Intent intent = new Intent(getActivity(), LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+        getActivity().finish();
     }
 
     public void deleteInfo() {

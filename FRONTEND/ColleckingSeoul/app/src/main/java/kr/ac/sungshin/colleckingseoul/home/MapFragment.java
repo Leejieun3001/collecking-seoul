@@ -141,14 +141,8 @@ public class MapFragment extends Fragment {
         clusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<MarkerItem>() {
             @Override
             public boolean onClusterClick(Cluster<MarkerItem> cluster) {
-                LatLngBounds.Builder builder_c = LatLngBounds.builder();
-                for (ClusterItem item : cluster.getItems()) {
-                    builder_c.include(item.getPosition());
-                }
-                LatLngBounds bounds_c = builder_c.build();
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds_c, 9));
-                float zoom = googleMap.getCameraPosition().zoom - 0.5f;
-                googleMap.animateCamera(CameraUpdateFactory.zoomTo(zoom));
+                CameraPosition cameraPosition = new CameraPosition.Builder().target(cluster.getPosition()).zoom(14).build();
+                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                 return true;
             }
         });

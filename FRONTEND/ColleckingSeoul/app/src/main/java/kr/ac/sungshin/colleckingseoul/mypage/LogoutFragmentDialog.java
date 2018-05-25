@@ -21,6 +21,7 @@ import kr.ac.sungshin.colleckingseoul.login.LoginActivity;
 import kr.ac.sungshin.colleckingseoul.model.response.User;
 import kr.ac.sungshin.colleckingseoul.model.singleton.InfoManager;
 import kr.ac.sungshin.colleckingseoul.network.ApplicationController;
+import kr.ac.sungshin.colleckingseoul.network.NetworkService;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -43,6 +44,7 @@ public class LogoutFragmentDialog extends DialogFragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_logout_fragment_dialog, container, false);
         ButterKnife.bind(this, view);
+
         Bundle args = getArguments();
         String value = args.getString("key");
 

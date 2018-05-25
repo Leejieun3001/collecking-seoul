@@ -1,18 +1,14 @@
 package kr.ac.sungshin.colleckingseoul.home;
 
-import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -20,7 +16,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -33,6 +28,8 @@ import com.google.maps.android.clustering.ClusterManager;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import kr.ac.sungshin.colleckingseoul.R;
 import kr.ac.sungshin.colleckingseoul.Review.ReviewListActivity;
 import kr.ac.sungshin.colleckingseoul.model.response.LandmarkListResult;
@@ -54,6 +51,7 @@ public class MapFragment extends Fragment {
     private NetworkService service;
     private ClusterManager<MarkerItem> clusterManager;
     private ArrayList<Landmark> list = new ArrayList<>();
+    private MarkerItem clickedClusterItem;
 
     MapView mMapView;
 
@@ -138,6 +136,7 @@ public class MapFragment extends Fragment {
                         case "SUCCESS":
                             list.addAll(response.body().getLandmarkList());
                             setUpClusterer();
+                            addItemsOnCluster();
                             break;
                     }
                 }
@@ -175,36 +174,12 @@ public class MapFragment extends Fragment {
         }
     }
 
-//    private void loadLandmark() {
-//        SqLiteController helper = new SqLiteController(this);
-//        ArrayList<Landmark> landmarks = helper.getAllLandmark(helper.getWritableDatabase());
-//        for (final Landmark landmark : landmarks) {
-//            LatLng latLng = new LatLng(landmark.getLat(), landmark.getLat());
-//            googleMap.addMarker(new MarkerOptions().position(latLng).title(landmark.getName()));
-//            googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-//                @Override
-//                public boolean onMarkerClick(Marker marker) {
-//                    marker.getTag();
-//                    Intent intent = new Intent(getBaseContext(), ReviewListActivity.class);
-//                    intent.putExtra("lat", landmark.getLat());
-//                    intent.putExtra("lng", landmark.getLat());
-//                    startActivity(intent);
-//                    return false;
-//                }
-//            });
-//        }
-//
-//        // icon 으로 마커 생성하는 방법
-////        Marker melbourne = mMap.addMarker(new MarkerOptions().position(MELBOURNE)
-////                .icon(BitmapDescriptorFactory
-////                        .defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-//    }
-
-
     private void setUpClusterer() {
         clusterManager = new ClusterManager<MarkerItem>(getActivity(), googleMap);
         googleMap.setOnCameraIdleListener(clusterManager);
         googleMap.setOnMarkerClickListener(clusterManager);
+        googleMap.setInfoWindowAdapter(clusterManager.getMarkerManager());
+        googleMap.setOnInfoWindowClickListener(clusterManager); //added
 
         clusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<MarkerItem>() {
             @Override
@@ -214,12 +189,35 @@ public class MapFragment extends Fragment {
                     builder_c.include(item.getPosition());
                 }
                 LatLngBounds bounds_c = builder_c.build();
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds_c, 15));
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds_c, 9));
                 float zoom = googleMap.getCameraPosition().zoom - 0.5f;
                 googleMap.animateCamera(CameraUpdateFactory.zoomTo(zoom));
                 return true;
             }
         });
+
+        clusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<MarkerItem>() {
+
+            @Override
+            public boolean onClusterItemClick(MarkerItem markerItem) {
+                clickedClusterItem = markerItem;
+                return false;
+            }
+        });
+
+        clusterManager.setOnClusterItemInfoWindowClickListener(new ClusterManager.OnClusterItemInfoWindowClickListener<MarkerItem>() {
+            @Override
+            public void onClusterItemInfoWindowClick(MarkerItem markerItem) {
+                Intent intent = new Intent(getContext(), ReviewListActivity.class);
+                intent.putExtra("lat", markerItem.getPosition().latitude);
+                intent.putExtra("lng", markerItem.getPosition().longitude);
+                intent.putExtra("idx", markerItem.getIdx());
+                intent.putExtra("title", markerItem.getTitle());
+                startActivity(intent);
+            }
+        });
+
+        clusterManager.getMarkerCollection().setOnInfoWindowAdapter(new MyInfoWindowAdapter());
     }
 
     private void addItemsOnCluster() {
@@ -228,12 +226,33 @@ public class MapFragment extends Fragment {
 
             for (int i = 0; i < length; i++) {
                 final Landmark landmark = list.get(i);
-                MarkerItem offsetItem = new MarkerItem(landmark.getLat(), landmark.getLng());
+                MarkerItem offsetItem = new MarkerItem(landmark.getLat(), landmark.getLng(), landmark.getName(), landmark.getIdx());
                 clusterManager.addItem(offsetItem);
             }
         } catch (Exception e) {
             e.getStackTrace();
-            Toast.makeText(getContext(), "Problem reading list of markers.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "지도 정보를 불러오는 중 문제가 발생했습니다. 다시 한 번 시도해주세요.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public class MyInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
+        private final View myContentsView;
+        TextView titleTextView;
+
+        MyInfoWindowAdapter() {
+            myContentsView = getLayoutInflater().inflate(
+                    R.layout.item_map_infowindow, null);
+        }
+        @Override
+        public View getInfoWindow(Marker marker) {
+            titleTextView = (TextView) myContentsView.findViewById(R.id.infowindow_textview_title);
+            titleTextView.setText(clickedClusterItem.getTitle());
+            return myContentsView;
+        }
+
+        @Override
+        public View getInfoContents(Marker marker) {
+            return null;
         }
     }
 }

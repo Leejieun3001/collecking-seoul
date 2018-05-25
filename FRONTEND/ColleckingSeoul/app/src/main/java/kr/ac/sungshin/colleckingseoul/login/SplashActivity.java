@@ -40,7 +40,7 @@ public class SplashActivity extends AppCompatActivity {
                 Date limitDate = calendar.getTime();
                 Date loginDate = new Date(userInfo.getString("loginDate", new Date().toString()));
 
-                if (limitDate.compareTo(loginDate) > 0) {
+                if (limitDate.compareTo(loginDate) < 0) {
                     ApplicationController.getInstance().setTokenOnHeader(savedToken);
                     User user = new User(userInfo.getString("idx", ""),
                             userInfo.getString("id", ""),

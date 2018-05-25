@@ -31,15 +31,11 @@ public class LogoutFragmentDialog extends DialogFragment {
     Button buttonLogout;
 
     public LogoutFragmentDialog() {
-        // Required empty public constructor
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
     }
 
     @Override
@@ -71,12 +67,8 @@ public class LogoutFragmentDialog extends DialogFragment {
         buttonLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //정보 지우기
                 deleteInfo();
-                //login 화면으로
                 goLogin();
-                // 스택에 있는거 비우기
-
             }
         });
     }

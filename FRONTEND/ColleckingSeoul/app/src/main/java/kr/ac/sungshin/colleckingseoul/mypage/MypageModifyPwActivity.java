@@ -1,5 +1,6 @@
 package kr.ac.sungshin.colleckingseoul.mypage;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,6 +13,8 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import kr.ac.sungshin.colleckingseoul.R;
+import kr.ac.sungshin.colleckingseoul.home.HomeActivity;
+import kr.ac.sungshin.colleckingseoul.login.LoginActivity;
 import kr.ac.sungshin.colleckingseoul.model.request.PassWordInfo;
 import kr.ac.sungshin.colleckingseoul.model.response.BaseResult;
 import kr.ac.sungshin.colleckingseoul.network.ApplicationController;
@@ -44,18 +47,21 @@ public class MypageModifyPwActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
         service = ApplicationController.getInstance().getNetworkService();
+
         bindClickListener();
 
     }
 
     //클릭 이벤트 바인딩
     public void bindClickListener() {
+        //취소
         buttonCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
+        //변경
         buttonStore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,11 +93,12 @@ public class MypageModifyPwActivity extends AppCompatActivity {
                                     break;
                                 case "SUCCESS":
                                     Toast.makeText(getBaseContext(), "비밀번호가 변경되었습니다. 다시 로그인 해 주세요", Toast.LENGTH_SHORT).show();
+                                    goLogin();
+                                    deleteInfo();
                                     break;
 
                             }
                         }
-
                     }
 
                     @Override
@@ -123,5 +130,18 @@ public class MypageModifyPwActivity extends AppCompatActivity {
             return false;
         }
         return true;
+    }
+
+    public void goLogin() {
+        Intent intent = new Intent(getBaseContext(), LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    public void deleteInfo() {
+        SharedPreferences.Editor prefs = getSharedPreferences("user", MODE_PRIVATE).edit();
+        prefs.remove("user");
+        prefs.commit();
     }
 }

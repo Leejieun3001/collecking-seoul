@@ -80,7 +80,7 @@ public class MyPageFragment extends android.support.v4.app.Fragment {
                     switch (message) {
                         case "SUCCESS":
                             MyVisitList.addAll(response.body().getLandmarks());
-                            if(MyVisitList.isEmpty()){
+                            if (MyVisitList.isEmpty()) {
                                 //BoardItem d = new BoardItem(0,0,0,"","","","","");
                                 //d.setContent("아직 등록된 리뷰가 없습니다.");
                                 //MyVisitList.add(d);

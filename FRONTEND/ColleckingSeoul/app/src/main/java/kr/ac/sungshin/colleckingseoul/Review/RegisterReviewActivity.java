@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.media.Rating;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -18,6 +21,12 @@ import android.widget.RatingBar;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.SquaringDrawable;
+import com.bumptech.glide.request.target.Target;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -76,10 +85,13 @@ public class RegisterReviewActivity extends AppCompatActivity {
         purpose = gettingIntent.getStringExtra("purpose");
 
         if (purpose.equals("edit")) {
+            writeButton.setText("글 수정");
+            photoButton.setText("사진 수정하기");
             titleEditText.setText(gettingIntent.getStringExtra("title"));
             contentEditText.setText(gettingIntent.getStringExtra("content"));
-            Glide.with(getApplicationContext())
-                    .load(gettingIntent.getStringExtra("photo"))
+            photo = gettingIntent.getStringExtra("photo");
+            Glide.with(getBaseContext())
+                    .load(photo)
                     .into(photoImageView);
         }
 
@@ -90,7 +102,6 @@ public class RegisterReviewActivity extends AppCompatActivity {
                 Log.d(TAG, "rating: " + ratingBar.getRating());
                 Log.d(TAG, "rating: " + rating);
                 Log.d(TAG, "fromUser: " + fromUser);
-                writeButton.setText("글 수정");
             }
         });
 
@@ -118,23 +129,15 @@ public class RegisterReviewActivity extends AppCompatActivity {
                 RequestBody landmark_idx = RequestBody.create(MediaType.parse("multipart/form-data"), idx);
 
                 MultipartBody.Part body;
-                Bitmap bitmap = Bitmap.createBitmap(0, 0, Bitmap.Config.ARGB_4444);
+                Bitmap bitmap;
+                File file;
                 if (imgUrl.equals("")) {
-                    try {
-                        bitmap = Glide.
-                            with(getBaseContext()).
-                            load(photo).
-                            asBitmap().
-                            into(photoImageView.getWidth(), photoImageView.getHeight()). // Width and height
-                            get();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    }
+                    file = new File(photo);
+                    Drawable drawable = photoImageView.getDrawable();
+                    bitmap = ((GlideBitmapDrawable) drawable).getBitmap();
                 } else {
                     BitmapFactory.Options options = new BitmapFactory.Options();
-                    options.inSampleSize = 4;
+                    options.inSampleSize = 2;
                     InputStream in = null;
                     try {
                         in = getContentResolver().openInputStream(imgUri);
@@ -142,14 +145,14 @@ public class RegisterReviewActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     bitmap = BitmapFactory.decodeStream(in, null, options); // InputStream 으로부터 Bitmap 을 만들어 준다
+                    file = new File(imgUrl); // 그저 블러온 파일의 이름을 알아내려고 사용.
                 }
-
+//
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos); // 압축 옵션( JPEG, PNG ) , 품질 설정 ( 0 - 100까지의 int형 ),
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos); // 압축 옵션( JPEG, PNG ) , 품질 설정 ( 0 - 100까지의 int형 ),
 
-                File photo = new File(imgUrl); // 그저 블러온 파일의 이름을 알아내려고 사용.
                 RequestBody photoBody = RequestBody.create(MediaType.parse("image/jpg"), baos.toByteArray());
-                body = MultipartBody.Part.createFormData("photo", photo.getName(), photoBody);
+                body = MultipartBody.Part.createFormData("photo", file.getName(), photoBody);
 
                 if (purpose.equals("edit")) { edit(title, content, landmark_idx, body); }
                 else if (purpose.equals("register")) { register(title, content, landmark_idx, body); }
@@ -235,7 +238,7 @@ public class RegisterReviewActivity extends AppCompatActivity {
             return false;
         }
 
-        if (imgUrl.equals("")) {
+        if (!purpose.equals("edit") && imgUrl.equals("")) {
             Toast.makeText(getBaseContext(), "사진을 선택해주세요.", Toast.LENGTH_SHORT).show();
             return false;
         }

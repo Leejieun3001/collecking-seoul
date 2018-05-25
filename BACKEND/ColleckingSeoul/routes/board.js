@@ -154,6 +154,7 @@ router.post('/write', upload.single('photo'), function (req, res) {
             decodedToken.idx,
             req.body.landmark_idx
         ];
+        console.log(params);
         connection.query(insertQuery, params, function (err, data) {
             if (err) callback(err, connection, "insert query error : ", res);
             else callback(null, connection, decodedToken.idx);
@@ -240,7 +241,6 @@ router.put('/modify', upload.single('photo'), function (req, res) {
 
 
     let modifyPhoto = function (connection, callback) {
-
         let updateQuery =
             "update Photo " +
             "set url =? "+

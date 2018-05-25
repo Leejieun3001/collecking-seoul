@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 
+import java.io.File;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
@@ -18,7 +19,7 @@ import java.util.Locale;
 import java.util.SimpleTimeZone;
 
 public class MainActivity extends AppCompatActivity {
-
+    private String TAG = "MainActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +38,10 @@ public class MainActivity extends AppCompatActivity {
 //                e.printStackTrace();
 //            }
 
-
+        File file = new File("https://s3.us-east-2.amazonaws.com/collecking-seoul/1524014394484.png");
+        Log.d(TAG, file.getAbsolutePath());
+        Log.d(TAG, file.getName());
+        Log.d(TAG, file.getPath());
 
     }
 

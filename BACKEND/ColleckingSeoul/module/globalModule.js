@@ -24,7 +24,7 @@ let checkBasicValid = function (params) {
             return errorConfig.NOT_MATCH_REGULATION;
             
         if (params[param] == null) return errorConfig.EMPTY_VALUE;
-        else if (params[param].trim() === "") return errorConfig.NULL_VALUE;
+        else if ((params[param] + "").trim() === "") return errorConfig.NULL_VALUE;
     }
     return "OK";
 };

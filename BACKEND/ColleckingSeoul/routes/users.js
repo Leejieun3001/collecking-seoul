@@ -279,7 +279,7 @@ router.delete('/withdraw', function (req, res) {
             res.status(200).send(decodedToken);
             callback("ALREADY_SEND_MESSAGE", connection, "api : /user/withdraw");
         } else {
-            callback(null, decodedToken.token.idx, connection);
+            callback(null, connection, decodedToken.token.idx);
         }
     };
   

@@ -127,7 +127,7 @@ router.get('/total', function (req, res) {
             if (error) callback(error, connection, "Select query Error : ");
             else {
                 resultJson.message = "SUCCESS";
-                if (rows.length !== 0) res.hasDone = 1;
+                if (rows.length !== 0) resultJson.hasDone = 1;
                 res.status(200).send(resultJson);
                 callback(null, connection, "api : /board/total");
             }

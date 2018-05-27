@@ -41,6 +41,7 @@ public class ReviewListActivity extends AppCompatActivity implements OnMapReadyC
     private GoogleMap googleMap;
     private LatLng initPosition;
     private int idx;
+    private int hasDone = 0;
 
     private LinearLayoutManager layoutManager;
     private ReviewListAdapter adapter;
@@ -65,10 +66,16 @@ public class ReviewListActivity extends AppCompatActivity implements OnMapReadyC
         floatingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getBaseContext(), RegisterReviewActivity.class);
-                intent.putExtra("idx", idx + "");
-                intent.putExtra("purpose", "register");
-                startActivityForResult(intent, REQUEST_FOR_BOARD);
+                if (hasDone == 1) {
+                    // 이미 후기를 작성한 사용자일 경우,
+                    Toast.makeText(getBaseContext(), "후기는 한번만 등록하실 수 있습니다.", Toast.LENGTH_SHORT).show();
+                } else {
+                    // 후기를 작성한적이 없는 사용자일 경우,
+                    Intent intent = new Intent(getBaseContext(), RegisterReviewActivity.class);
+                    intent.putExtra("idx", idx + "");
+                    intent.putExtra("purpose", "register");
+                    startActivityForResult(intent, REQUEST_FOR_BOARD);
+                }
             }
         });
         initRecyclerView();
@@ -113,7 +120,7 @@ public class ReviewListActivity extends AppCompatActivity implements OnMapReadyC
 
                 if (response.isSuccessful()) {
                     if (response.body().getMessage().equals("SUCCESS")) {
-
+                        hasDone = response.body().getHasDone();
                         itemList = response.body().getBoards();
                         if(itemList.isEmpty()){
                             BoardItem d = new BoardItem(0,0,0,"","","","","");

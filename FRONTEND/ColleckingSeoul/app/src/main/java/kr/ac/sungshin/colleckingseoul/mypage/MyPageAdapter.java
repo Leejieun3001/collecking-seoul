@@ -3,6 +3,7 @@ package kr.ac.sungshin.colleckingseoul.mypage;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,14 +25,16 @@ import kr.ac.sungshin.colleckingseoul.sqLite.Landmark;
  * Created by LG on 2018-05-17.
  */
 
-public class MyPageAdapter extends RecyclerView.Adapter<MyPageAdapter.ViewHolder>  {
+public class MyPageAdapter extends RecyclerView.Adapter<MyPageAdapter.ViewHolder> {
+    private final String TAG = "MyPageAdapter";
     private Context context;
-    private ArrayList<Landmark> list ;
+    private ArrayList<Landmark> list;
 
     public MyPageAdapter(Context context, ArrayList<Landmark> list) {
         this.context = context;
         this.list = list;
     }
+
     public void setAdapter(ArrayList<Landmark> list) {
         this.list = list;
         notifyDataSetChanged();
@@ -39,9 +42,9 @@ public class MyPageAdapter extends RecyclerView.Adapter<MyPageAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        return 0;
+        return list.size();
     }
-
+    
     @Override
     public MyPageAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -52,19 +55,21 @@ public class MyPageAdapter extends RecyclerView.Adapter<MyPageAdapter.ViewHolder
     @Override
     public void onBindViewHolder(MyPageAdapter.ViewHolder holder, int position) {
         Landmark item = list.get(position);
+         Log.d(TAG, item.getName());
         holder.textViewMyLandmarkName.setText(item.getName());
     }
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return list.get(position).getIdx();
     }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private TextView textViewMyLandmarkName;
+
         public ViewHolder(View itemView) {
             super(itemView);
-
-            textViewMyLandmarkName = (TextView) itemView.findViewById(R.id.landmarkrank_textview_name);
+            textViewMyLandmarkName = (TextView) itemView.findViewById(R.id.my_landmark_textview_name);
         }
     }
 

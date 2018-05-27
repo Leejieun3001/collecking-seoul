@@ -1,7 +1,6 @@
 package kr.ac.sungshin.colleckingseoul.mypage;
 
 import android.content.Intent;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,14 +16,12 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import kr.ac.sungshin.colleckingseoul.R;
-import kr.ac.sungshin.colleckingseoul.Review.BoardItem;
 import kr.ac.sungshin.colleckingseoul.model.response.MyLandmarkResult;
-import kr.ac.sungshin.colleckingseoul.model.response.rank.UserRank;
 import kr.ac.sungshin.colleckingseoul.network.ApplicationController;
 import kr.ac.sungshin.colleckingseoul.network.NetworkService;
-import kr.ac.sungshin.colleckingseoul.rank.LandmarkRankAdapter;
 import kr.ac.sungshin.colleckingseoul.rank.UserRankAdapter;
 import kr.ac.sungshin.colleckingseoul.sqLite.Landmark;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -44,6 +41,7 @@ public class MyPageFragment extends android.support.v4.app.Fragment {
     TextView textLeave;
     @BindView(R.id.my_landmark_recyclerView_userrecyclerview)
     RecyclerView recyclerViewMyLandmark;
+    private boolean flag = true;
 
     String TAG = "MyPageFragment";
     private NetworkService service;
@@ -69,7 +67,11 @@ public class MyPageFragment extends android.support.v4.app.Fragment {
         View view = inflater.inflate(R.layout.fragment_mypage, container, false);
         ButterKnife.bind(this, view);
         initRecyclerView();
-
+        if (!flag) {
+            recyclerViewMyLandmark.setAdapter(myPageAdapter);
+            return view;
+        }
+        flag = false;
         Call<MyLandmarkResult> getMyLandmarkList = service.getMyLandmarkList();
         getMyLandmarkList.enqueue(new Callback<MyLandmarkResult>() {
             @Override
@@ -80,13 +82,13 @@ public class MyPageFragment extends android.support.v4.app.Fragment {
                     switch (message) {
                         case "SUCCESS":
                             MyVisitList.addAll(response.body().getLandmarks());
-
+                            Log.d(TAG, MyVisitList.get(0).getName());
                             if (MyVisitList.isEmpty()) {
 
 
                             }
                             Log.d(TAG, String.valueOf(response.body().getMessage()));
-                            setMypageAdapter();
+                            setAdapter();
                             break;
                     }
                 }
@@ -97,11 +99,7 @@ public class MyPageFragment extends android.support.v4.app.Fragment {
 
             }
         });
-
-
-        ButterKnife.bind(this, view);
         bindClickListener();
-
         return view;
     }
 
@@ -111,11 +109,11 @@ public class MyPageFragment extends android.support.v4.app.Fragment {
         myPageLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerViewMyLandmark.setLayoutManager(myPageLayoutManager);
     }
-
-    private void setMypageAdapter() {
+    private void setAdapter() {
         myPageAdapter = new MyPageAdapter(getContext(), MyVisitList);
         myPageAdapter.notifyDataSetChanged();
         recyclerViewMyLandmark.setAdapter(myPageAdapter);
+        Log.d(TAG, "recyclerview item count : " + recyclerViewMyLandmark.getAdapter().getItemCount());
     }
 
     public void bindClickListener() {

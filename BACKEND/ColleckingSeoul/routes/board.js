@@ -164,13 +164,9 @@ router.post('/write', upload.single('photo'), function (req, res) {
         }
     };
     
-<<<<<<< HEAD
     let insertBoard = function (connection, u_idx, callback) {
       var decodedToken = jwtModule.decodeToken(req.headers.token).token;
-=======
-    let insertBoard = function (connection, callback) {
-        var decodedToken = jwtModule.decodeToken(req.headers.token).token;
->>>>>>> c76fd94d295755281c148afc2ee708202cab12b8
+
         let insertQuery =
             "insert into Board" +
             "(title, content, user_idx, landmark_idx, grade)" +
@@ -255,7 +251,7 @@ router.put('/modify', upload.single('photo'), function (req, res) {
             res.status(200).send(decodedToken);
             callback("ALREADY_SEND_MESSAGE", connection, "api : /board/");
         } else {
-            callback(null, connection,  decodedToken.token.idx);
+            callback(null, connection);
         }
     };
 

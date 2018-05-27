@@ -3,6 +3,7 @@ const router = require('express').Router();
 const bcrypt = require('bcrypt-nodejs');
 const async = require('async');
 const globalModule = require('../module/globalModule');
+const sqlController = require('../controller/sqlController');
 const nodemailer = require('nodemailer');
 const mailConfig = require('../config/mailAccount');
 const errorConfig =  require('../config/error');
@@ -10,7 +11,7 @@ const aws = require('aws-sdk');
 const multer = require('multer');
 const multerS3 = require('multer-s3');
 const jwtModule = require('../module/jwtModule');
-aws.config.loadFromPath('./config/aws_config.json')
+aws.config.loadFromPath('./config/aws_config.json');
 const s3 = new aws.S3();
 const upload = multer({
   storage: multerS3({
@@ -37,6 +38,8 @@ const upload = multer({
  *                  }
  */
 router.post('/', upload.single('photo'), function (req, res) {
+    console.log(req.body);
+    console.log(req.file);
     let checkValid = function (connection, callback) {
         let result = globalModule.checkBasicValid(req.body);
         if (result !== "OK") {

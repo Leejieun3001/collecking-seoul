@@ -8,6 +8,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -16,6 +18,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -34,6 +38,10 @@ public class ReviewListActivity extends AppCompatActivity implements OnMapReadyC
     RecyclerView recyclerView;
     @BindView(R.id.reviewlist_floatingbutton_fab)
     FloatingActionButton floatingButton;
+    @BindView(R.id.reviewlist_LinearLayout_null)
+    LinearLayout linearLayoutNull;
+    @BindView(R.id.reviewlist_TextView_null)
+    TextView textViewNull;
 
     private final String TAG = "ReviewActivity";
     private final int REQUEST_FOR_BOARD = 1000;
@@ -122,10 +130,9 @@ public class ReviewListActivity extends AppCompatActivity implements OnMapReadyC
                     if (response.body().getMessage().equals("SUCCESS")) {
                         hasDone = response.body().getHasDone();
                         itemList = response.body().getBoards();
-                        if(itemList.isEmpty()){
-                            BoardItem d = new BoardItem(0,0,0,"","","","",0,"");
-                            d.setContent("아직 등록된 리뷰가 없습니다.");
-                            itemList.add(d);
+                        if (itemList.isEmpty()) {
+                            recyclerView.setVisibility(View.GONE);
+                            textViewNull.setVisibility(View.VISIBLE);
                         }
 
                     }

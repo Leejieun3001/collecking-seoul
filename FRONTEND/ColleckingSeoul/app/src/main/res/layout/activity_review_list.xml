@@ -16,6 +16,21 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <LinearLayout
+            android:id="@+id/reviewlist_LinearLayout_null"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/reviewlist_TextView_null"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:text="아직 등록된 리뷰가 없습니다."/>
+
+        </LinearLayout>
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/reviewlist_recyclerview_recyclerview"
             android:layout_width="match_parent"

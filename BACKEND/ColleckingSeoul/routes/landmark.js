@@ -86,42 +86,7 @@ router.get('/', function (req, res) {
     async.waterfall(task, globalModule.asyncCallback.bind(this));
 });
 
-/**
- * api 목적        : 내가 다녀온 랜드마크 조회
- */
-router.get('/mine', function (req, res) {
-    let resultJson = {
-        message: '',
-        landmarks: null
-    };
 
-    let checkToken = function (connection, callback) {
-        var decodedToken = jwtModule.decodeToken(req.headers.token);
-        if (!decodedToken.hasOwnProperty('token')) {
-            res.status(200).send(decodedToken);
-            callback("ALREADY_SEND_MESSAGE", connection, "api : /landmark/mine");
-        } else {
-            callback(null, connection, decodedToken.token.idx);
-        }
-    };
-
-    let selectMyLandmark = function (connection, u_idx, callback) {
-        connection.query('select l.idx, l.name from Tour t left join Landmark l on t.landmark_idx=l.idx '
-            + 'where t.user_idx = ? ', 
-            u_idx, function (error, rows) {
-            if (error)  callback(error, connection, "Select query Error : ", res);
-            else {
-                resultJson.message = "SUCCESS";
-                resultJson.landmarks = rows;
-                res.status(200).send(resultJson);
-                callback(null, connection, "api : /landmark/mine");
-            }
-        });
-    }
-
-    var task = [globalModule.connect.bind(this), checkToken, selectMyLandmark, globalModule.releaseConnection.bind(this)];
-    async.waterfall(task, globalModule.asyncCallback.bind(this));
-});
 
 
 /**
@@ -134,7 +99,7 @@ router.get('/landmark_list', function (req, res) {
         landmarkList: []
     }
     let selectLandmark = function (connection, callback) {
-      var decoded = jwtModule.decodeToken(req.headers.token);
+
         let selectQuery =
             "select * from Landmark"
         connection.query(selectQuery,function (err, data) {

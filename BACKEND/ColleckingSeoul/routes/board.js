@@ -166,7 +166,6 @@ router.post('/write', upload.single('photo'), function (req, res) {
     
     let insertBoard = function (connection, u_idx, callback) {
       var decodedToken = jwtModule.decodeToken(req.headers.token).token;
-
         let insertQuery =
             "insert into Board" +
             "(title, content, user_idx, landmark_idx, grade)" +

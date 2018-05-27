@@ -125,6 +125,7 @@ public class ReviewActivity extends AppCompatActivity {
                 intent.putExtra("idx", idx + "");
                 intent.putExtra("title", textViewTitle.getText().toString());
                 intent.putExtra("content", textViewContent.getText().toString());
+                intent.putExtra("grade", ratingBarRating.getRating());
                 intent.putExtra("photo", url);
                 intent.putExtra("purpose", "edit");
 

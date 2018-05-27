@@ -89,6 +89,7 @@ public class RegisterReviewActivity extends AppCompatActivity {
             photoButton.setText("사진 수정하기");
             titleEditText.setText(gettingIntent.getStringExtra("title"));
             contentEditText.setText(gettingIntent.getStringExtra("content"));
+            ratingBar.setRating(gettingIntent.getFloatExtra("grade", 0));
             photo = gettingIntent.getStringExtra("photo");
             Glide.with(getBaseContext())
                     .load(photo)
@@ -124,6 +125,7 @@ public class RegisterReviewActivity extends AppCompatActivity {
                 if (!checkValid()) return;
 
                 float reviewRating = ratingBar.getRating();
+                Log.d(TAG, "reviewRating : " + reviewRating);
                 RequestBody title = RequestBody.create(MediaType.parse("multipart/form-data"), titleEditText.getText().toString());
                 RequestBody grade = RequestBody.create(MediaType.parse("multipart/form-data"), reviewRating + "");
                 RequestBody content = RequestBody.create(MediaType.parse("multipart/form-data"), contentEditText.getText().toString());

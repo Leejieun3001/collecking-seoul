@@ -168,7 +168,7 @@ router.post('/write', upload.single('photo'), function (req, res) {
         let insertQuery =
             "insert into Board" +
             "(title, content, user_idx, landmark_idx, grade)" +
-            "values (?,?,?,?)";
+            "values (?,?,?,?,?)";
         let params = [
             req.body.title,
             req.body.content,
@@ -256,7 +256,7 @@ router.put('/modify', upload.single('photo'), function (req, res) {
     let modifyBoard = function (connection, callback) {
         let modifyQuery =
             "update Board " +
-            "set title =?, content =?, date =? , grade = ?" +
+            "set title =?, content =?, date =? , grade =?" +
             "where idx =?";
         let params = [
             req.body.title,

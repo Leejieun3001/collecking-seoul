@@ -165,7 +165,6 @@ router.post('/write', upload.single('photo'), function (req, res) {
     };
     
     let insertBoard = function (connection, u_idx, callback) {
-      var decodedToken = jwtModule.decodeToken(req.headers.token).token;
         let insertQuery =
             "insert into Board" +
             "(title, content, user_idx, landmark_idx, grade)" +
@@ -179,15 +178,15 @@ router.post('/write', upload.single('photo'), function (req, res) {
         ];
         connection.query(insertQuery, params, function (err, data) {
             if (err) callback(err, connection, "insert query error : ", res);
-            else callback(null, connection, decodedToken.idx);
+            else callback(null, connection, u_idx);
         });
     }
 
-    let selectPostId = function (connection, userIdx, callback) {
+    let selectPostId = function (connection, u_idx, callback) {
         let selectQuery =
             "select idx from Board where user_idx = ? and landmark_idx = ? ";
         let params = [
-            userIdx,
+            u_idx,
             req.body.landmark_idx
         ];
         connection.query(selectQuery, params, function (err, data) {

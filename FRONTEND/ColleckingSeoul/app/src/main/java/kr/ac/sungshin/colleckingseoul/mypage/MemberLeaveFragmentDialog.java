@@ -3,6 +3,7 @@ package kr.ac.sungshin.colleckingseoul.mypage;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import kr.ac.sungshin.colleckingseoul.MainActivity;
 import kr.ac.sungshin.colleckingseoul.R;
 import kr.ac.sungshin.colleckingseoul.login.LoginActivity;
 import kr.ac.sungshin.colleckingseoul.model.response.BaseResult;
@@ -111,9 +113,8 @@ public class MemberLeaveFragmentDialog extends DialogFragment {
     }
 
     public void deleteInfo() {
-        SharedPreferences.Editor prefs = getActivity().getSharedPreferences("user", MODE_PRIVATE).edit();
-        prefs.remove("user");
-        prefs.commit();
+        SharedPreferences userInfo = getActivity().getSharedPreferences("user", MODE_PRIVATE);
+        userInfo.edit().clear().commit();
     }
 }
 

@@ -11,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TabHost;
+import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -77,12 +79,12 @@ public class LogoutFragmentDialog extends DialogFragment {
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
         getActivity().finish();
+        Toast.makeText(getContext(), "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show();
     }
 
     public void deleteInfo() {
-        SharedPreferences.Editor prefs = getActivity().getSharedPreferences("user", MODE_PRIVATE).edit();
-        prefs.remove("user");
-        prefs.apply();
+        SharedPreferences userInfo = getActivity().getSharedPreferences("user", MODE_PRIVATE);
+        userInfo.edit().clear().commit();
     }
 
 }

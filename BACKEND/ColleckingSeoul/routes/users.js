@@ -284,7 +284,7 @@ router.delete('/withdraw', function (req, res) {
     };
   
     let deleteUser = function (connection, u_idx, callback) {
-        connection.query('update User set id = "탈퇴한 회원", nickname = "탈퇴한 회원", isMember = 0 where user_idx = ?', 
+        connection.query('update User set id = "탈퇴한 회원", nickname = "탈퇴한 회원", isMember = 0 where idx = ?', 
             u_idx, function (error, rows) {
             if (error) callback(error, connection, "Update query Error : ", res);
             else {

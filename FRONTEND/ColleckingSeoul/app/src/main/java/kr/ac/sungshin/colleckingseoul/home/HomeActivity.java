@@ -1,5 +1,7 @@
 package kr.ac.sungshin.colleckingseoul.home;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -18,6 +20,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import kr.ac.sungshin.colleckingseoul.R;
 
+import kr.ac.sungshin.colleckingseoul.login.LoginActivity;
 import kr.ac.sungshin.colleckingseoul.mypage.MyPageFragment;
 import kr.ac.sungshin.colleckingseoul.rank.RankFragment;
 

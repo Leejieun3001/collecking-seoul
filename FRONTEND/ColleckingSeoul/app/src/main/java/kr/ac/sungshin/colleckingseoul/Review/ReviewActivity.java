@@ -12,6 +12,7 @@ import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +45,8 @@ public class ReviewActivity extends AppCompatActivity {
     TextView textViewContent;
     @BindView(R.id.review_imageview_photo)
     ImageView imageViewPhoto;
+    @BindView(R.id.review_ratingbar_ratingbar)
+    RatingBar ratingBarRating;
     @BindView(R.id.review_button_modify)
     Button buttonModify;
 
@@ -80,7 +83,10 @@ public class ReviewActivity extends AppCompatActivity {
                         textViewNickname.setText(response.body().getBoard().getNickname());
                         textViewdate.setText(response.body().getBoard().getDate());
                         textViewIdx.setText(String.valueOf(idx));
+                        Log.d(TAG, String.valueOf(response.body().getBoard().getGrade()));
+                        ratingBarRating.setRating(response.body().getBoard().getGrade());
                         textViewContent.setText(response.body().getBoard().getContent());
+                        Log.d(TAG, response.body().getBoard().getUrl());
                         url = response.body().getBoard().getUrl();
 
                         if (!url.equals("")) {

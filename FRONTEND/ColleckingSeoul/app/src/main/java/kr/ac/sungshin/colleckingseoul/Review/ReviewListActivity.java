@@ -123,7 +123,7 @@ public class ReviewListActivity extends AppCompatActivity implements OnMapReadyC
                         hasDone = response.body().getHasDone();
                         itemList = response.body().getBoards();
                         if(itemList.isEmpty()){
-                            BoardItem d = new BoardItem(0,0,0,"","","","","");
+                            BoardItem d = new BoardItem(0,0,0,"","","","",0,"");
                             d.setContent("아직 등록된 리뷰가 없습니다.");
                             itemList.add(d);
                         }

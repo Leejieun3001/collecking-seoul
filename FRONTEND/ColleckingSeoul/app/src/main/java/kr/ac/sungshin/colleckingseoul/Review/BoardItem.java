@@ -12,22 +12,32 @@ public class BoardItem {
     private String content;
     private String date;
     private String nickname;
+    private float grade;
     private String url;
 
-    public BoardItem(int idx, int bIdx, int uIdx, String title, String content, String date, String nickname, String url) {
+    public BoardItem(int idx, int bIdx, int uIdx, String title, String content, String date, String nickname, float grade, String url) {
         this.idx = idx;
         this.bIdx = bIdx;
-        this.bIdx = bIdx;
+        this.uIdx = uIdx;
         this.title = title;
         this.content = content;
         this.date = date;
         this.nickname = nickname;
+        this.grade = grade;
         this.url = url;
     }
 
 
     public int getIdx() {
         return idx;
+    }
+
+    public int getbIdx() {
+        return bIdx;
+    }
+
+    public int getuIdx() {
+        return uIdx;
     }
 
     public String getTitle() {
@@ -46,12 +56,24 @@ public class BoardItem {
         return nickname;
     }
 
+    public float getGrade() {
+        return grade;
+    }
+
     public String getUrl() {
         return url;
     }
 
     public void setIdx(int idx) {
         this.idx = idx;
+    }
+
+    public void setbIdx(int bIdx) {
+        this.bIdx = bIdx;
+    }
+
+    public void setuIdx(int uIdx) {
+        this.uIdx = uIdx;
     }
 
     public void setTitle(String title) {
@@ -70,24 +92,11 @@ public class BoardItem {
         this.nickname = nickname;
     }
 
-    public void setUrl(String photo) {
-        this.url = photo;
+    public void setGrade(float grade) {
+        this.grade = grade;
     }
 
-    public void setbIdx(int bIdx) {
-        this.bIdx = bIdx;
-    }
-
-    public void setuIdx(int uIdx) {
-        this.uIdx = uIdx;
-    }
-
-    public int getbIdx() {
-
-        return bIdx;
-    }
-
-    public int getuIdx() {
-        return uIdx;
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

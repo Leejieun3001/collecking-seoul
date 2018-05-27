@@ -9,11 +9,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import kr.ac.sungshin.colleckingseoul.R;
+import kr.ac.sungshin.colleckingseoul.Review.BoardItem;
 import kr.ac.sungshin.colleckingseoul.model.response.rank.UserRank;
 import kr.ac.sungshin.colleckingseoul.sqLite.Landmark;
 
@@ -23,7 +26,7 @@ import kr.ac.sungshin.colleckingseoul.sqLite.Landmark;
 
 public class MyPageAdapter extends RecyclerView.Adapter<MyPageAdapter.ViewHolder>  {
     private Context context;
-    private ArrayList<Landmark> list = new ArrayList<>();
+    private ArrayList<Landmark> list ;
 
     public MyPageAdapter(Context context, ArrayList<Landmark> list) {
         this.context = context;
@@ -41,6 +44,7 @@ public class MyPageAdapter extends RecyclerView.Adapter<MyPageAdapter.ViewHolder
 
     @Override
     public MyPageAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_my_landmark, parent, false);
         return new MyPageAdapter.ViewHolder(view);
     }
@@ -56,14 +60,12 @@ public class MyPageAdapter extends RecyclerView.Adapter<MyPageAdapter.ViewHolder
         return 0;
     }
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.my_landmark_textview_name)
-            TextView textViewMyLandmarkName;
-
+        private TextView textViewMyLandmarkName;
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+
+            textViewMyLandmarkName = (TextView) itemView.findViewById(R.id.landmarkrank_textview_name);
         }
     }
-
 
 }

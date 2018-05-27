@@ -130,7 +130,6 @@ router.get('/total', function (req, res) {
  * api 목적        : 글등록 
  * request params : {string title: "글제목", 
  *                   string content: "내용",
- *                   int user_idx :"회원 인덱스",
  *                   int landmark_idx : "랜드마크 인덱스",
  *                   float grade : "평점",
  *                   File photo : "글 사진" }
@@ -150,11 +149,11 @@ router.post('/write', upload.single('photo'), function (req, res) {
             res.status(200).send(decodedToken);
             callback("ALREADY_SEND_MESSAGE", connection, "api : /board/");
         } else {
-            callback(null, decodedToken.token.idx, connection);
+            callback(null, connection, decodedToken.token.idx);
         }
     };
     
-    let insertBoard = function (connection, callback) {
+    let insertBoard = function (connection, u_idx, callback) {
       var decodedToken = jwtModule.decodeToken(req.headers.token).token;
         let insertQuery =
             "insert into Board" +
@@ -163,7 +162,7 @@ router.post('/write', upload.single('photo'), function (req, res) {
         let params = [
             req.body.title,
             req.body.content,
-            decodedToken.idx,
+            u_idx,
             req.body.landmark_idx,
             req.body.grade
         ];
@@ -242,7 +241,7 @@ router.put('/modify', upload.single('photo'), function (req, res) {
             res.status(200).send(decodedToken);
             callback("ALREADY_SEND_MESSAGE", connection, "api : /board/");
         } else {
-            callback(null, decodedToken.token.idx, connection);
+            callback(null, connection,  decodedToken.token.idx);
         }
     };
 

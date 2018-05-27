@@ -1,6 +1,7 @@
 package kr.ac.sungshin.colleckingseoul.mypage;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -26,6 +28,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.content.Context.MODE_PRIVATE;
+
 /**
  * Created by kwonhyeon-a on 2018. 5. 15..
  */
@@ -41,6 +45,12 @@ public class MyPageFragment extends android.support.v4.app.Fragment {
     TextView textLeave;
     @BindView(R.id.my_landmark_recyclerView_userrecyclerview)
     RecyclerView recyclerViewMyLandmark;
+    @BindView(R.id.mypage_textview_memberNickname)
+    TextView textViewMemberNickname;
+    @BindView(R.id.mypage_linearLayout_null)
+    LinearLayout linearLayoutNull;
+
+
     private boolean flag = true;
 
     String TAG = "MyPageFragment";
@@ -72,22 +82,24 @@ public class MyPageFragment extends android.support.v4.app.Fragment {
             return view;
         }
         flag = false;
+
         Call<MyLandmarkResult> getMyLandmarkList = service.getMyLandmarkList();
+        SharedPreferences userInfo = getActivity().getSharedPreferences("user", MODE_PRIVATE);
+        String userNickname = userInfo.getString("nickname", "");
+        textViewMemberNickname.setText(userNickname);
+
         getMyLandmarkList.enqueue(new Callback<MyLandmarkResult>() {
             @Override
             public void onResponse(Call<MyLandmarkResult> call, Response<MyLandmarkResult> response) {
                 if (response.isSuccessful()) {
                     String message = response.body().getMessage();
-                    Log.d(TAG, String.valueOf(response.body().getMessage()));
                     switch (message) {
                         case "SUCCESS":
                             MyVisitList.addAll(response.body().getLandmarks());
-                            Log.d(TAG, MyVisitList.get(0).getName());
                             if (MyVisitList.isEmpty()) {
-
-
+                                recyclerViewMyLandmark.setVisibility(View.GONE);
+                                linearLayoutNull.setVisibility(View.VISIBLE);
                             }
-                            Log.d(TAG, String.valueOf(response.body().getMessage()));
                             setAdapter();
                             break;
                     }
@@ -109,11 +121,11 @@ public class MyPageFragment extends android.support.v4.app.Fragment {
         myPageLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerViewMyLandmark.setLayoutManager(myPageLayoutManager);
     }
+
     private void setAdapter() {
         myPageAdapter = new MyPageAdapter(getContext(), MyVisitList);
         myPageAdapter.notifyDataSetChanged();
         recyclerViewMyLandmark.setAdapter(myPageAdapter);
-        Log.d(TAG, "recyclerview item count : " + recyclerViewMyLandmark.getAdapter().getItemCount());
     }
 
     public void bindClickListener() {

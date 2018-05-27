@@ -101,16 +101,12 @@ public class MyPageModifyActivity extends AppCompatActivity {
 
                 final MyInfo myinfo = new MyInfo(editTextNickname.getText().toString(), editTextPhone.getText().toString(), intType,
                         Integer.toString(datePickerBirth.getYear()) + Integer.toString(datePickerBirth.getMonth()) + Integer.toString(datePickerBirth.getDayOfMonth()));
-
-                Log.d("MyPage", editTextNickname.getText().toString() + editTextPhone.getText().toString() +
-                        Integer.toString(datePickerBirth.getYear()) + Integer.toString(datePickerBirth.getMonth()) + Integer.toString(datePickerBirth.getDayOfMonth()));
                 Call<BaseResult> getUpdateInfo = service.getUpdateUserInfoResult(myinfo);
 
 
                 getUpdateInfo.enqueue(new Callback<BaseResult>() {
                     @Override
                     public void onResponse(Call<BaseResult> call, Response<BaseResult> response) {
-                        Log.d("MyPage", "서버에 요청");
                         if (response.isSuccessful()) {
                             String message = response.body().getMessage();
                             Log.d("MyPage", message);

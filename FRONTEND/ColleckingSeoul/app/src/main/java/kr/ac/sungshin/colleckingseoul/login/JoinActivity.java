@@ -253,9 +253,9 @@ public class JoinActivity extends AppCompatActivity {
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     Img.compress(Bitmap.CompressFormat.JPEG, 20, baos);
                     //imgUrl = "temp";
-                   // File photo = new File(imgUrl);
+                    // File photo = new File(imgUrl);
                     RequestBody photoBody = RequestBody.create(MediaType.parse("image/jpg"), baos.toByteArray());
-                    body = MultipartBody.Part.createFormData("photo",Img.toString(), photoBody);
+                    body = MultipartBody.Part.createFormData("photo", Img.toString(), photoBody);
                 } else {
                     BitmapFactory.Options options = new BitmapFactory.Options();
                     options.inSampleSize = 4;
@@ -286,7 +286,6 @@ public class JoinActivity extends AppCompatActivity {
                                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                                 startActivity(intent);
                             } else {
-                                Log.d(TAG, "여기" + response.body().getMessage());
                                 Toast.makeText(getApplicationContext(), "죄송합니다. 오류가 발생하였습니다. 빠른시일 내에 개선하겠습니다.", Toast.LENGTH_SHORT).show();
                             }
 
@@ -314,7 +313,6 @@ public class JoinActivity extends AppCompatActivity {
             Toast.makeText(getBaseContext(), "패스워드를 입력해주세요.", Toast.LENGTH_SHORT).show();
             return false;
         }
-
         if (name.equals("") || name.length() > 10) {
             Toast.makeText(getBaseContext(), "이름을 올바르게 입력해주세요.", Toast.LENGTH_SHORT).show();
             return false;

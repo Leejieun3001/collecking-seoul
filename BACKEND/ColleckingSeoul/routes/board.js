@@ -85,6 +85,7 @@ router.get('/', function (req, res) {
 router.get('/total', function (req, res) {
     let resultJson = {
         message: '',
+        hasDone: 0,
         boards: null
     };
 
@@ -94,35 +95,46 @@ router.get('/total', function (req, res) {
             res.status(200).send(decodedToken);
             callback("ALREADY_SEND_MESSAGE", connection, "api : /board/total");
         } else {
-            callback(null, connection);
+            callback(null, connection, decodedToken.token.idx);
         }
     };
 
-    let checkValid = function (connection, callback) {
+    let checkValid = function (connection, u_idx, callback) {
         if (req.query.idx === "" || req.query.idx == null) {
             res.status(200).send(errorConfig.NULL_VALUE);
             callback("ALREADY_SEND_MESSAGE", connection, "api : /board/total");
         } else {
-            callback(null, connection);
+            callback(null, connection, u_idx);
         }
     }
 
-    let selectBoardList = function (connection, callback) {
+    let selectBoardList = function (connection, u_idx, callback) {
         connection.query('select b.b_idx idx, title, b_content content, nickname, date, p.url from BoardListView b '
             + 'left join Photo p on b.b_idx = p.board_idx '
             + 'where b.l_idx = ?', 
             req.query.idx, function (error, rows) {
-            if (error) callback(error, connection, "Selecet query Error : ");
+            if (error) callback(error, connection, "Select query Error : ");
+            else {
+                resultJson.boards = rows;
+                callback(null, connection, u_idx);
+            }
+        });
+    }
+
+    let selectHistoryOfWriting = function (connection, u_idx, callback) {
+        connection.query('b_idx from BoardListView where l_idx = ? and u_idx = ?', 
+            [req.query.idx, u_idx], function (error, rows) {
+            if (error) callback(error, connection, "Select query Error : ");
             else {
                 resultJson.message = "SUCCESS";
-                resultJson.boards = rows;
+                if (rows.length !== 0) res.hasDone = 1;
                 res.status(200).send(resultJson);
                 callback(null, connection, "api : /board/total");
             }
         });
     }
 
-    var task = [globalModule.connect.bind(this), checkToken, checkValid, selectBoardList, globalModule.releaseConnection.bind(this)];
+    var task = [globalModule.connect.bind(this), checkToken, checkValid, selectBoardList, selectHistoryOfWriting, globalModule.releaseConnection.bind(this)];
     async.waterfall(task, globalModule.asyncCallback.bind(this));
 });
 
@@ -140,7 +152,6 @@ router.post('/write', upload.single('photo'), function (req, res) {
         code: "",
         user: null
     };
-    var boardIndex;
 
     
     let checkToken = function (connection, callback) {
@@ -153,8 +164,13 @@ router.post('/write', upload.single('photo'), function (req, res) {
         }
     };
     
+<<<<<<< HEAD
     let insertBoard = function (connection, u_idx, callback) {
       var decodedToken = jwtModule.decodeToken(req.headers.token).token;
+=======
+    let insertBoard = function (connection, callback) {
+        var decodedToken = jwtModule.decodeToken(req.headers.token).token;
+>>>>>>> c76fd94d295755281c148afc2ee708202cab12b8
         let insertQuery =
             "insert into Board" +
             "(title, content, user_idx, landmark_idx, grade)" +
@@ -166,7 +182,6 @@ router.post('/write', upload.single('photo'), function (req, res) {
             req.body.landmark_idx,
             req.body.grade
         ];
-        console.log(params);
         connection.query(insertQuery, params, function (err, data) {
             if (err) callback(err, connection, "insert query error : ", res);
             else callback(null, connection, decodedToken.idx);
@@ -183,12 +198,11 @@ router.post('/write', upload.single('photo'), function (req, res) {
         connection.query(selectQuery, params, function (err, data) {
             if (err) callback(err, connection, "insert query error : ", res);
             else {
-                boardIndex = data[0].idx;
-                callback(null, connection);
+                callback(null, connection, data[0].idx);
             }
         });
     }
-    let insertPhoto = function (connection, callback) {
+    let insertPhoto = function (connection, boardIndex, callback) {
         var decodedToken = jwtModule.decodeToken(req.headers.token).token;
         let insertQuery =
             "insert into Photo" +
@@ -207,7 +221,7 @@ router.post('/write', upload.single('photo'), function (req, res) {
             }
             else {
                 res.status(200).send({ message: "SUCCESS" });
-                callback(null, connection, "api : /post/write_post");
+                callback(null, connection, "api : /post/write");
             }
         });
     }

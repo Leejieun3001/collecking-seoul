@@ -78,6 +78,7 @@ public interface NetworkService {
     @Multipart
     Call<DefaultResult> getWritingBoardResult(@Part("title") RequestBody title,
                                               @Part("content") RequestBody content,
+                                              @Part("grade") RequestBody grade,
                                               @Part("landmark_idx") RequestBody landmark_idx,
                                               @Part MultipartBody.Part photo);
 
@@ -85,6 +86,7 @@ public interface NetworkService {
     @Multipart
     Call<DefaultResult> getModifyBoardResult(@Part("title") RequestBody title,
                                              @Part("content") RequestBody content,
+                                             @Part("grade") RequestBody grade,
                                              @Part("idx") RequestBody idx,
                                              @Part MultipartBody.Part photo);
 

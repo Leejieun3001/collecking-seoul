@@ -125,6 +125,7 @@ public class RegisterReviewActivity extends AppCompatActivity {
 
                 float reviewRating = ratingBar.getRating();
                 RequestBody title = RequestBody.create(MediaType.parse("multipart/form-data"), titleEditText.getText().toString());
+                RequestBody grade = RequestBody.create(MediaType.parse("multipart/form-data"), reviewRating + "");
                 RequestBody content = RequestBody.create(MediaType.parse("multipart/form-data"), contentEditText.getText().toString());
                 RequestBody landmark_idx = RequestBody.create(MediaType.parse("multipart/form-data"), idx);
 
@@ -154,8 +155,8 @@ public class RegisterReviewActivity extends AppCompatActivity {
                 RequestBody photoBody = RequestBody.create(MediaType.parse("image/jpg"), baos.toByteArray());
                 body = MultipartBody.Part.createFormData("photo", file.getName(), photoBody);
 
-                if (purpose.equals("edit")) { edit(title, content, landmark_idx, body); }
-                else if (purpose.equals("register")) { register(title, content, landmark_idx, body); }
+                if (purpose.equals("edit")) { edit(title, content, grade, landmark_idx, body); }
+                else if (purpose.equals("register")) { register(title, content, grade, landmark_idx, body); }
 
             }
         });
@@ -179,8 +180,8 @@ public class RegisterReviewActivity extends AppCompatActivity {
         }
     }
 
-    private void edit (final RequestBody title, final RequestBody content, RequestBody idx, MultipartBody.Part body) {
-        Call<DefaultResult> getModifyBoardResult = service.getModifyBoardResult(title, content, idx, body);
+    private void edit (final RequestBody title, final RequestBody content, RequestBody grade, RequestBody idx, MultipartBody.Part body) {
+        Call<DefaultResult> getModifyBoardResult = service.getModifyBoardResult(title, content, grade, idx, body);
         getModifyBoardResult.enqueue(new Callback<DefaultResult>() {
             @Override
             public void onResponse(Call<DefaultResult> call, Response<DefaultResult> response) {
@@ -203,8 +204,8 @@ public class RegisterReviewActivity extends AppCompatActivity {
         });
     }
 
-    private void register (RequestBody title, RequestBody content, RequestBody landmark_idx, MultipartBody.Part body) {
-        Call<DefaultResult> getWritingBoardResult = service.getWritingBoardResult(title, content, landmark_idx, body);
+    private void register (RequestBody title, RequestBody content, RequestBody grade, RequestBody landmark_idx, MultipartBody.Part body) {
+        Call<DefaultResult> getWritingBoardResult = service.getWritingBoardResult(title, content, grade, landmark_idx, body);
         getWritingBoardResult.enqueue(new Callback<DefaultResult>() {
             @Override
             public void onResponse(Call<DefaultResult> call, Response<DefaultResult> response) {

@@ -122,7 +122,7 @@ router.get('/total', function (req, res) {
     }
 
     let selectHistoryOfWriting = function (connection, u_idx, callback) {
-        connection.query('b_idx from BoardListView where l_idx = ? and u_idx = ?', 
+        connection.query('select b_idx from BoardListView where l_idx = ? and u_idx = ?', 
             [req.query.idx, u_idx], function (error, rows) {
             if (error) callback(error, connection, "Select query Error : ");
             else {

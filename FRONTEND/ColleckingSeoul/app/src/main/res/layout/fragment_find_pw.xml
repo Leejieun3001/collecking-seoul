@@ -2,37 +2,37 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="kr.ac.sungshin.colleckingseoul.login.FindPwFragment">
+    tools:context="kr.ac.sungshin.colleckingseoul.login.FindPwFragment"
+    android:background="@drawable/login_background">
 
     <!-- TODO: Update blank fragment layout -->
     <LinearLayout
+        android:id="@+id/findpw_linearLayout_findid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:gravity="center"
-        android:id="@+id/findpw_linearLayout_findid">
+        android:orientation="vertical">
+
         <EditText
             android:id="@+id/findPw_editText_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="이메일을 입력해 주세요"
             android:layout_margin="@dimen/small_margin"
-            />
+            android:hint="이메일을 입력해 주세요" />
+
         <EditText
             android:id="@+id/findPw_editText_phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="핸드폰 번호 ( - 없이 입력해 주세요) "
             android:layout_margin="@dimen/small_margin"
-            />
-
-
+            android:hint="핸드폰 번호 ( - 없이 입력해 주세요) " />
 
         <Button
             android:id="@+id/findPw_button_findPw"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="비밀번호 찾기"
+            android:background="@drawable/find_button_findpassword_off"
+
             />
 
     </LinearLayout>

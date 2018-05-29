@@ -36,8 +36,8 @@ public class HomeActivity extends AppCompatActivity {
     private final long FINISH_INTERVAL_TIME = 2000;
     private long backPressedTime = 0;
     private final int LANDMARK = 0;
-    private final int RANKING  = 1;
-    private final int MYPAGE   = 2;
+    private final int RANKING = 1;
+    private final int MYPAGE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,9 +54,15 @@ public class HomeActivity extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 int drawable;
                 switch (tab.getPosition()) {
-                    case LANDMARK: drawable = R.drawable.navigation_button_landmark_on; break;
-                    case RANKING:  drawable = R.drawable.navigation_button_ranking_on; break;
-                    default:       drawable = R.drawable.navigation_button_mypage_on; break;
+                    case LANDMARK:
+                        drawable = R.drawable.navigation_button_landmark_on;
+                        break;
+                    case RANKING:
+                        drawable = R.drawable.navigation_button_ranking_on;
+                        break;
+                    default:
+                        drawable = R.drawable.navigation_button_mypage_on;
+                        break;
                 }
                 tab.setIcon(drawable);
                 viewPager.setCurrentItem(tab.getPosition());
@@ -66,9 +72,15 @@ public class HomeActivity extends AppCompatActivity {
             public void onTabUnselected(TabLayout.Tab tab) {
                 int drawable;
                 switch (tab.getPosition()) {
-                    case LANDMARK: drawable = R.drawable.navigation_button_landmark_off; break;
-                    case RANKING:  drawable = R.drawable.navigation_button_ranking_off; break;
-                    default:       drawable = R.drawable.navigation_button_mypage_off; break;
+                    case LANDMARK:
+                        drawable = R.drawable.navigation_button_landmark_off;
+                        break;
+                    case RANKING:
+                        drawable = R.drawable.navigation_button_ranking_off;
+                        break;
+                    default:
+                        drawable = R.drawable.navigation_button_mypage_off;
+                        break;
                 }
                 tab.setIcon(drawable);
 

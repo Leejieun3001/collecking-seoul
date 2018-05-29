@@ -1,37 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="kr.ac.sungshin.colleckingseoul.login.FindInfoActivity">
 
-    <LinearLayout
-        android:id="@+id/ll"
+    <android.support.design.widget.TabLayout
+        android:id="@+id/findinfo_tablayout_tablayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        map:tabIndicatorColor="#fcb542"
+        android:background="@drawable/find_button_id">
 
-        <Button
-            android:id="@+id/findinfo_button_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="아이디 찾기" />
-
-        <Button
-            android:id="@+id/findinfo_button_password"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="비밀번호 찾기" />
-
-    </LinearLayout>
+    </android.support.design.widget.TabLayout>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/findinfo_viewpager_viewpager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/ll"></android.support.v4.view.ViewPager>
+        android:layout_height="0dp"
+        android:layout_weight="9">
 
-
+    </android.support.v4.view.ViewPager>
 </LinearLayout>
+
+
+
+

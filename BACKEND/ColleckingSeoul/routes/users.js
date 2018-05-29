@@ -94,9 +94,14 @@ router.put('/update_photo', upload.single('photo'), function (req, res) {
       message: ''
   };
 
+  console.log('update_photo ㅅ시작');
+  console.log(req.body);
+  console.log(req.file);
   let checkToken = function (connection, callback) {
+      console.log('checkToken');
       var decodedToken = jwtModule.decodeToken(req.headers.token);
       if (!decodedToken.hasOwnProperty('token')) {
+            console.log('decodedToken');
           res.status(200).send(decodedToken);
           callback("ALREADY_SEND_MESSAGE", connection, "api : /landmark/mine");
       } else {
@@ -105,6 +110,7 @@ router.put('/update_photo', upload.single('photo'), function (req, res) {
   };
 
   let checkValid = function (connection, u_idx, callback) {
+    console.log('checkValid');
     if (req.file === undefined) {
       res.status(200).send(errorConfig.NO_IMAGE);
       callback("ALREADY_SEND_MESSAGE", connection, "api : /landmark/mine");
@@ -114,6 +120,7 @@ router.put('/update_photo', upload.single('photo'), function (req, res) {
   }
 
   let updatePhoto = function (connection, u_idx, callback) {
+    console.log('updatePhoto');
       let params = [
         req.file.location,
         u_idx
@@ -129,7 +136,7 @@ router.put('/update_photo', upload.single('photo'), function (req, res) {
       });
   }
 
-  var task = [globalModule.connect.bind(this), checkToken, checkValid, selectMyLandmark, globalModule.releaseConnection.bind(this)];
+  var task = [globalModule.connect.bind(this), checkToken, checkValid, updatePhoto, globalModule.releaseConnection.bind(this)];
   async.waterfall(task, globalModule.asyncCallback.bind(this));
 });
 

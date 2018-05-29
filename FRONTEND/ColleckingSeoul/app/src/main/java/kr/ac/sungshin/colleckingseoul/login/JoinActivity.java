@@ -234,8 +234,8 @@ public class JoinActivity extends AppCompatActivity {
         buttonJoin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //  if (!checkValid(editTextId.getText().toString(), editTextPassword.getText().toString(), editTextRepassword.getText().toString(), editTextNikname.getText().toString(), editTextPhone.getText().toString(), Integer.toString(Datepickerbirth.getYear()) + Integer.toString(Datepickerbirth.getMonth()) + Integer.toString(Datepickerbirth.getDayOfMonth())))
-                //       return;
+                if (!checkValid(editTextId.getText().toString(), editTextPassword.getText().toString(), editTextRepassword.getText().toString(), editTextNikname.getText().toString(), editTextPhone.getText().toString(), Integer.toString(Datepickerbirth.getYear()) + Integer.toString(Datepickerbirth.getMonth()) + Integer.toString(Datepickerbirth.getDayOfMonth())))
+                    return;
 
                 int typeId = radioGroupSex.getCheckedRadioButtonId();
 
@@ -244,13 +244,24 @@ public class JoinActivity extends AppCompatActivity {
                 int intType = 1;
                 if (type.equals("남자")) intType = 0;
                 else if (type.equals("여자")) intType = 1;
+                String birthYear = Integer.toString(Datepickerbirth.getYear());
+                String birthMonth;
+                String birthDate;
+
+                if (Datepickerbirth.getMonth() < 9)
+                    birthMonth = "0" + Integer.toString(Datepickerbirth.getMonth() + 1);
+                else if (Datepickerbirth.getMonth() == 9) birthMonth = "10";
+                else birthMonth = Integer.toString(Datepickerbirth.getMonth() + 1);
+                if (Datepickerbirth.getDayOfMonth() < 10)
+                    birthDate = "0" + Integer.toString(Datepickerbirth.getDayOfMonth());
+                else birthDate = Integer.toString(Datepickerbirth.getDayOfMonth());
 
                 RequestBody id = RequestBody.create(MediaType.parse("multipart/form-data"), editTextId.getText().toString());
                 RequestBody password1 = RequestBody.create(MediaType.parse("multipart/form-data"), editTextPassword.getText().toString());
                 RequestBody password2 = RequestBody.create(MediaType.parse("multipart/form-data"), editTextRepassword.getText().toString());
                 RequestBody nickname = RequestBody.create(MediaType.parse("multipart/form-data"), editTextNikname.getText().toString());
                 RequestBody phone = RequestBody.create(MediaType.parse("multipart/form-data"), editTextPhone.getText().toString());
-                RequestBody birth = RequestBody.create(MediaType.parse("multipart/form-data"), Integer.toString(Datepickerbirth.getYear()) + Integer.toString(Datepickerbirth.getMonth()) + Integer.toString(Datepickerbirth.getDayOfMonth()));
+                RequestBody birth = RequestBody.create(MediaType.parse("multipart/form-data"), birthYear + "-" + birthMonth + "-" + birthDate);
                 RequestBody sex = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(intType));
 
                 MultipartBody.Part body;
@@ -273,7 +284,7 @@ public class JoinActivity extends AppCompatActivity {
                     bitmap = BitmapFactory.decodeStream(in, null, options); // InputStream 으로부터 Bitmap 을 만들어 준다
                     file = new File(imgUrl); // 그저 블러온 파일의 이름을 알아내려고 사용.
                 }
-//
+
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos); // 압축 옵션( JPEG, PNG ) , 품질 설정 ( 0 - 100까지의 int형 ),
 

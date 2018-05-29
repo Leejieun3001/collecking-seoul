@@ -108,7 +108,6 @@ public class MyPageModifyActivity extends AppCompatActivity {
     }
 
     public void bindClickListener() {
-
         //취소
         buttonCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,11 +120,6 @@ public class MyPageModifyActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_PICK);
-                File tempFile = new File(Environment.getExternalStorageDirectory() + "/temp.jpg");
-//                Uri tempUri = Uri.fromFile(tempFile);
-//                intent.putExtra("crop", "true");
-//                intent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
-//                intent.setType("image/*");
                 intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
                 intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(intent, REQ_CODE_SELECT_IMAGE);
@@ -135,24 +129,33 @@ public class MyPageModifyActivity extends AppCompatActivity {
         buttonStore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (!checkValid(editTextNickname.getText().toString(), editTextPhone.getText().toString(), Integer.toString(datePickerBirth.getYear()) + Integer.toString(datePickerBirth.getMonth()) + Integer.toString(datePickerBirth.getDayOfMonth())))
                     return;
 
                 int typeId = radioGroupSex.getCheckedRadioButtonId();
-
                 RadioButton radionbuttonSex = (RadioButton) findViewById(typeId);
                 String type = radionbuttonSex.getText().toString();
                 int intType = 1;
                 if (type.equals("남자")) intType = 0;
                 else if (type.equals("여자")) intType = 1;
+                String birthYear = Integer.toString(datePickerBirth.getYear());
+                String birthMonth;
+                String birthDate;
+
+                if (datePickerBirth.getMonth() < 9)
+                    birthMonth = "0" + Integer.toString(datePickerBirth.getMonth() + 1);
+                else if (datePickerBirth.getMonth() == 9) birthMonth = "10";
+                else birthMonth = Integer.toString(datePickerBirth.getMonth() + 1);
+
+                if (datePickerBirth.getDayOfMonth() < 10)
+                    birthDate = "0" + Integer.toString(datePickerBirth.getDayOfMonth());
+                else birthDate = Integer.toString(datePickerBirth.getDayOfMonth());
 
 
                 final MyInfo myinfo = new MyInfo(editTextNickname.getText().toString(), editTextPhone.getText().toString(), intType,
-                        Integer.toString(datePickerBirth.getYear()) + Integer.toString(datePickerBirth.getMonth()) + Integer.toString(datePickerBirth.getDayOfMonth()));
+                        birthYear + "-" + birthMonth + "-" + birthDate);
+
                 Call<BaseResult> getUpdateInfo = service.getUpdateUserInfoResult(myinfo);
-
-
                 getUpdateInfo.enqueue(new Callback<BaseResult>() {
                     @Override
                     public void onResponse(Call<BaseResult> call, Response<BaseResult> response) {
@@ -179,7 +182,6 @@ public class MyPageModifyActivity extends AppCompatActivity {
                                     break;
                             }
                         }
-
                     }
 
                     @Override
@@ -187,15 +189,12 @@ public class MyPageModifyActivity extends AppCompatActivity {
 
                     }
                 });
-
-
             }
         });
 
     }
 
     public boolean checkValid(String name, String phone, String birth) {
-
         if (name.equals("") || name.length() > 10) {
             Toast.makeText(getBaseContext(), "닉네임을 올바르게 입력해주세요.", Toast.LENGTH_SHORT).show();
             return false;
@@ -222,12 +221,10 @@ public class MyPageModifyActivity extends AppCompatActivity {
     public void changeInfo(MyInfo myinfo) {
         final SharedPreferences userInfo = getSharedPreferences("user", MODE_PRIVATE);
         final SharedPreferences.Editor editor = userInfo.edit();
-
         editor.putString("nickname", myinfo.getNickname());
         editor.putString("phone", myinfo.getPhone());
         editor.putString("birth", myinfo.getBirth());
         editor.putInt("sex", myinfo.getSex());
-
         editor.apply();
         editor.commit();
     }
@@ -239,7 +236,6 @@ public class MyPageModifyActivity extends AppCompatActivity {
         editor.apply();
         editor.commit();
     }
-
 
     // 선택된 이미지 데이터 받아오기
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -293,11 +289,11 @@ public class MyPageModifyActivity extends AppCompatActivity {
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
-            Bitmap bitmap = BitmapFactory.decodeStream(in, null, options); // InputStream 으로부터 Bitmap 을 만들어 준다.
+            Bitmap bitmap = BitmapFactory.decodeStream(in, null, options);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos); // 압축 옵션( JPEG, PNG ) , 품질 설정 ( 0 - 100까지의 int형 ),
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos);
 
-            File photo = new File(imgUrl); // 그저 블러온 파일의 이름을 알아내려고 사용.
+            File photo = new File(imgUrl);
             RequestBody photoBody = RequestBody.create(MediaType.parse("image/jpg"), baos.toByteArray());
             body = MultipartBody.Part.createFormData("photo", photo.getName(), photoBody);
         }

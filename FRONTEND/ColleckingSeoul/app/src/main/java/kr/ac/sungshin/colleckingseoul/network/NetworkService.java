@@ -106,7 +106,8 @@ public interface NetworkService {
     Call<MyLandmarkResult> getMyLandmarkList();
 
     @PUT("user/update_photo")
-    Call<BaseResult> getUpdatePhotoReult();
+    @Multipart
+    Call<BaseResult> getUpdatePhotoResult(@Part MultipartBody.Part photo);
 
     @PUT("user/update_info")
     Call<BaseResult> getUpdateUserInfoResult(@Body MyInfo info);

@@ -8,4 +8,8 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="FacebookLoginButton">
+        <item name="android:background">@drawable/login_button_facebook</item>
+    </style>
+
 </resources>

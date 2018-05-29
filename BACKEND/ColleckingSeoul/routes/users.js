@@ -164,13 +164,11 @@ router.put('/update_info', function (req, res) {
     }
 
     let updateUserInfo = function (connection, u_idx, callback) {
-        console.log("updateUserInfo", connection);
-        console.log("updateUserInfo", u_idx);
         let updateQuery = "update User set nickname= ?, phone = ?, birth = ?, sex = ? where idx = ?";
         let params = [
             req.body.nickname,
             req.body.phone,
-            Date(req.body.birth),
+            new Date(req.body.birth),
             req.body.sex,
             u_idx
         ];

@@ -35,6 +35,9 @@ public class HomeActivity extends AppCompatActivity {
     //Back 키 두번 클릭 여부 확인
     private final long FINISH_INTERVAL_TIME = 2000;
     private long backPressedTime = 0;
+    private final int LANDMARK = 0;
+    private final int RANKING  = 1;
+    private final int MYPAGE   = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,33 +52,47 @@ public class HomeActivity extends AppCompatActivity {
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                int drawable;
+                switch (tab.getPosition()) {
+                    case LANDMARK: drawable = R.drawable.navigation_button_landmark_on; break;
+                    case RANKING:  drawable = R.drawable.navigation_button_ranking_on; break;
+                    default:       drawable = R.drawable.navigation_button_mypage_on; break;
+                }
+                tab.setIcon(drawable);
                 viewPager.setCurrentItem(tab.getPosition());
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
+                int drawable;
+                switch (tab.getPosition()) {
+                    case LANDMARK: drawable = R.drawable.navigation_button_landmark_off; break;
+                    case RANKING:  drawable = R.drawable.navigation_button_ranking_off; break;
+                    default:       drawable = R.drawable.navigation_button_mypage_off; break;
+                }
+                tab.setIcon(drawable);
 
             }
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
+                Log.d(TAG, "onTabReselected : " + tab.getPosition());
 
             }
         });
     }
 
     private void setupTabIcons() {
-        Log.d(TAG, tabLayout.getTabCount() + "");
-        tabLayout.getTabAt(0).setIcon(R.drawable.marker);
-        tabLayout.getTabAt(1).setIcon(R.drawable.crown);
-        tabLayout.getTabAt(2).setIcon(R.drawable.person);
+        tabLayout.getTabAt(LANDMARK).setIcon(R.drawable.navigation_button_landmark_on).setCustomView(R.layout.item_custom_icon);
+        tabLayout.getTabAt(RANKING).setIcon(R.drawable.navigation_button_ranking_off).setCustomView(R.layout.item_custom_icon);
+        tabLayout.getTabAt(MYPAGE).setIcon(R.drawable.navigation_button_mypage_off).setCustomView(R.layout.item_custom_icon);
     }
 
     private void setupViewPager() {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFrag(new MapFragment(), "메인");
-        adapter.addFrag(new RankFragment(), "랭킹");
-        adapter.addFrag(new MyPageFragment(), "마이페이지");
+        adapter.addFrag(new MapFragment());
+        adapter.addFrag(new RankFragment());
+        adapter.addFrag(new MyPageFragment());
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
     }
@@ -96,9 +113,8 @@ public class HomeActivity extends AppCompatActivity {
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
         private final List<Fragment> fragmentList = new ArrayList<>();
-        private final List<String> titleList = new ArrayList<>();
 
-        public ViewPagerAdapter(FragmentManager manager) {
+        private ViewPagerAdapter(FragmentManager manager) {
             super(manager);
         }
 
@@ -112,14 +128,8 @@ public class HomeActivity extends AppCompatActivity {
             return fragmentList.size();
         }
 
-        public void addFrag(Fragment fragment, String title) {
+        private void addFrag(Fragment fragment) {
             fragmentList.add(fragment);
-            titleList.add(title);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return titleList.get(position);
         }
     }
 }

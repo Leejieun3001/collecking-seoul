@@ -22,6 +22,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -29,6 +31,7 @@ import java.io.InputStream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 import kr.ac.sungshin.colleckingseoul.R;
 import kr.ac.sungshin.colleckingseoul.home.HomeActivity;
 import kr.ac.sungshin.colleckingseoul.model.request.Join;
@@ -54,7 +57,7 @@ public class MyPageModifyActivity extends AppCompatActivity {
     @BindView(R.id.mypage_button_profile)
     Button buttonPofile;
     @BindView(R.id.mypage_image_profile)
-    ImageView imageViewProfile;
+    CircleImageView imageViewProfile;
     @BindView(R.id.mypage_edittext_nickname)
     EditText editTextNickname;
     @BindView(R.id.mypage_edittext_phone)
@@ -86,6 +89,7 @@ public class MyPageModifyActivity extends AppCompatActivity {
         String userNickname = userInfo.getString("nickname", "");
         String userPhone = userInfo.getString("phone", "");
         String userPhoto = userInfo.getString("url", "");
+        Log.d(TAG, "이것은" + userPhoto);
         int userSex = userInfo.getInt("sex", 0);
         editTextNickname.setText(userNickname);
         editTextPhone.setText(userPhone);
@@ -93,6 +97,12 @@ public class MyPageModifyActivity extends AppCompatActivity {
             radioGroupSex.check(R.id.mypage_radiobutton_woman);
         } else {
             radioGroupSex.check(R.id.mypage_radiobutton_man);
+        }
+
+        if (!userPhoto.equals("")) {
+            Glide.with(getApplicationContext())
+                    .load(userPhoto)
+                    .into(imageViewProfile);
         }
         bindClickListener();
     }
@@ -217,9 +227,19 @@ public class MyPageModifyActivity extends AppCompatActivity {
         editor.putString("phone", myinfo.getPhone());
         editor.putString("birth", myinfo.getBirth());
         editor.putInt("sex", myinfo.getSex());
+
         editor.apply();
         editor.commit();
     }
+
+    public void changePhoto() {
+        final SharedPreferences userInfo = getSharedPreferences("user", MODE_PRIVATE);
+        final SharedPreferences.Editor editor = userInfo.edit();
+        editor.putString("url", imgUrl);
+        editor.apply();
+        editor.commit();
+    }
+
 
     // 선택된 이미지 데이터 받아오기
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -232,6 +252,7 @@ public class MyPageModifyActivity extends AppCompatActivity {
                     getImageNameToUri(data.getData());
                     this.data = data.getData();
                     StoreProfile();
+                    changePhoto();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -252,7 +273,7 @@ public class MyPageModifyActivity extends AppCompatActivity {
     }
 
     public void StoreProfile() {
-       MultipartBody.Part body;
+        MultipartBody.Part body;
 
         if (imgUrl == "") {
             Bitmap Img = BitmapFactory.decodeResource(getResources(), R.drawable.avatar_male);

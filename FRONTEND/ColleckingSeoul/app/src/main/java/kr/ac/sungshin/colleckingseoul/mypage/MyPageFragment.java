@@ -78,15 +78,40 @@ public class MyPageFragment extends android.support.v4.app.Fragment {
         ButterKnife.bind(this, view);
         initRecyclerView();
         if (!flag) {
+            SharedPreferences userInfo = getActivity().getSharedPreferences("user", MODE_PRIVATE);
+            String userNickname = userInfo.getString("nickname", "");
+            textViewMemberNickname.setText(userNickname);
             recyclerViewMyLandmark.setAdapter(myPageAdapter);
+            bindClickListener();
             return view;
         }
         flag = false;
 
-        Call<MyLandmarkResult> getMyLandmarkList = service.getMyLandmarkList();
         SharedPreferences userInfo = getActivity().getSharedPreferences("user", MODE_PRIVATE);
         String userNickname = userInfo.getString("nickname", "");
         textViewMemberNickname.setText(userNickname);
+        getVisitList();
+        bindClickListener();
+        return view;
+    }
+
+    private void initRecyclerView() {
+        recyclerViewMyLandmark.setHasFixedSize(true);
+        myPageLayoutManager = new LinearLayoutManager(getContext());
+        myPageLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerViewMyLandmark.setLayoutManager(myPageLayoutManager);
+    }
+
+    private void setAdapter() {
+        myPageAdapter = new MyPageAdapter(getContext(), MyVisitList);
+        myPageAdapter.notifyDataSetChanged();
+        recyclerViewMyLandmark.setAdapter(myPageAdapter);
+    }
+
+
+    public void getVisitList() {
+
+        Call<MyLandmarkResult> getMyLandmarkList = service.getMyLandmarkList();
 
         getMyLandmarkList.enqueue(new Callback<MyLandmarkResult>() {
             @Override
@@ -111,21 +136,7 @@ public class MyPageFragment extends android.support.v4.app.Fragment {
 
             }
         });
-        bindClickListener();
-        return view;
-    }
 
-    private void initRecyclerView() {
-        recyclerViewMyLandmark.setHasFixedSize(true);
-        myPageLayoutManager = new LinearLayoutManager(getContext());
-        myPageLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        recyclerViewMyLandmark.setLayoutManager(myPageLayoutManager);
-    }
-
-    private void setAdapter() {
-        myPageAdapter = new MyPageAdapter(getContext(), MyVisitList);
-        myPageAdapter.notifyDataSetChanged();
-        recyclerViewMyLandmark.setAdapter(myPageAdapter);
     }
 
     public void bindClickListener() {

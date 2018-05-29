@@ -1,7 +1,14 @@
 package kr.ac.sungshin.colleckingseoul.mypage;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,9 +17,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,6 +38,9 @@ import kr.ac.sungshin.colleckingseoul.model.response.User;
 import kr.ac.sungshin.colleckingseoul.model.singleton.InfoManager;
 import kr.ac.sungshin.colleckingseoul.network.ApplicationController;
 import kr.ac.sungshin.colleckingseoul.network.NetworkService;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -35,6 +51,10 @@ public class MyPageModifyActivity extends AppCompatActivity {
     Button buttonCancel;
     @BindView(R.id.mypage_button_store)
     Button buttonStore;
+    @BindView(R.id.mypage_button_profile)
+    Button buttonPofile;
+    @BindView(R.id.mypage_image_profile)
+    ImageView imageViewProfile;
     @BindView(R.id.mypage_edittext_nickname)
     EditText editTextNickname;
     @BindView(R.id.mypage_edittext_phone)
@@ -49,7 +69,11 @@ public class MyPageModifyActivity extends AppCompatActivity {
     RadioButton radioButtonWoman;
 
     private NetworkService service;
+    private static final int REQ_CODE_SELECT_IMAGE = 100;
     private final String TAG = "MyPageModifyActivity";
+
+    String imgUrl = "";
+    Uri data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +104,21 @@ public class MyPageModifyActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+        //프로필 사진
+        buttonPofile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                File tempFile = new File(Environment.getExternalStorageDirectory() + "/temp.jpg");
+//                Uri tempUri = Uri.fromFile(tempFile);
+//                intent.putExtra("crop", "true");
+//                intent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
+//                intent.setType("image/*");
+                intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
+                intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, REQ_CODE_SELECT_IMAGE);
             }
         });
         //저장
@@ -182,6 +221,94 @@ public class MyPageModifyActivity extends AppCompatActivity {
         editor.commit();
     }
 
+    // 선택된 이미지 데이터 받아오기
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQ_CODE_SELECT_IMAGE) {
+            //이미지를 성공적으로 가져왔을 경우
+            if (resultCode == Activity.RESULT_OK) {
+                try {
+                    Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
+                    imageViewProfile.setImageBitmap(image_bitmap);
+                    getImageNameToUri(data.getData());
+                    this.data = data.getData();
+                    StoreProfile();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public String getImageNameToUri(Uri data) {
+        String[] proj = {MediaStore.Images.Media.DATA};
+        Cursor cursor = managedQuery(data, proj, null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        String imgPath = cursor.getString(column_index);
+        String imgName = imgPath.substring(imgPath.lastIndexOf("/") + 1);
+        imgUrl = imgPath;
+
+        return imgName;
+    }
+
+    public void StoreProfile() {
+       MultipartBody.Part body;
+
+        if (imgUrl == "") {
+            Bitmap Img = BitmapFactory.decodeResource(getResources(), R.drawable.avatar_male);
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            Img.compress(Bitmap.CompressFormat.JPEG, 20, baos);
+            //imgUrl = "temp";
+            // File photo = new File(imgUrl);
+            RequestBody photoBody = RequestBody.create(MediaType.parse("image/jpg"), baos.toByteArray());
+            body = MultipartBody.Part.createFormData("photo", Img.toString(), photoBody);
+        } else {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inSampleSize = 4;
+            InputStream in = null;
+            try {
+                in = getContentResolver().openInputStream(data);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            Bitmap bitmap = BitmapFactory.decodeStream(in, null, options); // InputStream 으로부터 Bitmap 을 만들어 준다.
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos); // 압축 옵션( JPEG, PNG ) , 품질 설정 ( 0 - 100까지의 int형 ),
+
+            File photo = new File(imgUrl); // 그저 블러온 파일의 이름을 알아내려고 사용.
+            RequestBody photoBody = RequestBody.create(MediaType.parse("image/jpg"), baos.toByteArray());
+            body = MultipartBody.Part.createFormData("photo", photo.getName(), photoBody);
+        }
+
+        Call<BaseResult> getUpdatePhotoResult = service.getUpdatePhotoResult(body);
+        getUpdatePhotoResult.enqueue(new Callback<BaseResult>() {
+            @Override
+            public void onResponse(Call<BaseResult> call, Response<BaseResult> response) {
+                if (response.isSuccessful()) {
+
+                    Log.d(TAG, response.body().getMessage());
+                    switch (response.body().getMessage()) {
+                        case "SUCCESS":
+                            Toast.makeText(getBaseContext(), "프로필 사진을 성공적으로 변경 하였습니다.", Toast.LENGTH_SHORT).show();
+                            break;
+                        case "NO_IMAGE":
+                            Toast.makeText(getBaseContext(), "프로필 사진을 없습니다.", Toast.LENGTH_SHORT).show();
+                            break;
+                        case "NOT_LOGIN":
+                            Toast.makeText(getBaseContext(), "로그인 하지 않은 사용자 입니다.", Toast.LENGTH_SHORT).show();
+                            break;
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BaseResult> call, Throwable t) {
+
+            }
+        });
+
+    }
 
 }
 

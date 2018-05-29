@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -24,6 +26,9 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,6 +36,7 @@ import java.io.InputStream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 import kr.ac.sungshin.colleckingseoul.R;
 import kr.ac.sungshin.colleckingseoul.model.response.BaseResult;
 import kr.ac.sungshin.colleckingseoul.model.response.VerificationCodeResult;
@@ -70,7 +76,7 @@ public class JoinActivity extends AppCompatActivity {
     @BindView(R.id.join_button_profile)
     Button buttonProfile;
     @BindView(R.id.join_image_profile)
-    ImageView imageProfile;
+    CircleImageView imageProfile;
     @BindView(R.id.join_radioGroup_sex)
     RadioGroup radioGroupSex;
 
@@ -86,7 +92,9 @@ public class JoinActivity extends AppCompatActivity {
 
     private static final String TEMP_FILE_NAME = "profileImageTemp.jpg";
 
+    private String photo = "";
     String imgUrl = "";
+
     Uri data;
 
     @Override
@@ -122,11 +130,11 @@ public class JoinActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 Intent intent = new Intent(Intent.ACTION_PICK);
-                //File tempFile = new File(Environment.getExternalStorageDirectory() + "/temp.jpg");
-                //Uri tempUri = Uri.fromFile(tempFile);
-                //intent.putExtra("crop", "true");
-                //intent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
-                //  intent.setType("image/*");
+                File tempFile = new File(Environment.getExternalStorageDirectory() + "/temp.jpg");
+                Uri tempUri = Uri.fromFile(tempFile);
+                intent.putExtra("crop", "true");
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
+                intent.setType("image/*");
                 intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
                 intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(intent, REQ_CODE_SELECT_IMAGE);
@@ -226,8 +234,8 @@ public class JoinActivity extends AppCompatActivity {
         buttonJoin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!checkValid(editTextId.getText().toString(), editTextPassword.getText().toString(), editTextRepassword.getText().toString(), editTextNikname.getText().toString(), editTextPhone.getText().toString(), Integer.toString(Datepickerbirth.getYear()) + Integer.toString(Datepickerbirth.getMonth()) + Integer.toString(Datepickerbirth.getDayOfMonth())))
-                    return;
+                //  if (!checkValid(editTextId.getText().toString(), editTextPassword.getText().toString(), editTextRepassword.getText().toString(), editTextNikname.getText().toString(), editTextPhone.getText().toString(), Integer.toString(Datepickerbirth.getYear()) + Integer.toString(Datepickerbirth.getMonth()) + Integer.toString(Datepickerbirth.getDayOfMonth())))
+                //       return;
 
                 int typeId = radioGroupSex.getCheckedRadioButtonId();
 
@@ -246,33 +254,31 @@ public class JoinActivity extends AppCompatActivity {
                 RequestBody sex = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(intType));
 
                 MultipartBody.Part body;
-
-                if (imgUrl == "") {
-                    Bitmap Img = BitmapFactory.decodeResource(getResources(), R.drawable.avatar_male);
-
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    Img.compress(Bitmap.CompressFormat.JPEG, 20, baos);
-                    //imgUrl = "temp";
-                    // File photo = new File(imgUrl);
-                    RequestBody photoBody = RequestBody.create(MediaType.parse("image/jpg"), baos.toByteArray());
-                    body = MultipartBody.Part.createFormData("photo", Img.toString(), photoBody);
+                Bitmap bitmap;
+                File file;
+                if (imgUrl.equals("")) {
+                    file = new File(photo);
+                    Log.d(TAG, String.valueOf(file.exists()));
+                    Drawable drawable = imageProfile.getDrawable();
+                    bitmap = ((GlideBitmapDrawable) drawable).getBitmap();
                 } else {
                     BitmapFactory.Options options = new BitmapFactory.Options();
-                    options.inSampleSize = 4;
+                    options.inSampleSize = 2;
                     InputStream in = null;
                     try {
                         in = getContentResolver().openInputStream(data);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
-                    Bitmap bitmap = BitmapFactory.decodeStream(in, null, options); // InputStream 으로부터 Bitmap 을 만들어 준다.
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos); // 압축 옵션( JPEG, PNG ) , 품질 설정 ( 0 - 100까지의 int형 ),
-
-                    File photo = new File(imgUrl); // 그저 블러온 파일의 이름을 알아내려고 사용.
-                    RequestBody photoBody = RequestBody.create(MediaType.parse("image/jpg"), baos.toByteArray());
-                    body = MultipartBody.Part.createFormData("photo", photo.getName(), photoBody);
+                    bitmap = BitmapFactory.decodeStream(in, null, options); // InputStream 으로부터 Bitmap 을 만들어 준다
+                    file = new File(imgUrl); // 그저 블러온 파일의 이름을 알아내려고 사용.
                 }
+//
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos); // 압축 옵션( JPEG, PNG ) , 품질 설정 ( 0 - 100까지의 int형 ),
+
+                RequestBody photoBody = RequestBody.create(MediaType.parse("image/jpg"), baos.toByteArray());
+                body = MultipartBody.Part.createFormData("photo", file.getName(), photoBody);
 
                 Call<BaseResult> getJoinResult = service.getJoinResult(id, password1, password2, phone, nickname, birth, sex, body);
                 getJoinResult.enqueue(new Callback<BaseResult>() {
@@ -297,6 +303,7 @@ public class JoinActivity extends AppCompatActivity {
                         Log.d(TAG, "onFailure");
                     }
                 });
+
             }
         });
 

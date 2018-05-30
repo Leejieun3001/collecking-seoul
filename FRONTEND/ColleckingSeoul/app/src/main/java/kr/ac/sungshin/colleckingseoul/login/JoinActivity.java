@@ -271,7 +271,7 @@ public class JoinActivity extends AppCompatActivity {
                     file = new File(photo);
                     Log.d(TAG, String.valueOf(file.exists()));
                     Drawable drawable = imageProfile.getDrawable();
-                    bitmap = ((GlideBitmapDrawable) drawable).getBitmap();
+                    bitmap = ((BitmapDrawable) drawable).getBitmap();
                 } else {
                     BitmapFactory.Options options = new BitmapFactory.Options();
                     options.inSampleSize = 2;

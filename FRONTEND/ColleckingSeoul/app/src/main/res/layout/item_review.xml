@@ -3,7 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:id="@+id/itemreview_layout_layout"
     android:layout_height="100dp"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:padding="10dp"
+    android:background="@drawable/mainplace_box_white">
     <ImageView
         android:id="@+id/itemreview_imageview_image"
         android:layout_width="0dp"
@@ -20,7 +22,9 @@
             android:maxLines="1"
             android:ellipsize="end"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/big_text_size"/>
         <TextView
             android:id="@+id/itemreview_textview_content"
             android:maxLines="2"

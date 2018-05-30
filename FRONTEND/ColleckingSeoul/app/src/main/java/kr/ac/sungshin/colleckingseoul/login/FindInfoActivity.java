@@ -5,6 +5,7 @@ package kr.ac.sungshin.colleckingseoul.login;
 import android.app.Activity;
 import android.app.TabActivity;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import android.support.design.widget.TabLayout;
@@ -35,7 +36,7 @@ public class FindInfoActivity extends AppCompatActivity {
     @BindView(R.id.findinfo_tablayout_tablayout)
     TabLayout tabLayout;
     private final int FINDID = 0;
-    private final int FINDPW  = 1;
+    private final int FINDPW = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,11 +46,22 @@ public class FindInfoActivity extends AppCompatActivity {
 
         setupViewPager();
         tabLayout.setupWithViewPager(viewPager);
-         setupTabIcons();
+
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                Drawable drawable = getResources().getDrawable(R.drawable.find_button_id);
 
+                switch (tab.getPosition()) {
+                    case FINDID:
+                        drawable = getResources().getDrawable(R.drawable.find_button_id);
+                        break;
+                    case FINDPW:
+                        drawable = getResources().getDrawable(R.drawable.find_button_password);
+                        break;
+                }
+                tabLayout.setBackgroundDrawable(drawable);
+                viewPager.setCurrentItem(tab.getPosition());
             }
 
             @Override
@@ -71,12 +83,6 @@ public class FindInfoActivity extends AppCompatActivity {
         adapter.addFrag(new FindPwFragment());
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-    }
-
-    private void setupTabIcons() {
-        tabLayout.getTabAt(FINDID).setIcon(R.drawable.find_button_id);
-        tabLayout.getTabAt(FINDPW).setIcon(R.drawable.find_button_password);
-
     }
 
 

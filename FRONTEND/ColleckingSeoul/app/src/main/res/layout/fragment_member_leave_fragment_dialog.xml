@@ -9,30 +9,49 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="정말 collecking seoul을 떠나시겠습니까?" />
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/ic_launcher"/>
+            android:layout_marginBottom="@dimen/small_margin"
+            android:layout_marginLeft="@dimen/small_margin"
+            android:layout_marginRight="@dimen/small_margin"
+            android:src="@drawable/login_colleckingseoul" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/small_margin"
+            android:layout_marginLeft="@dimen/small_margin"
+            android:layout_marginRight="@dimen/small_margin"
+            android:text="정말 collecking seoul을 떠나시겠습니까?"
+            android:textColor="#000000"
+            android:textSize="@dimen/big_text_size" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center">
+
             <Button
                 android:id="@+id/memberleavefragmentdialog_button_cancle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="취소"/>
+                android:layout_margin="@dimen/small_margin"
+                android:background="@color/colorPrimary"
+                android:text="취소"
+                android:textColor="@color/colorWhite" />
+
             <Button
                 android:id="@+id/memberleavefragmentdialog_button_leave"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="회원 탈퇴"/>
+                android:layout_margin="@dimen/small_margin"
+                android:background="@color/colorAccent"
+                android:text="회원 탈퇴"
+                android:textColor="@color/colorWhite" />
         </LinearLayout>
     </LinearLayout>
 

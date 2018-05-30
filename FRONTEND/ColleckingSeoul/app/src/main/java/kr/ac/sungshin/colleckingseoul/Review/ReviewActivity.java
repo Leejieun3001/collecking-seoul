@@ -31,8 +31,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ReviewActivity extends AppCompatActivity {
-    @BindView(R.id.review_textview_name)
-    TextView textViewName;
+
     @BindView(R.id.review_textview_title)
     TextView textViewTitle;
     @BindView(R.id.review_textview_nickname)
@@ -72,7 +71,7 @@ public class ReviewActivity extends AppCompatActivity {
         bindClickListener();
     }
 
-    private void loadReviewInfo () {
+    private void loadReviewInfo() {
         Call<BoardResult> boardResult = service.getBoardResult(idx);
         boardResult.enqueue(new Callback<BoardResult>() {
             @Override
@@ -96,7 +95,7 @@ public class ReviewActivity extends AppCompatActivity {
                         }
                         SharedPreferences userInfo = getSharedPreferences("user", MODE_PRIVATE);
                         String userIdx = userInfo.getString("idx", "0");
-                        if (String.valueOf(response.body().getBoard().getuIdx()).equals(userIdx)){
+                        if (String.valueOf(response.body().getBoard().getuIdx()).equals(userIdx)) {
                             buttonModify.setVisibility(View.VISIBLE);
                         }
                     }
@@ -117,7 +116,7 @@ public class ReviewActivity extends AppCompatActivity {
         });
     }
 
-    private void bindClickListener () {
+    private void bindClickListener() {
         buttonModify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -82,6 +82,10 @@ public class MyPageFragment extends android.support.v4.app.Fragment {
             String userNickname = userInfo.getString("nickname", "");
             textViewMemberNickname.setText(userNickname);
             recyclerViewMyLandmark.setAdapter(myPageAdapter);
+            if (MyVisitList.isEmpty()) {
+                recyclerViewMyLandmark.setVisibility(View.GONE);
+                linearLayoutNull.setVisibility(View.VISIBLE);
+            }
             bindClickListener();
             return view;
         }

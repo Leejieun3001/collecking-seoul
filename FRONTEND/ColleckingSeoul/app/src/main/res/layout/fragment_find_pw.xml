@@ -2,8 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="kr.ac.sungshin.colleckingseoul.login.FindPwFragment"
-    android:background="@drawable/login_background">
+    android:background="@drawable/login_background"
+    tools:context="kr.ac.sungshin.colleckingseoul.login.FindPwFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <LinearLayout
@@ -18,19 +18,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/small_margin"
-            android:hint="이메일을 입력해 주세요" />
+            android:gravity="center"
+            android:hint="이메일을 입력해 주세요"
+            android:textColorHint="@color/colorAccent"
+            android:textSize="@dimen/text_size_13" />
 
         <EditText
             android:id="@+id/findPw_editText_phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/small_margin"
-            android:hint="핸드폰 번호 ( - 없이 입력해 주세요) " />
+            android:gravity="center"
+            android:hint="핸드폰 번호 ( - 없이 입력해 주세요) "
+            android:textColorHint="@color/colorPrimary"
+            android:textSize="@dimen/text_size_13" />
 
         <Button
             android:id="@+id/findPw_button_findPw"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/big_margin"
             android:background="@drawable/find_button_findpassword_off"
 
             />

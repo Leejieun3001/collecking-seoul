@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/login_background"
     android:orientation="vertical"
     tools:context="kr.ac.sungshin.colleckingseoul.mypage.MyPageFragment">
 
@@ -30,7 +31,8 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/my_landmark_recyclerView_userrecyclerview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="250dp"
+        android:background="@color/colorWhite"
         android:padding="@dimen/small_margin">
 
     </android.support.v7.widget.RecyclerView>
@@ -38,17 +40,25 @@
     <LinearLayout
         android:id="@+id/mypage_linearLayout_null"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="250dp"
+        android:layout_margin="@dimen/small_margin"
+        android:background="@color/colorWhite"
         android:gravity="center"
         android:visibility="gone">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_88"
+            android:layout_marginTop="@dimen/margin_88"
             android:text="아직 방문하신 곳이 없습니다."
             android:textSize="18dp" />
 
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="30dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -60,32 +70,40 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_margin="5dp"
             android:text="정보 수정하기"
-            android:textSize="20dp" />
+            android:textColor="#000000"
+            android:textSize="@dimen/big_text_size" />
 
         <TextView
             android:id="@+id/mypage_textview_modify_pw"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_margin="5dp"
             android:text="비밀번호 수정하기"
-            android:textSize="20dp" />
+            android:textColor="#000000"
+            android:textSize="@dimen/big_text_size" />
 
         <TextView
             android:id="@+id/mypage_textview_logout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_margin="5dp"
             android:text="로그아웃"
-            android:textSize="20dp" />
+            android:textColor="#000000"
+            android:textSize="@dimen/big_text_size" />
 
         <TextView
             android:id="@+id/mypage_textview_leave"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_margin="5dp"
             android:text="탈퇴 하기"
-            android:textSize="20dp" />
+            android:textColor="#000000"
+            android:textSize="@dimen/big_text_size" />
 
     </LinearLayout>
 

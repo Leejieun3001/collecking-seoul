@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:gravity="center"
     tools:context="kr.ac.sungshin.colleckingseoul.mypage.MypageModifyPwActivity">
 
     <LinearLayout
@@ -13,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="5dp"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:orientation="horizontal">
 
         <TextView
@@ -80,7 +81,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="5dp"
+        android:layout_margin="@dimen/big_margin"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -90,8 +91,10 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="4dp"
+            android:background="@color/colorAccent"
             android:padding="15dp"
-            android:text="취소" />
+            android:text="취소"
+            android:textColor="@color/colorWhite" />
 
         <Button
             android:id="@+id/mypage_pw_button_store"
@@ -99,8 +102,10 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="4dp"
+            android:background="@color/colorPrimary"
             android:padding="15dp"
-            android:text="저장하기" />
+            android:text="저장하기"
+            android:textColor="@color/colorWhite" />
     </LinearLayout>
 
 </LinearLayout>

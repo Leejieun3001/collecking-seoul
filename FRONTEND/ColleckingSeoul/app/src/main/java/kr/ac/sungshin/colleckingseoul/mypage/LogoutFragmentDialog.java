@@ -14,6 +14,8 @@ import android.widget.Button;
 import android.widget.TabHost;
 import android.widget.Toast;
 
+import com.facebook.login.LoginManager;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import kr.ac.sungshin.colleckingseoul.R;
@@ -69,6 +71,8 @@ public class LogoutFragmentDialog extends DialogFragment {
             @Override
             public void onClick(View v) {
                 deleteInfo();
+                //페이스북 로그 아웃
+                LoginManager.getInstance().logOut();
                 goLogin();
             }
         });

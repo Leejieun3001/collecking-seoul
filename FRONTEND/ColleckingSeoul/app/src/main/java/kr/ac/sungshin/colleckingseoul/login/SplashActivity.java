@@ -92,7 +92,7 @@ public class SplashActivity extends AppCompatActivity {
         service = ApplicationController.getInstance().getNetworkService();
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
-        handler.postDelayed(runnable, 3000);
+        handler.postDelayed(runnable, 2000);
     }
 
     public void goHome() {

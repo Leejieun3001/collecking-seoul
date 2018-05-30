@@ -48,6 +48,8 @@ public class LandmarkRankAdapter extends RecyclerView.Adapter<LandmarkRankAdapte
     public void onBindViewHolder(LandmarkRankAdapter.ViewHolder holder, int position) {
         LandmarkRank item = listDatas.get(position);
         holder.nameTextView.setText(item.getName());
+        holder.rankingTextView.setText(position + 1 + "위");
+        holder.photoImageview.setImageResource(R.drawable.default_landmark);
     }
 
     @Override
@@ -58,6 +60,10 @@ public class LandmarkRankAdapter extends RecyclerView.Adapter<LandmarkRankAdapte
     public static class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.landmarkrank_textview_name)
         TextView nameTextView;
+        @BindView(R.id.landmarkrank_textview_ranking)
+        TextView rankingTextView;
+        @BindView(R.id.landmarkrank_imageview_photo)
+        ImageView photoImageview;
 
         public ViewHolder(View itemView) {
             super(itemView);

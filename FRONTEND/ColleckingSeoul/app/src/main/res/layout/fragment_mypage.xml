@@ -12,13 +12,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:padding="@dimen/small_margin">
+        android:padding="@dimen/margin_10">
 
         <TextView
             android:id="@+id/mypage_textview_memberNickname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=""
+            android:textColor="@color/colorAccent"
             android:textSize="18dp" />
 
         <TextView
@@ -31,9 +31,11 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/my_landmark_recyclerView_userrecyclerview"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="200dp"
         android:background="@color/colorWhite"
-        android:padding="@dimen/small_margin">
+        android:layout_marginRight="@dimen/regular_margin"
+        android:layout_marginLeft="@dimen/regular_margin"
+        android:padding="@dimen/margin_10">
 
     </android.support.v7.widget.RecyclerView>
 
@@ -41,7 +43,6 @@
         android:id="@+id/mypage_linearLayout_null"
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:layout_margin="@dimen/small_margin"
         android:background="@color/colorWhite"
         android:gravity="center"
         android:visibility="gone">
@@ -63,46 +64,52 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/regular_margin"
+        android:layout_marginLeft="@dimen/regular_margin"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/mypage_textview_modify_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:layout_margin="10dp"
             android:text="정보 수정하기"
-            android:textColor="#000000"
+            android:textColor="@color/colorWhite"
+            android:background="@drawable/tab_background"
             android:textSize="@dimen/big_text_size" />
 
         <TextView
             android:id="@+id/mypage_textview_modify_pw"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:layout_margin="10dp"
             android:text="비밀번호 수정하기"
-            android:textColor="#000000"
+            android:textColor="@color/colorWhite"
+            android:background="@drawable/tab_background"
             android:textSize="@dimen/big_text_size" />
 
         <TextView
             android:id="@+id/mypage_textview_logout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:layout_margin="10dp"
             android:text="로그아웃"
-            android:textColor="#000000"
+            android:textColor="@color/colorWhite"
+            android:background="@drawable/tab_background"
             android:textSize="@dimen/big_text_size" />
 
         <TextView
             android:id="@+id/mypage_textview_leave"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:layout_margin="10dp"
             android:text="탈퇴 하기"
-            android:textColor="#000000"
+            android:textColor="@color/colorWhite"
+            android:background="@drawable/tab_background"
             android:textSize="@dimen/big_text_size" />
 
     </LinearLayout>

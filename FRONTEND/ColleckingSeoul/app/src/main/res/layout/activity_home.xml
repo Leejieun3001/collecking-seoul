@@ -14,7 +14,7 @@
         android:id="@+id/home_tablayout_tablayout"
         android:layout_height="0dp"
         android:layout_width="match_parent"
-        android:background="@drawable/tab_background"
+        android:background="@drawable/navigation_bar"
         map:tabIndicatorColor="#fcb542"
         android:layout_weight="1"
         >

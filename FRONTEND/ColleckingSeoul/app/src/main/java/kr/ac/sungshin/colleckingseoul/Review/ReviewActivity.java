@@ -38,8 +38,6 @@ public class ReviewActivity extends AppCompatActivity {
     TextView textViewNickname;
     @BindView(R.id.review_textview_date)
     TextView textViewdate;
-    @BindView(R.id.review_textview_idx)
-    TextView textViewIdx;
     @BindView(R.id.review_textview_content)
     TextView textViewContent;
     @BindView(R.id.review_imageview_photo)
@@ -80,8 +78,7 @@ public class ReviewActivity extends AppCompatActivity {
                     if (response.body().getMessage().equals("SUCCESS")) {
                         textViewTitle.setText(response.body().getBoard().getTitle());
                         textViewNickname.setText(response.body().getBoard().getNickname());
-                        textViewdate.setText(response.body().getBoard().getDate());
-                        textViewIdx.setText(String.valueOf(idx));
+                        textViewdate.setText(response.body().getBoard().getDate().substring(0, 10));
                         Log.d(TAG, String.valueOf(response.body().getBoard().getGrade()));
                         ratingBarRating.setRating(response.body().getBoard().getGrade());
                         textViewContent.setText(response.body().getBoard().getContent());

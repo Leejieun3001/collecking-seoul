@@ -7,10 +7,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -39,12 +44,30 @@ public class HomeActivity extends AppCompatActivity {
     private final int RANKING = 1;
     private final int MYPAGE = 2;
 
+    private ActionBar actionBar;
+    private TextView actionBarTitle;
+//    pri
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
 
+        actionBar = getSupportActionBar();
+        actionBar.setTitle("");
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayOptions(actionBar.getDisplayOptions() | ActionBar.DISPLAY_SHOW_CUSTOM);
+        actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_background));//line under the action bar
+        ActionBar.LayoutParams params = new ActionBar.LayoutParams(//Center the textview in the ActionBar !
+                ActionBar.LayoutParams.WRAP_CONTENT,
+                ActionBar.LayoutParams.WRAP_CONTENT,
+                Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
+        actionBarTitle = new TextView(actionBar.getThemedContext());
+        actionBarTitle.setText("COLLECKING\n       SEOUL");
+        actionBarTitle.setTextSize(20);
+        actionBarTitle.setLayoutParams(params);
+        actionBar.setCustomView(actionBarTitle);
         setupViewPager();
         tabLayout.setupWithViewPager(viewPager);
         setupTabIcons();
@@ -55,12 +78,15 @@ public class HomeActivity extends AppCompatActivity {
                 int drawable;
                 switch (tab.getPosition()) {
                     case LANDMARK:
+                        actionBarTitle.setText("COLLECKING\n       SEOUL");
                         drawable = R.drawable.navigation_button_landmark_on;
                         break;
                     case RANKING:
+                        actionBarTitle.setText("RANKING");
                         drawable = R.drawable.navigation_button_ranking_on;
                         break;
                     default:
+                        actionBarTitle.setText("COLLECKING\n       SEOUL");
                         drawable = R.drawable.navigation_button_mypage_on;
                         break;
                 }
@@ -102,8 +128,10 @@ public class HomeActivity extends AppCompatActivity {
 
     private void setupViewPager() {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        RankFragment rankFragment = new RankFragment();
+        rankFragment.setFragmentManager(getSupportFragmentManager());
         adapter.addFrag(new MapFragment());
-        adapter.addFrag(new RankFragment());
+        adapter.addFrag(rankFragment);
         adapter.addFrag(new MyPageFragment());
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));

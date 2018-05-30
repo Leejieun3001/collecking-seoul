@@ -28,6 +28,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -89,7 +91,10 @@ public class MyPageModifyActivity extends AppCompatActivity {
         String userNickname = userInfo.getString("nickname", "");
         String userPhone = userInfo.getString("phone", "");
         String userPhoto = userInfo.getString("url", "");
-        Log.d(TAG, "이것은" + userPhoto);
+        String[] birth = userInfo.getString("birth", "").split("-");
+
+
+        datePickerBirth.updateDate(Integer.parseInt(birth[0]), Integer.parseInt(birth[1]) - 1, Integer.parseInt(birth[2].substring(0, 2)));
         int userSex = userInfo.getInt("sex", 0);
         editTextNickname.setText(userNickname);
         editTextPhone.setText(userPhone);

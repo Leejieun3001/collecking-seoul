@@ -11,8 +11,8 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_121"
-        android:layout_marginRight="@dimen/margin_121"
+        android:layout_marginLeft="@dimen/margin_115"
+        android:layout_marginRight="@dimen/margin_115"
 
         android:background="@drawable/login_colleckingseoul" />
 
@@ -62,24 +62,25 @@
         android:background="@drawable/login_button_login" />
 
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/small_margin"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:layout_marginLeft="@dimen/margin_88"
+        android:layout_marginRight="@dimen/margin_88">
 
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="@dimen/margin_10"
             android:orientation="vertical">
 
             <Button
                 android:id="@+id/login_button_kakao"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:background="@drawable/login_button_kakao" />
 
             <TextView
@@ -95,12 +96,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/margin_10"
             android:orientation="vertical">
 
             <Button
                 android:id="@+id/login_button_facebook"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:background="@drawable/login_button_facebook" />
 
             <TextView
@@ -109,7 +112,7 @@
                 android:text="카카오 톡으로 로그인"
                 android:textSize="@dimen/text_size_8" />
         </LinearLayout>
-    </LinearLayout>
+    </RelativeLayout>
 
     <View
         android:layout_width="match_parent"

@@ -6,10 +6,23 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:actionBarStyle">@style/CustomActionBar</item>
     </style>
 
     <style name="FacebookLoginButton">
         <item name="android:background">@drawable/login_button_facebook</item>
+    </style>
+
+    <style name="CustomActionBarTheme" parent="android:style/Theme.Holo.Light">
+        <item name="android:actionBarStyle">@style/CustomActionBar</item>
+    </style>
+
+    <style name="CustomActionBar" parent="android:style/Widget.Holo.ActionBar">
+        <item name="android:titleTextStyle">@style/CustomActionBarTitleText</item>
+    </style>
+
+    <style name="CustomActionBarTitleText" parent="android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/colorWhite</item>
     </style>
 
 </resources>

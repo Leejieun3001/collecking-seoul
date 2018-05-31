@@ -122,6 +122,7 @@ public class JoinActivity extends AppCompatActivity {
         actionBar.setCustomView(imageView);
 
         bindClickListener();
+
     }
 
     @Override
@@ -135,7 +136,6 @@ public class JoinActivity extends AppCompatActivity {
 
     //클릭 이벤트 바인딩
     public void bindClickListener() {
-
         //갤러리에서 프로필 사진 가져오기
         buttonProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,10 +143,6 @@ public class JoinActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(Intent.ACTION_PICK);
                 File tempFile = new File(Environment.getExternalStorageDirectory() + "/temp.jpg");
-                Uri tempUri = Uri.fromFile(tempFile);
-                intent.putExtra("crop", "true");
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
-                intent.setType("image/*");
                 intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
                 intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(intent, REQ_CODE_SELECT_IMAGE);
@@ -167,7 +163,6 @@ public class JoinActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<BaseResult> call, Response<BaseResult> response) {
                             if (response.isSuccessful()) {
-                                Log.d(TAG, response.body().toString());
                                 if (response.body().getMessage().equals("SUCCESS")) {
                                     Toast.makeText(getApplicationContext(), "사용가능한 이메일 입니다.", Toast.LENGTH_SHORT).show();
                                     isDuplicate = true;
@@ -246,13 +241,10 @@ public class JoinActivity extends AppCompatActivity {
         buttonJoin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!checkValid(editTextId.getText().toString(), editTextPassword.getText().toString(), editTextRepassword.getText().toString(), editTextNikname.getText().toString(), editTextPhone.getText().toString(), Integer.toString(Datepickerbirth.getYear()) + Integer.toString(Datepickerbirth.getMonth()) + Integer.toString(Datepickerbirth.getDayOfMonth())))
-                    return;
-
                 int typeId = radioGroupSex.getCheckedRadioButtonId();
 
-                RadioButton radionbuttonSex = (RadioButton) findViewById(typeId);
-                String type = radionbuttonSex.getText().toString();
+                RadioButton radiobuttonSex = (RadioButton) findViewById(typeId);
+                String type = radiobuttonSex.getText().toString();
                 int intType = 1;
                 if (type.equals("남자")) intType = 0;
                 else if (type.equals("여자")) intType = 1;
@@ -268,11 +260,15 @@ public class JoinActivity extends AppCompatActivity {
                     birthDate = "0" + Integer.toString(Datepickerbirth.getDayOfMonth());
                 else birthDate = Integer.toString(Datepickerbirth.getDayOfMonth());
 
-                RequestBody id = RequestBody.create(MediaType.parse("multipart/form-data"), editTextId.getText().toString());
+                if (!checkValid(editTextId.getText().toString(), editTextPassword.getText().toString(), editTextRepassword.getText().toString(), editTextPhone.getText().toString(), editTextNikname.getText().toString(), birthYear + "-" + birthMonth + "-" + birthDate)) {
+                    return;
+                }
+
+                RequestBody id = RequestBody.create(MediaType.parse("multipart/form-data"), editTextId.getText().toString().trim());
                 RequestBody password1 = RequestBody.create(MediaType.parse("multipart/form-data"), editTextPassword.getText().toString());
                 RequestBody password2 = RequestBody.create(MediaType.parse("multipart/form-data"), editTextRepassword.getText().toString());
-                RequestBody nickname = RequestBody.create(MediaType.parse("multipart/form-data"), editTextNikname.getText().toString());
-                RequestBody phone = RequestBody.create(MediaType.parse("multipart/form-data"), editTextPhone.getText().toString());
+                RequestBody nickname = RequestBody.create(MediaType.parse("multipart/form-data"), editTextNikname.getText().toString().trim());
+                RequestBody phone = RequestBody.create(MediaType.parse("multipart/form-data"), editTextPhone.getText().toString().trim());
                 RequestBody birth = RequestBody.create(MediaType.parse("multipart/form-data"), birthYear + "-" + birthMonth + "-" + birthDate);
                 RequestBody sex = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(intType));
 
@@ -280,8 +276,8 @@ public class JoinActivity extends AppCompatActivity {
                 Bitmap bitmap;
                 File file;
                 if (imgUrl.equals("")) {
-                    file = new File(photo);
-                    Log.d(TAG, String.valueOf(file.exists()));
+                    String phototmp = "/tmp.jpg";
+                    file = new File(phototmp);
                     Drawable drawable = imageProfile.getDrawable();
                     bitmap = ((BitmapDrawable) drawable).getBitmap();
                 } else {
@@ -303,17 +299,19 @@ public class JoinActivity extends AppCompatActivity {
                 RequestBody photoBody = RequestBody.create(MediaType.parse("image/jpg"), baos.toByteArray());
                 body = MultipartBody.Part.createFormData("photo", file.getName(), photoBody);
 
+
+
                 Call<BaseResult> getJoinResult = service.getJoinResult(id, password1, password2, phone, nickname, birth, sex, body);
                 getJoinResult.enqueue(new Callback<BaseResult>() {
                     @Override
                     public void onResponse(Call<BaseResult> call, Response<BaseResult> response) {
-
                         if (response.isSuccessful()) {
 
                             if (response.body().getMessage().equals("SUCCESS")) {
                                 Toast.makeText(getApplicationContext(), "회원가입이 성공적으로 완료되었습니다.", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                                 startActivity(intent);
+                                finish();
                             } else {
                                 Toast.makeText(getApplicationContext(), "죄송합니다. 오류가 발생하였습니다. 빠른시일 내에 개선하겠습니다.", Toast.LENGTH_SHORT).show();
                             }
@@ -327,13 +325,13 @@ public class JoinActivity extends AppCompatActivity {
                     }
                 });
 
+
             }
         });
-
     }
-
     //유효성 체크
-    public boolean checkValid(String id, String password, String repassword, String name, String phone, String birth) {
+
+    public boolean checkValid(String id, String password, String repassword, String phone, String name, String birth) {
         // 빈칸 체크
         if (id.equals("")) {
             Toast.makeText(getBaseContext(), "이메일을 입력해주세요.", Toast.LENGTH_SHORT).show();
@@ -343,10 +341,12 @@ public class JoinActivity extends AppCompatActivity {
             Toast.makeText(getBaseContext(), "패스워드를 입력해주세요.", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (name.equals("") || name.length() > 10) {
-            Toast.makeText(getBaseContext(), "이름을 올바르게 입력해주세요.", Toast.LENGTH_SHORT).show();
+
+        if (name.equals("")) {
+            Toast.makeText(getBaseContext(), "이름을 입력해주세요.", Toast.LENGTH_SHORT).show();
             return false;
         }
+
         if (phone.equals("") || !phone.matches("^[0-9]{11}+$")) {
             Toast.makeText(getBaseContext(), "전화번호를 올바르게 입력해주세요. - 없이 번호만 입력해 주세요.", Toast.LENGTH_SHORT).show();
             return false;

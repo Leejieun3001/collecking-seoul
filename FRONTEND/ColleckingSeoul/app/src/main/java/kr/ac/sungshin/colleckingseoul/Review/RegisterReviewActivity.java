@@ -131,6 +131,7 @@ public class RegisterReviewActivity extends AppCompatActivity {
                 File file;
                 if (imgUrl.equals("")) {
                     file = new File(photo);
+                    Log.d(TAG , photo);
                     Drawable drawable = photoImageView.getDrawable();
                     bitmap = ((GlideBitmapDrawable) drawable).getBitmap();
                 } else {

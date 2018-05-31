@@ -59,7 +59,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="30dp" />
+        android:layout_height="@dimen/margin_10" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -73,7 +73,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:gravity="center"
-            android:layout_margin="10dp"
+            android:layout_margin="@dimen/margin_5"
             android:text="정보 수정하기"
             android:textColor="@color/colorWhite"
             android:background="@drawable/tab_background"
@@ -84,7 +84,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:gravity="center"
-            android:layout_margin="10dp"
+            android:layout_margin="@dimen/margin_5"
             android:text="비밀번호 수정하기"
             android:textColor="@color/colorWhite"
             android:background="@drawable/tab_background"
@@ -95,7 +95,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:gravity="center"
-            android:layout_margin="10dp"
+            android:layout_margin="@dimen/margin_5"
             android:text="로그아웃"
             android:textColor="@color/colorWhite"
             android:background="@drawable/tab_background"
@@ -106,7 +106,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:gravity="center"
-            android:layout_margin="10dp"
+            android:layout_margin="@dimen/margin_5"
             android:text="탈퇴 하기"
             android:textColor="@color/colorWhite"
             android:background="@drawable/tab_background"

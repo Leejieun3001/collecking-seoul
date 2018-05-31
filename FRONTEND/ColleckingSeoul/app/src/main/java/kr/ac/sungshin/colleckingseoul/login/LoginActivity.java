@@ -1,5 +1,6 @@
 package kr.ac.sungshin.colleckingseoul.login;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -11,9 +12,11 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +34,7 @@ import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
 import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.LogoutResponseCallback;
 import com.kakao.usermgmt.callback.MeResponseCallback;
 import com.kakao.usermgmt.response.model.UserProfile;
 import com.kakao.util.exception.KakaoException;
@@ -58,6 +62,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
+    @BindView(R.id.login_linearlayout_container)
+    LinearLayout containerLayout;
     @BindView(R.id.login_button_kakao)
     Button kakaoButton;
     @BindView(R.id.login_button_facebook)
@@ -105,6 +111,10 @@ public class LoginActivity extends AppCompatActivity {
 
 //        facebookButton.setBackgroundResource(R.drawable.login_button_facebook);
 
+        bindClickListeners();
+    }
+
+    private void bindClickListeners() {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -196,6 +206,15 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        containerLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(idEditText.getWindowToken(), 0);
+                imm.hideSoftInputFromWindow(passwordEditText.getWindowToken(), 0);
+            }
+        });
+
     }
 
     public void saveInfo(User user, String token) {
@@ -261,6 +280,10 @@ public class LoginActivity extends AppCompatActivity {
         Log.d(TAG, "resultCode : " + resultCode);
         Log.d(TAG, "data : " + data.getDataString());
         facebookCallbackManager.onActivityResult(requestCode, resultCode, data);
+        if (Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
+
+            return;
+        }
     }
 
     //facebook Login
@@ -359,7 +382,7 @@ public class LoginActivity extends AppCompatActivity {
         // 카카오 세션을 오픈한다
         callbackForKakao = new SessionCallback();
         Session.getCurrentSession().addCallback(callbackForKakao);
-        Session.getCurrentSession().open(AuthType.KAKAO_TALK, LoginActivity.this);
+        Session.getCurrentSession().open(AuthType.KAKAO_LOGIN_ALL, LoginActivity.this);
     }
 
     protected void requestMeOnKakao() {
@@ -400,6 +423,12 @@ public class LoginActivity extends AppCompatActivity {
                             String message = response.body().getMessage();
 
                             switch (message) {
+                                case "SUCCESS":
+                                    User user = response.body().getUser();
+                                    String token = response.body().getToken();
+                                    saveInfo(user, token);
+                                    goHome();
+                                    return;
                                 case "NOT_SIGN_UP":
                                     Toast.makeText(getBaseContext(), "입력하신 회원정보는 존재하지 않습니다.", Toast.LENGTH_SHORT).show();
                                     break;
@@ -409,14 +438,8 @@ public class LoginActivity extends AppCompatActivity {
                                 case "NOT_MATCH_ACCOUNT":
                                     Toast.makeText(getBaseContext(), "카카오 계정이 아닌 다른 계정이 등록되어 있습니다.", Toast.LENGTH_SHORT).show();
                                     break;
-                                case "SUCCESS":
-                                    User user = response.body().getUser();
-                                    String token = response.body().getToken();
-                                    saveInfo(user, token);
-                                    goHome();
-                                    break;
-
                             }
+                            kakaoLogout();
                         }
                     }
 
@@ -435,12 +458,22 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    protected void kakaoLogout() {
+        UserManagement.requestLogout(new LogoutResponseCallback() {
+            @Override
+            public void onCompleteLogout() {
+
+            }
+        });
+    }
+
     private class SessionCallback implements ISessionCallback {
         @Override
         public void onSessionOpened() {
             Log.d(TAG, "세션 오픈됨 : ");
             // 사용자 정보를 가져옴, 회원가입 미가입시 자동가입 시킴
             requestMeOnKakao();
+//            kakaoLogout();
         }
 
         @Override

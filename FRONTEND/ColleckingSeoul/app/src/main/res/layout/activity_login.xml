@@ -6,6 +6,7 @@
     android:background="@drawable/login_background"
     android:gravity="center"
     android:orientation="vertical"
+    android:id="@+id/login_linearlayout_container"
     tools:context="kr.ac.sungshin.colleckingseoul.login.LoginActivity">
 
     <ImageView

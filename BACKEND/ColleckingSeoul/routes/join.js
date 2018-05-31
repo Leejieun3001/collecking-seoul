@@ -90,7 +90,7 @@ router.post('/', upload.single('photo'), function (req, res) {
             hash,
             req.body.nickname,
             req.body.phone,
-            Date(req.body.birth),
+            new Date(req.body.birth),
             req.body.sex
         ];
         connection.query(insertQuery, params, function (err, data) {

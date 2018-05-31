@@ -18,6 +18,12 @@ import android.widget.TabHost;
 import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
+import com.kakao.auth.AuthType;
+import com.kakao.auth.ISessionCallback;
+import com.kakao.auth.Session;
+import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.LogoutResponseCallback;
+import com.kakao.util.exception.KakaoException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,6 +38,8 @@ public class LogoutFragmentDialog extends DialogFragment {
     Button buttonCancel;
     @BindView(R.id.logoutfragmentdialog_button_logout)
     Button buttonLogout;
+
+    SessionCallback callbackForKakao;
 
     private static String TAG = "LogoutFragmentDialog";
 
@@ -84,9 +92,27 @@ public class LogoutFragmentDialog extends DialogFragment {
             @Override
             public void onClick(View v) {
                 deleteInfo();
-                //페이스북 로그 아웃
+                //페이스북 로그아웃
                 LoginManager.getInstance().logOut();
+                //카카오톡 로그아웃
+                logoutKakao();
                 goLogin();
+            }
+        });
+    }
+
+    private void logoutKakao() {
+        callbackForKakao = new SessionCallback();
+        Session.getCurrentSession().addCallback(callbackForKakao);
+        Session.getCurrentSession().open(AuthType.KAKAO_TALK, getActivity());
+    }
+
+    private void logout() {
+        UserManagement.requestLogout(new LogoutResponseCallback() {
+            @Override
+            public void onCompleteLogout() {
+                Log.d(TAG, "로그아웃 완료");
+                //로그아웃 완료시 LOGOUT_OK 이벤트를 발생시킵니다.
             }
         });
     }
@@ -102,6 +128,22 @@ public class LogoutFragmentDialog extends DialogFragment {
     public void deleteInfo() {
         SharedPreferences userInfo = getActivity().getSharedPreferences("user", MODE_PRIVATE);
         userInfo.edit().clear().commit();
+    }
+
+    private class SessionCallback implements ISessionCallback {
+        @Override
+        public void onSessionOpened() {
+            Log.d(TAG, "세션 오픈됨 : ");
+            // 사용자 정보를 가져옴, 회원가입 미가입시 자동가입 시킴
+            logout();
+        }
+
+        @Override
+        public void onSessionOpenFailed(KakaoException exception) {
+            if (exception != null) {
+                Log.d(TAG, exception.getMessage());
+            }
+        }
     }
 
 }

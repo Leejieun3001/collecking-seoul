@@ -100,10 +100,11 @@ public class MyPageFragment extends android.support.v4.app.Fragment {
     }
 
     private void initRecyclerView() {
-        recyclerViewMyLandmark.setHasFixedSize(true);
+        recyclerViewMyLandmark.setHasFixedSize(false);
         myPageLayoutManager = new LinearLayoutManager(getContext());
         myPageLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerViewMyLandmark.setLayoutManager(myPageLayoutManager);
+        recyclerViewMyLandmark.setNestedScrollingEnabled(false);
     }
 
     private void setAdapter() {

@@ -1,6 +1,7 @@
 package kr.ac.sungshin.colleckingseoul.mypage;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -9,11 +10,13 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -52,6 +55,8 @@ import retrofit2.Response;
 import retrofit2.http.Body;
 
 public class MyPageModifyActivity extends AppCompatActivity {
+    @BindView(R.id.mypagemodify_constraintLayout_container)
+    ConstraintLayout containerLayout;
     @BindView(R.id.mypage_button_cancel)
     Button buttonCancel;
     @BindView(R.id.mypage_button_store)
@@ -194,6 +199,15 @@ public class MyPageModifyActivity extends AppCompatActivity {
 
                     }
                 });
+            }
+        });
+
+        containerLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(editTextNickname.getWindowToken(), 0);
+                imm.hideSoftInputFromWindow(editTextPhone.getWindowToken(), 0);
             }
         });
 

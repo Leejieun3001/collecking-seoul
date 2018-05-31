@@ -4,6 +4,7 @@
     <dimen name="small_margin">23dp</dimen>
     <dimen name="regular_margin">46dp</dimen>
     <dimen name="big_margin">69dp</dimen>
+    <dimen name="margin_5">5dp</dimen>
     <dimen name="margin_10">10dp</dimen>
     <dimen name="margin_30">30dp</dimen>
     <dimen name="margin_45">45dp</dimen>

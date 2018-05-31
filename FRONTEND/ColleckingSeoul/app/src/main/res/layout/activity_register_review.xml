@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/registerreview_linearlayout_container"
     tools:context="kr.ac.sungshin.colleckingseoul.Review.RegisterReviewActivity"
     android:orientation="vertical">
     <ScrollView

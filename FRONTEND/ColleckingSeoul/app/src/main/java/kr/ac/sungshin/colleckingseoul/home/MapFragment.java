@@ -71,6 +71,7 @@ public class MapFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         service = ApplicationController.getInstance().getNetworkService();
+
     }
 
     @Nullable

@@ -4,108 +4,84 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:gravity="center"
+    android:orientation="vertical"
     tools:context="kr.ac.sungshin.colleckingseoul.mypage.MypageModifyPwActivity">
 
     <LinearLayout
-
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="5dp"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="현재 비밀번호 : " />
+        android:layout_marginLeft="@dimen/regular_margin"
+        android:layout_marginRight="@dimen/regular_margin"
+        android:orientation="vertical">
 
         <EditText
             android:id="@+id/mypage_pw_edittext_now_password"
-            android:layout_width="150dp"
-            android:layout_height="35dp"
-            android:hint="   비밀번호"
-            android:inputType="textPassword"
-            android:textSize="12dp" />
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="5dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="새 비밀 번호  : " />
+            android:layout_marginTop="@dimen/margin_10"
+            android:gravity="center"
+            android:hint="비밀번호"
+            android:inputType="textPassword"
+            android:textColor="@color/colorAccent"
+            android:textColorHighlight="@color/colorAccent"
+            android:textSize="@dimen/regular_text_size" />
 
         <EditText
             android:id="@+id/mypage_pw_edittext_new_password"
-            android:layout_width="150dp"
-            android:layout_height="35dp"
-            android:hint="   비밀번호 확인"
-            android:inputType="textPassword"
-            android:textSize="12dp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="5dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="새 비밀번호 확인 : " />
+            android:layout_marginTop="@dimen/margin_10"
+            android:gravity="center"
+            android:hint="비밀번호 확인"
+            android:inputType="textPassword"
+            android:textColor="@color/colorAccent"
+            android:textColorHighlight="@color/colorAccent"
+            android:textSize="@dimen/regular_text_size" />
 
         <EditText
             android:id="@+id/mypage_pw_edittext_new_repassword"
-            android:layout_width="150dp"
-            android:layout_height="35dp"
-            android:hint="   새 비밀번호 확인"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_10"
+            android:gravity="center"
+            android:hint="새 비밀번호 확인"
             android:inputType="textPassword"
-            android:textSize="12dp" />
+            android:textColor="@color/colorAccent"
+            android:textColorHighlight="@color/colorAccent"
+            android:textSize="@dimen/regular_text_size" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center_vertical"
+            android:layout_marginTop="@dimen/big_margin"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/mypage_pw_button_cancel"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorAccent"
+                android:padding="@dimen/margin_10"
+                android:layout_marginRight="@dimen/margin_10"
+                android:text="취소"
+                android:textColor="@color/colorWhite" />
+
+            <Button
+                android:id="@+id/mypage_pw_button_store"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:padding="@dimen/margin_10"
+                android:layout_marginLeft="@dimen/margin_10"
+                android:text="저장하기"
+                android:textColor="@color/colorWhite" />
+        </LinearLayout>
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="@dimen/big_margin"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/mypage_pw_button_cancel"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="4dp"
-            android:background="@color/colorAccent"
-            android:padding="15dp"
-            android:text="취소"
-            android:textColor="@color/colorWhite" />
-
-        <Button
-            android:id="@+id/mypage_pw_button_store"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="4dp"
-            android:background="@color/colorPrimary"
-            android:padding="15dp"
-            android:text="저장하기"
-            android:textColor="@color/colorWhite" />
-    </LinearLayout>
 
 </LinearLayout>

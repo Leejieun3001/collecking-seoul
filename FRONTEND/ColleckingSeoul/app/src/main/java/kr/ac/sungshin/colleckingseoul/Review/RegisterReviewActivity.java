@@ -1,6 +1,7 @@
 package kr.ac.sungshin.colleckingseoul.Review;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,9 +15,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.Toast;
 
@@ -50,6 +53,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class RegisterReviewActivity extends AppCompatActivity {
+    @BindView(R.id.registerreview_linearlayout_container)
+    LinearLayout containerLayout;
     @BindView(R.id.registerreview_edittext_title)
     EditText titleEditText;
     @BindView(R.id.registerreview_edittext_content)
@@ -95,16 +100,6 @@ public class RegisterReviewActivity extends AppCompatActivity {
                     .load(photo)
                     .into(photoImageView);
         }
-
-        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-            @Override
-            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                Log.d(TAG, "star count : " + ratingBar.getNumStars());
-                Log.d(TAG, "rating: " + ratingBar.getRating());
-                Log.d(TAG, "rating: " + rating);
-                Log.d(TAG, "fromUser: " + fromUser);
-            }
-        });
 
         bindClickListeners();
     }
@@ -160,6 +155,14 @@ public class RegisterReviewActivity extends AppCompatActivity {
                 if (purpose.equals("edit")) { edit(title, content, grade, landmark_idx, body); }
                 else if (purpose.equals("register")) { register(title, content, grade, landmark_idx, body); }
 
+            }
+        });
+        containerLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(titleEditText.getWindowToken(), 0);
+                imm.hideSoftInputFromWindow(contentEditText.getWindowToken(), 0);
             }
         });
     }

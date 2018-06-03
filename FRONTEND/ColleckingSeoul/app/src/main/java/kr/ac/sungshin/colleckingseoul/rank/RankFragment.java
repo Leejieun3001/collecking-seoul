@@ -204,11 +204,13 @@ public class RankFragment extends Fragment {
         int tempId = landmarkRank.getIdx();
         double lat = landmarkRank.getLat();
         double lng = landmarkRank.getLng();
+        String name = landmarkRank.getName();
         Intent intent = new Intent(getContext(), ReviewListActivity.class);
 
         intent.putExtra("idx", tempId);
         intent.putExtra("lat", lat);
         intent.putExtra("lng", lng);
+        intent.putExtra("title", name);
         startActivity(intent);
         }
     };

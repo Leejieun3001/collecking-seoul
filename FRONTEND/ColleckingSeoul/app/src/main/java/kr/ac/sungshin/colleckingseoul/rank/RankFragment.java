@@ -29,6 +29,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import kr.ac.sungshin.colleckingseoul.R;
 import kr.ac.sungshin.colleckingseoul.Review.BoardItem;
 import kr.ac.sungshin.colleckingseoul.Review.ReviewActivity;
+import kr.ac.sungshin.colleckingseoul.Review.ReviewListActivity;
 import kr.ac.sungshin.colleckingseoul.Review.ReviewListAdapter;
 import kr.ac.sungshin.colleckingseoul.ViewPagerAdapter;
 import kr.ac.sungshin.colleckingseoul.home.HomeActivity;
@@ -199,10 +200,15 @@ public class RankFragment extends Fragment {
     public View.OnClickListener clickEvent = new View.OnClickListener() {
         public void onClick(View v) {
         int itemPosition = landmarkRecyclerView.getChildPosition(v);
-        int tempId = Integer.parseInt(landmarkRankList.get(itemPosition).getIdx());
-        Intent intent = new Intent(getContext(), ReviewActivity.class);
+        LandmarkRank landmarkRank = landmarkRankList.get(itemPosition);
+        int tempId = landmarkRank.getIdx();
+        double lat = landmarkRank.getLat();
+        double lng = landmarkRank.getLng();
+        Intent intent = new Intent(getContext(), ReviewListActivity.class);
 
         intent.putExtra("idx", tempId);
+        intent.putExtra("lat", lat);
+        intent.putExtra("lng", lng);
         startActivity(intent);
         }
     };

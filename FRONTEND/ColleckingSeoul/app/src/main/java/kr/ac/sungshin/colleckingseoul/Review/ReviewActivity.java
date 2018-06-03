@@ -82,7 +82,6 @@ public class ReviewActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         idx = intent.getIntExtra("idx", 0);
-        Log.d(TAG, "idx : " + idx);
 
         loadReviewInfo();
         bindClickListener();

@@ -5,23 +5,32 @@ package kr.ac.sungshin.colleckingseoul.model.response.rank;
  */
 
 public class LandmarkRank {
-    private String idx;
+    private int idx;
     private String name;
+    private double lat;
+    private double lng;
 
     public LandmarkRank(String name) {
         this.name = name;
     }
 
-    public LandmarkRank(String idx, String name) {
+    public LandmarkRank(int idx, String name) {
         this.idx = idx;
         this.name = name;
     }
 
-    public String getIdx() {
+    public LandmarkRank(int idx, String name, double lat, double lng) {
+        this.idx = idx;
+        this.name = name;
+        this.lat = lat;
+        this.lng = lng;
+    }
+
+    public int getIdx() {
         return idx;
     }
 
-    public void setIdx(String idx) {
+    public void setIdx(int idx) {
         this.idx = idx;
     }
 
@@ -31,5 +40,21 @@ public class LandmarkRank {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLng() {
+        return lng;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
     }
 }

@@ -15,6 +15,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -92,6 +94,21 @@ public class MyPageModifyActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         service = ApplicationController.getInstance().getNetworkService();
 
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("");
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayOptions(actionBar.getDisplayOptions() | ActionBar.DISPLAY_SHOW_CUSTOM);
+        ImageView actionBarimageView = new ImageView(actionBar.getThemedContext());
+        actionBarimageView.setScaleType(ImageView.ScaleType.CENTER);
+        actionBarimageView.setImageResource(R.drawable.main_title_cloeckingseoul);
+        ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(
+                ActionBar.LayoutParams.WRAP_CONTENT,
+                ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL
+                | Gravity.CENTER_VERTICAL);
+        layoutParams.rightMargin = 40;
+        actionBarimageView.setLayoutParams(layoutParams);
+        actionBar.setCustomView(actionBarimageView);
+
         SharedPreferences userInfo = getSharedPreferences("user", MODE_PRIVATE);
         String userNickname = userInfo.getString("nickname", "");
         String userPhone = userInfo.getString("phone", "");
@@ -115,6 +132,15 @@ public class MyPageModifyActivity extends AppCompatActivity {
                     .into(imageViewProfile);
         }
         bindClickListener();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public void bindClickListener() {

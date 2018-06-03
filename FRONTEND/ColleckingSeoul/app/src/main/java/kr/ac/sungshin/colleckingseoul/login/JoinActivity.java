@@ -1,6 +1,7 @@
 package kr.ac.sungshin.colleckingseoul.login;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -19,10 +20,12 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -52,6 +55,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class JoinActivity extends AppCompatActivity {
+    @BindView(R.id.join_linearlayout_container)
+    LinearLayout containerLayout;
     @BindView(R.id.join_edittext_id)
     EditText editTextId;
     @BindView(R.id.join_button_duplication)
@@ -324,8 +329,19 @@ public class JoinActivity extends AppCompatActivity {
                         Log.d(TAG, "onFailure");
                     }
                 });
+            }
+        });
 
-
+        containerLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(editTextId.getWindowToken(), 0);
+                imm.hideSoftInputFromWindow(editTextPassword.getWindowToken(), 0);
+                imm.hideSoftInputFromWindow(editTextcheckCode.getWindowToken(), 0);
+                imm.hideSoftInputFromWindow(editTextNikname.getWindowToken(), 0);
+                imm.hideSoftInputFromWindow(editTextPhone.getWindowToken(), 0);
+                imm.hideSoftInputFromWindow(editTextRepassword.getWindowToken(), 0);
             }
         });
     }
@@ -366,7 +382,7 @@ public class JoinActivity extends AppCompatActivity {
             return false;
         }
         //비밀번호 체크
-        if (!password.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,}$")) {
+        if (!password.matches("^.*(?=.{6,20})(?=.*[0-9])(?=.*[a-zA-Z]).*$")) {
             Toast.makeText(getBaseContext(), "비밀번호는 8자리이상 영문 숫자 조합입니다. 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();
             return false;
         }

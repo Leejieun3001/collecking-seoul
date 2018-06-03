@@ -5,23 +5,23 @@ package kr.ac.sungshin.colleckingseoul.model.response.rank;
  */
 
 public class LandmarkRank {
-    private int idx;
+    private String idx;
     private String name;
 
     public LandmarkRank(String name) {
         this.name = name;
     }
 
-    public LandmarkRank(int idx, String name) {
+    public LandmarkRank(String idx, String name) {
         this.idx = idx;
         this.name = name;
     }
 
-    public int getIdx() {
+    public String getIdx() {
         return idx;
     }
 
-    public void setIdx(int idx) {
+    public void setIdx(String idx) {
         this.idx = idx;
     }
 

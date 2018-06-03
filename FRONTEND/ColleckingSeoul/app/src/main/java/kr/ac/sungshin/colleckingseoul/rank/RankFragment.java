@@ -199,7 +199,7 @@ public class RankFragment extends Fragment {
     public View.OnClickListener clickEvent = new View.OnClickListener() {
         public void onClick(View v) {
         int itemPosition = landmarkRecyclerView.getChildPosition(v);
-        int tempId = landmarkRankList.get(itemPosition).getIdx();
+        int tempId = Integer.parseInt(landmarkRankList.get(itemPosition).getIdx());
         Intent intent = new Intent(getContext(), ReviewActivity.class);
 
         intent.putExtra("idx", tempId);

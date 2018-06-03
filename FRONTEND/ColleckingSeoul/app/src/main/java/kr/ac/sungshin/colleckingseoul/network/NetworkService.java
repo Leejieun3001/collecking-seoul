@@ -99,7 +99,7 @@ public interface NetworkService {
     @GET("rank/user_rank")
     Call<UserRankResult> getUserRankList();
 
-    @GET("/rank/landmark_rank")
+    @GET("/rank/landmark")
     Call<LandmarkRankResult> getLandmarkRankList();
 
     @GET("landmark/mine")

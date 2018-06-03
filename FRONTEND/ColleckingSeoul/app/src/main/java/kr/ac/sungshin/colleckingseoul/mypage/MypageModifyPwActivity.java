@@ -2,12 +2,16 @@ package kr.ac.sungshin.colleckingseoul.mypage;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import butterknife.BindView;
@@ -48,8 +52,32 @@ public class MypageModifyPwActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         service = ApplicationController.getInstance().getNetworkService();
 
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("");
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayOptions(actionBar.getDisplayOptions() | ActionBar.DISPLAY_SHOW_CUSTOM);
+        ImageView actionBarimageView = new ImageView(actionBar.getThemedContext());
+        actionBarimageView.setScaleType(ImageView.ScaleType.CENTER);
+        actionBarimageView.setImageResource(R.drawable.main_title_cloeckingseoul);
+        ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(
+                ActionBar.LayoutParams.WRAP_CONTENT,
+                ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL
+                | Gravity.CENTER_VERTICAL);
+        layoutParams.rightMargin = 40;
+        actionBarimageView.setLayoutParams(layoutParams);
+        actionBar.setCustomView(actionBarimageView);
+
         bindClickListener();
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     //클릭 이벤트 바인딩

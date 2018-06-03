@@ -45,7 +45,7 @@ public class HomeActivity extends AppCompatActivity {
     private final int MYPAGE = 2;
 
     private ActionBar actionBar;
-    private TextView actionBarTitle;
+    private ImageView actionBarimageView;
 //    pri
 
     @Override
@@ -54,20 +54,19 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
 
-        actionBar = getSupportActionBar();
+        ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("");
-        actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayOptions(actionBar.getDisplayOptions() | ActionBar.DISPLAY_SHOW_CUSTOM);
-        actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_background));//line under the action bar
-        ActionBar.LayoutParams params = new ActionBar.LayoutParams(//Center the textview in the ActionBar !
+        actionBarimageView = new ImageView(actionBar.getThemedContext());
+        actionBarimageView.setScaleType(ImageView.ScaleType.CENTER);
+        actionBarimageView.setImageResource(R.drawable.main_title_cloeckingseoul);
+        ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(
                 ActionBar.LayoutParams.WRAP_CONTENT,
-                ActionBar.LayoutParams.WRAP_CONTENT,
-                Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
-        actionBarTitle = new TextView(actionBar.getThemedContext());
-        actionBarTitle.setText("COLLECKING\n       SEOUL");
-        actionBarTitle.setTextSize(20);
-        actionBarTitle.setLayoutParams(params);
-        actionBar.setCustomView(actionBarTitle);
+                ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL
+                | Gravity.CENTER_VERTICAL);
+        layoutParams.rightMargin = 40;
+        actionBarimageView.setLayoutParams(layoutParams);
+        actionBar.setCustomView(actionBarimageView);
         setupViewPager();
         tabLayout.setupWithViewPager(viewPager);
         setupTabIcons();
@@ -78,15 +77,15 @@ public class HomeActivity extends AppCompatActivity {
                 int drawable;
                 switch (tab.getPosition()) {
                     case LANDMARK:
-                        actionBarTitle.setText("COLLECKING\n       SEOUL");
+                        actionBarimageView.setImageResource(R.drawable.main_title_cloeckingseoul);
                         drawable = R.drawable.navigation_button_landmark_on;
                         break;
                     case RANKING:
-                        actionBarTitle.setText("RANKING");
+                        actionBarimageView.setImageResource(R.drawable.ranking_title_ranking);
                         drawable = R.drawable.navigation_button_ranking_on;
                         break;
                     default:
-                        actionBarTitle.setText("COLLECKING\n       SEOUL");
+                        actionBarimageView.setImageResource(R.drawable.main_title_cloeckingseoul);
                         drawable = R.drawable.navigation_button_mypage_on;
                         break;
                 }

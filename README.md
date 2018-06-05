@@ -1,11 +1,12 @@
 # collecking-seoul
 
-
+![image](./image/introduction.png)
 ## 소개
 `서울 주요명소를 돌아다니며 랜드마크를 모으는 위치기반 모바일 애플리케이션`입니다.
 
 
 ## 개발환경
+![image](./image/environment.png)
 `BACKEND: Node.js, AWS EC2, AWS RDS, AWS S3, MySQL`
 
 `FRONTEND: Android Studio, Java`

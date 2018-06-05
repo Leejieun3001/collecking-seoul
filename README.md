@@ -12,7 +12,7 @@
 
 
 ## 팀 인원
-- 디자인 : 1명 (정승후)
+- 디자인 : 1명 ([정승후](https://tmdgn07.wixsite.com/huya-portfolio))
 - 개발 : 2명 ([권현아](https://github.com/kwonhyeona), [이지은](https://github.com/Leejieun3001))
 
 

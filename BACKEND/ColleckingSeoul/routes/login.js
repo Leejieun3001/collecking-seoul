@@ -83,6 +83,7 @@ router.post('/', function (req, res) {
                     phone: rows[0].phone,
                     birth: rows[0].birth,
                     url: rows[0].url,
+                    snsCategory: rows[0].snsCategory,
                     sex: rows[0].sex
                 };
                 resultJson.token = jwtModule.makeToken(rows[0]);
@@ -198,9 +199,9 @@ router.post('/sns', function (req, res) {
             phone: row.phone,
             birth: row.birth,
             url: row.url,
+            snsCategory: row.snsCategory,
             sex: row.sex
         };
-        console.log('login', row);
         resultJson.token = jwtModule.makeToken(row);
     }
 

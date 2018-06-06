@@ -40,6 +40,10 @@ public class LogoutFragmentDialog extends DialogFragment {
     Button buttonLogout;
 
     SessionCallback callbackForKakao;
+    int snsCategory;
+    final int NOMAL     = 0;
+    final int FACEBOOK  = 1;
+    final int KAKAO     = 2;
 
     private static String TAG = "LogoutFragmentDialog";
 
@@ -72,6 +76,8 @@ public class LogoutFragmentDialog extends DialogFragment {
         Dialog dialog = super.onCreateDialog(savedInstanceState);
         // request a window without the title
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        final SharedPreferences userInfo = getActivity().getSharedPreferences("user", MODE_PRIVATE);
+        this.snsCategory = userInfo.getInt("snsCategory", 0);
         return dialog;
     }
 
@@ -92,11 +98,11 @@ public class LogoutFragmentDialog extends DialogFragment {
             @Override
             public void onClick(View v) {
                 deleteInfo();
-                //페이스북 로그아웃
-                LoginManager.getInstance().logOut();
-                //카카오톡 로그아웃
-                logoutKakao();
-                goLogin();
+                switch (snsCategory) {
+                    case FACEBOOK: LoginManager.getInstance().logOut(); goLogin(); break;
+                    case KAKAO:    logoutKakao(); break;
+                    case NOMAL:    goLogin(); break;
+                }
             }
         });
     }
@@ -112,7 +118,7 @@ public class LogoutFragmentDialog extends DialogFragment {
             @Override
             public void onCompleteLogout() {
                 Log.d(TAG, "로그아웃 완료");
-                //로그아웃 완료시 LOGOUT_OK 이벤트를 발생시킵니다.
+                goLogin();
             }
         });
     }

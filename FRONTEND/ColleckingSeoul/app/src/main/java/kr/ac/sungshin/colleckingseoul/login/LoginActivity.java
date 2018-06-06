@@ -227,6 +227,7 @@ public class LoginActivity extends AppCompatActivity {
         editor.putString("birth", user.getBirth());
         editor.putInt("sex", user.getSex());
         editor.putString("url", user.getUrl());
+        editor.putInt("snsCategory", user.getSnsCategory());
         editor.putString("token", token);
         editor.putBoolean("autoLogin", autoLoginCheckBox.isChecked());
         editor.putString("loginDate", new Date().toString());
@@ -402,6 +403,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSessionClosed(ErrorResult errorResult) {
                 Log.d(TAG, "오류로 카카오로그인 실패 ");
+                kakaoLogout();
             }
 
             @Override

@@ -11,6 +11,7 @@ public class User {
     private String phone;
     private String birth;
     private String url;
+    private int snsCategory;
     private int sex;
 
 
@@ -29,6 +30,17 @@ public class User {
         this.phone = phone;
         this.birth = birth;
         this.url = url;
+        this.sex = sex;
+    }
+
+    public User(String idx, String id, String nickname, String phone, String birth, String url, int snsCategory, int sex) {
+        this.idx = idx;
+        this.id = id;
+        this.nickname = nickname;
+        this.phone = phone;
+        this.birth = birth;
+        this.url = url;
+        this.snsCategory = snsCategory;
         this.sex = sex;
     }
 
@@ -58,5 +70,13 @@ public class User {
 
     public int getSex() {
         return sex;
+    }
+
+    public int getSnsCategory() {
+        return snsCategory;
+    }
+
+    public void setSnsCategory(int snsCategory) {
+        this.snsCategory = snsCategory;
     }
 }

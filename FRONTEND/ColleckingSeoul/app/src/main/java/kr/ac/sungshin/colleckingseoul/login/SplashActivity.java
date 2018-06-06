@@ -118,6 +118,7 @@ public class SplashActivity extends AppCompatActivity {
         editor.putString("birth", user.getBirth());
         editor.putInt("sex", user.getSex());
         editor.putString("url", user.getUrl());
+        editor.putInt("snsCategory", user.getSnsCategory());
         editor.putString("token", token);
         editor.putString("loginDate", new Date().toString());
         editor.apply();

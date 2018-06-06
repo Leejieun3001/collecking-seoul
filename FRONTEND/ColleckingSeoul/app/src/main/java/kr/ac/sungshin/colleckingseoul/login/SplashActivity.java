@@ -75,6 +75,7 @@ public class SplashActivity extends AppCompatActivity {
                                     case "SUCCESS":
                                         User user = response.body().getUser();
                                         String token = response.body().getToken();
+                                        Log.d("토큰" , token);
                                         saveInfo(user, token);
                                         goHome();
                                         break;

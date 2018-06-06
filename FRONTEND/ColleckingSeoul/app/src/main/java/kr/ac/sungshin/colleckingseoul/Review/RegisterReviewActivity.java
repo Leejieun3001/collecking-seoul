@@ -181,7 +181,7 @@ public class RegisterReviewActivity extends AppCompatActivity {
                 }
 //
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos); // 압축 옵션( JPEG, PNG ) , 품질 설정 ( 0 - 100까지의 int형 ),
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos); // 압축 옵션( JPEG, PNG ) , 품질 설정 ( 0 - 100까지의 int형 ),
 
                 RequestBody photoBody = RequestBody.create(MediaType.parse("image/jpg"), baos.toByteArray());
                 body = MultipartBody.Part.createFormData("photo", file.getName(), photoBody);

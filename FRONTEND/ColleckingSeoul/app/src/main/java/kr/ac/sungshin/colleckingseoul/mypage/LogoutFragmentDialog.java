@@ -40,11 +40,12 @@ public class LogoutFragmentDialog extends DialogFragment {
     @BindView(R.id.logoutfragmentdialog_button_logout)
     Button buttonLogout;
 
+
     SessionCallback callbackForKakao;
     int snsCategory;
-    final int NOMAL     = 0;
-    final int FACEBOOK  = 1;
-    final int KAKAO     = 2;
+    final int NOMAL = 0;
+    final int FACEBOOK = 1;
+    final int KAKAO = 2;
 
     private static String TAG = "LogoutFragmentDialog";
 
@@ -99,14 +100,24 @@ public class LogoutFragmentDialog extends DialogFragment {
             @Override
             public void onClick(View v) {
                 deleteInfo();
+
                 switch (snsCategory) {
-                    case FACEBOOK: LoginManager.getInstance().logOut(); goLogin(); break;
-                    case KAKAO:    logoutKakao(); break;
-                    default:       goLogin(); break;
+                    case FACEBOOK:
+                        LoginManager.getInstance().logOut();
+                        goLogin();
+                        break;
+                    case KAKAO:
+                        logoutKakao();
+                        break;
+                    default:
+                        goLogin();
+                        break;
                 }
+
             }
         });
     }
+
 
     private void logoutKakao() {
         callbackForKakao = SessionCallback.getInstance();

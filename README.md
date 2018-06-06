@@ -1,4 +1,6 @@
 # collecking-seoul
+![image](./FRONTEND/ColleckingSeoul/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png)
+
 
 
 ## 소개

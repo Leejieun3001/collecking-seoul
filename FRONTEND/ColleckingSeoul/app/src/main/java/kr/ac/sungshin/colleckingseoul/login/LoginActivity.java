@@ -381,7 +381,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private void loginOnKakao() {
         // 카카오 세션을 오픈한다
-        callbackForKakao = new SessionCallback();
+        callbackForKakao = SessionCallback.getInstance();
+        callbackForKakao.setInfo(LoginActivity.this, "LOGIN");
         Session.getCurrentSession().addCallback(callbackForKakao);
         Session.getCurrentSession().open(AuthType.KAKAO_LOGIN_ALL, LoginActivity.this);
     }
@@ -403,7 +404,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSessionClosed(ErrorResult errorResult) {
                 Log.d(TAG, "오류로 카카오로그인 실패 ");
-                kakaoLogout();
+                callbackForKakao.logout();
             }
 
             @Override
@@ -441,8 +442,8 @@ public class LoginActivity extends AppCompatActivity {
                                     Toast.makeText(getBaseContext(), "카카오 계정이 아닌 다른 계정이 등록되어 있습니다.", Toast.LENGTH_SHORT).show();
                                     break;
                             }
-                            kakaoLogout();
                         }
+                        callbackForKakao.logout();
                     }
 
                     @Override
@@ -458,32 +459,6 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d(TAG, "onNotSignedUp");
             }
         });
-    }
-
-    protected void kakaoLogout() {
-        UserManagement.requestLogout(new LogoutResponseCallback() {
-            @Override
-            public void onCompleteLogout() {
-
-            }
-        });
-    }
-
-    private class SessionCallback implements ISessionCallback {
-        @Override
-        public void onSessionOpened() {
-            Log.d(TAG, "세션 오픈됨 : ");
-            // 사용자 정보를 가져옴, 회원가입 미가입시 자동가입 시킴
-            requestMeOnKakao();
-//            kakaoLogout();
-        }
-
-        @Override
-        public void onSessionOpenFailed(KakaoException exception) {
-            if (exception != null) {
-                Log.d(TAG, exception.getMessage());
-            }
-        }
     }
 
     //뒤로가기 버튼 클릭

@@ -30,6 +30,7 @@ import butterknife.ButterKnife;
 import kr.ac.sungshin.colleckingseoul.R;
 import kr.ac.sungshin.colleckingseoul.home.HomeActivity;
 import kr.ac.sungshin.colleckingseoul.login.LoginActivity;
+import kr.ac.sungshin.colleckingseoul.login.SessionCallback;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -101,26 +102,18 @@ public class LogoutFragmentDialog extends DialogFragment {
                 switch (snsCategory) {
                     case FACEBOOK: LoginManager.getInstance().logOut(); goLogin(); break;
                     case KAKAO:    logoutKakao(); break;
-                    case NOMAL:    goLogin(); break;
+                    default:       goLogin(); break;
                 }
             }
         });
     }
 
     private void logoutKakao() {
-        callbackForKakao = new SessionCallback();
+        callbackForKakao = SessionCallback.getInstance();
+        callbackForKakao.setInfo(getActivity(), "LOGOUT");
+        callbackForKakao.setDialog(this);
         Session.getCurrentSession().addCallback(callbackForKakao);
-        Session.getCurrentSession().open(AuthType.KAKAO_TALK, getActivity());
-    }
-
-    private void logout() {
-        UserManagement.requestLogout(new LogoutResponseCallback() {
-            @Override
-            public void onCompleteLogout() {
-                Log.d(TAG, "로그아웃 완료");
-                goLogin();
-            }
-        });
+        Session.getCurrentSession().open(AuthType.KAKAO_LOGIN_ALL, getActivity());
     }
 
     public void goLogin() {
@@ -134,22 +127,6 @@ public class LogoutFragmentDialog extends DialogFragment {
     public void deleteInfo() {
         SharedPreferences userInfo = getActivity().getSharedPreferences("user", MODE_PRIVATE);
         userInfo.edit().clear().commit();
-    }
-
-    private class SessionCallback implements ISessionCallback {
-        @Override
-        public void onSessionOpened() {
-            Log.d(TAG, "세션 오픈됨 : ");
-            // 사용자 정보를 가져옴, 회원가입 미가입시 자동가입 시킴
-            logout();
-        }
-
-        @Override
-        public void onSessionOpenFailed(KakaoException exception) {
-            if (exception != null) {
-                Log.d(TAG, exception.getMessage());
-            }
-        }
     }
 
 }

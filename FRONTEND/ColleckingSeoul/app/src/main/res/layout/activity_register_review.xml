@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/registerreview_linearlayout_container"
+    android:id="@+id/registerreview_relativelayout_container"
     tools:context="kr.ac.sungshin.colleckingseoul.Review.RegisterReviewActivity"
     android:orientation="vertical">
     <ScrollView
@@ -52,5 +52,10 @@
                 android:text="글 등록하기"/>
         </LinearLayout>
     </ScrollView>
-
-</LinearLayout>
+    <ProgressBar
+        android:id="@+id/registerreview_progressbar_progressbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
+</RelativeLayout>

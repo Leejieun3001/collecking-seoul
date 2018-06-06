@@ -5,12 +5,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.media.Rating;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,7 +26,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -55,8 +61,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class RegisterReviewActivity extends AppCompatActivity {
-    @BindView(R.id.registerreview_linearlayout_container)
-    LinearLayout containerLayout;
+    @BindView(R.id.registerreview_relativelayout_container)
+    RelativeLayout containerLayout;
     @BindView(R.id.registerreview_edittext_title)
     EditText titleEditText;
     @BindView(R.id.registerreview_edittext_content)
@@ -69,6 +75,8 @@ public class RegisterReviewActivity extends AppCompatActivity {
     Button writeButton;
     @BindView(R.id.registerreview_ratingbar_ratingbar)
     RatingBar ratingBar;
+    @BindView(R.id.registerreview_progressbar_progressbar)
+    ProgressBar progressBar;
 
     private NetworkService service;
     private final String TAG = "RegisterReviewActivity";
@@ -91,6 +99,13 @@ public class RegisterReviewActivity extends AppCompatActivity {
         idx = gettingIntent.getStringExtra("idx");
         purpose = gettingIntent.getStringExtra("purpose");
 
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            Drawable wrapDrawable = DrawableCompat.wrap(progressBar.getIndeterminateDrawable());
+            DrawableCompat.setTint(wrapDrawable, ContextCompat.getColor(getBaseContext(), R.color.colorAccent));
+            progressBar.setIndeterminateDrawable(DrawableCompat.unwrap(wrapDrawable));
+        } else {
+            progressBar.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(getBaseContext(), android.R.color.holo_green_light), PorterDuff.Mode.SRC_IN);
+        }
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("");
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -136,6 +151,7 @@ public class RegisterReviewActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (!checkValid()) return;
 
+                progressBar.setVisibility(View.VISIBLE);
                 float reviewRating = ratingBar.getRating();
                 Log.d(TAG, "reviewRating : " + reviewRating);
                 RequestBody title = RequestBody.create(MediaType.parse("multipart/form-data"), titleEditText.getText().toString());
@@ -217,12 +233,15 @@ public class RegisterReviewActivity extends AppCompatActivity {
                     } else {
                         Toast.makeText(getBaseContext(), "후기 수정에 에러가 발생했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
                     }
+                    progressBar.setVisibility(View.GONE);
                 }
+
             }
 
             @Override
             public void onFailure(Call<DefaultResult> call, Throwable t) {
                 Log.d(TAG, "onFailure");
+                progressBar.setVisibility(View.GONE);
             }
         });
     }
@@ -241,12 +260,14 @@ public class RegisterReviewActivity extends AppCompatActivity {
                     } else {
                         Toast.makeText(getBaseContext(), "후기 등록에 에러가 발생했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
                     }
+                    progressBar.setVisibility(View.GONE);
                 }
             }
 
             @Override
             public void onFailure(Call<DefaultResult> call, Throwable t) {
                 Log.d(TAG, "onFailure");
+                progressBar.setVisibility(View.GONE);
             }
         });
     }

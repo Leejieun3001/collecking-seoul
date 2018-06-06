@@ -2,17 +2,25 @@ package kr.ac.sungshin.colleckingseoul.login;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ProgressBar;
 
 import java.lang.ref.WeakReference;
 import java.util.Calendar;
 import java.util.Date;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import kr.ac.sungshin.colleckingseoul.R;
 import kr.ac.sungshin.colleckingseoul.home.HomeActivity;
 import kr.ac.sungshin.colleckingseoul.model.request.RefreshToken;
@@ -26,6 +34,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SplashActivity extends AppCompatActivity {
+    @BindView(R.id.splash_progressbar_progressbar)
+    ProgressBar progressBar;
+
     private static final String TAG = "Splash";
     private NetworkService service;
     private final SplashHandler handler = new SplashHandler(this);
@@ -88,6 +99,16 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        ButterKnife.bind(this);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+
+            Drawable wrapDrawable = DrawableCompat.wrap(progressBar.getIndeterminateDrawable());
+            DrawableCompat.setTint(wrapDrawable, ContextCompat.getColor(getBaseContext(), R.color.colorAccent));
+            progressBar.setIndeterminateDrawable(DrawableCompat.unwrap(wrapDrawable));
+        } else {
+            progressBar.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(getBaseContext(), android.R.color.holo_green_light), PorterDuff.Mode.SRC_IN);
+        }
 
         service = ApplicationController.getInstance().getNetworkService();
         ActionBar actionBar = getSupportActionBar();

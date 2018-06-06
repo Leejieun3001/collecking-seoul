@@ -16,6 +16,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -107,7 +108,9 @@ public class ReviewListActivity extends AppCompatActivity implements OnMapReadyC
     public void onMapReady(GoogleMap map) {
         googleMap = map;
         googleMap.getUiSettings().setAllGesturesEnabled(false);
-        googleMap.addMarker(new MarkerOptions().position(initPosition));
+        MarkerOptions markerOptions = new MarkerOptions().position(initPosition);
+        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.main_place_visit));
+        googleMap.addMarker(markerOptions);
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initPosition, 15));
     }
 

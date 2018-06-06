@@ -24,5 +24,8 @@
     <style name="CustomActionBarTitleText" parent="android:style/TextAppearance.Holo.Widget.ActionBar.Title">
         <item name="android:textColor">@color/colorWhite</item>
     </style>
+    <style name="AppTheme.AccentColor">
+        <item name="colorAccent">@color/colorAccent</item> <!-- Whatever color you want-->
+    </style>
 
 </resources>

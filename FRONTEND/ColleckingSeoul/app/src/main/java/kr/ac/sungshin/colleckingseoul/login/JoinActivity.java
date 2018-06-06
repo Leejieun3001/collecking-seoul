@@ -3,16 +3,22 @@ package kr.ac.sungshin.colleckingseoul.login;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -26,6 +32,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -85,6 +92,8 @@ public class JoinActivity extends AppCompatActivity {
     CircleImageView imageProfile;
     @BindView(R.id.join_radioGroup_sex)
     RadioGroup radioGroupSex;
+    @BindView(R.id.join_progressbar_progressbar)
+    ProgressBar progressBar;
 
     private NetworkService service;
     private final String TAG = "JoinActivity";
@@ -111,6 +120,14 @@ public class JoinActivity extends AppCompatActivity {
         service = ApplicationController.getInstance().getNetworkService();
         ButterKnife.bind(this);
 
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            Drawable wrapDrawable = DrawableCompat.wrap(progressBar.getIndeterminateDrawable());
+            DrawableCompat.setTint(wrapDrawable, ContextCompat.getColor(getBaseContext(), R.color.colorAccent));
+            progressBar.setIndeterminateDrawable(DrawableCompat.unwrap(wrapDrawable));
+        } else {
+            progressBar.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(getBaseContext(), android.R.color.holo_green_light), PorterDuff.Mode.SRC_IN);
+        }
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("");
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -246,6 +263,7 @@ public class JoinActivity extends AppCompatActivity {
         buttonJoin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                progressBar.setVisibility(View.VISIBLE);
                 int typeId = radioGroupSex.getCheckedRadioButtonId();
 
                 RadioButton radiobuttonSex = (RadioButton) findViewById(typeId);
@@ -311,7 +329,6 @@ public class JoinActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<BaseResult> call, Response<BaseResult> response) {
                         if (response.isSuccessful()) {
-
                             if (response.body().getMessage().equals("SUCCESS")) {
                                 Toast.makeText(getApplicationContext(), "회원가입이 성공적으로 완료되었습니다.", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
@@ -320,13 +337,14 @@ public class JoinActivity extends AppCompatActivity {
                             } else {
                                 Toast.makeText(getApplicationContext(), "죄송합니다. 오류가 발생하였습니다. 빠른시일 내에 개선하겠습니다.", Toast.LENGTH_SHORT).show();
                             }
-
+                            progressBar.setVisibility(View.GONE);
                         }
                     }
 
                     @Override
                     public void onFailure(Call<BaseResult> call, Throwable t) {
                         Log.d(TAG, "onFailure");
+                        progressBar.setVisibility(View.GONE);
                     }
                 });
             }

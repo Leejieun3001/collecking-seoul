@@ -91,7 +91,7 @@ public class RankFragment extends Fragment {
         super();
     }
 
-    public void setFragmentManager (FragmentManager fragmentManager) {
+    public void setFragmentManager(FragmentManager fragmentManager) {
         this.fragmentManager = fragmentManager;
     }
 
@@ -199,19 +199,19 @@ public class RankFragment extends Fragment {
 
     public View.OnClickListener clickEvent = new View.OnClickListener() {
         public void onClick(View v) {
-        int itemPosition = landmarkRecyclerView.getChildPosition(v);
-        LandmarkRank landmarkRank = landmarkRankList.get(itemPosition);
-        int tempId = landmarkRank.getIdx();
-        double lat = landmarkRank.getLat();
-        double lng = landmarkRank.getLng();
-        String name = landmarkRank.getName();
-        Intent intent = new Intent(getContext(), ReviewListActivity.class);
+            int itemPosition = landmarkRecyclerView.getChildPosition(v);
+            LandmarkRank landmarkRank = landmarkRankList.get(itemPosition);
+            int tempId = landmarkRank.getIdx();
+            double lat = landmarkRank.getLat();
+            double lng = landmarkRank.getLng();
+            String name = landmarkRank.getName();
+            Intent intent = new Intent(getContext(), ReviewListActivity.class);
 
-        intent.putExtra("idx", tempId);
-        intent.putExtra("lat", lat);
-        intent.putExtra("lng", lng);
-        intent.putExtra("title", name);
-        startActivity(intent);
+            intent.putExtra("idx", tempId);
+            intent.putExtra("lat", lat);
+            intent.putExtra("lng", lng);
+            intent.putExtra("title", name);
+            startActivity(intent);
         }
     };
 }

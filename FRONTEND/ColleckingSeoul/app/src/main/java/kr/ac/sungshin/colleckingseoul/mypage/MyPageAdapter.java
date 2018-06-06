@@ -29,10 +29,12 @@ public class MyPageAdapter extends RecyclerView.Adapter<MyPageAdapter.ViewHolder
     private final String TAG = "MyPageAdapter";
     private Context context;
     private ArrayList<Landmark> list;
+    View.OnClickListener mOnClickListener;
 
-    public MyPageAdapter(Context context, ArrayList<Landmark> list) {
+    public MyPageAdapter(Context context, ArrayList<Landmark> list, View.OnClickListener mOnClickListener) {
         this.context = context;
         this.list = list;
+        this.mOnClickListener = mOnClickListener;
     }
 
     public void setAdapter(ArrayList<Landmark> list) {
@@ -42,20 +44,20 @@ public class MyPageAdapter extends RecyclerView.Adapter<MyPageAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return (list != null) ? list.size() : 0;
     }
-    
+
     @Override
     public MyPageAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_my_landmark, parent, false);
+        view.setOnClickListener(mOnClickListener);
         return new MyPageAdapter.ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(MyPageAdapter.ViewHolder holder, int position) {
         Landmark item = list.get(position);
-         Log.d(TAG, item.getName());
         holder.textViewMyLandmarkName.setText(item.getName());
     }
 

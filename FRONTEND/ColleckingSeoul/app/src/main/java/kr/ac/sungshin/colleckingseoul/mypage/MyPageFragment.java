@@ -19,7 +19,9 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import kr.ac.sungshin.colleckingseoul.R;
+import kr.ac.sungshin.colleckingseoul.Review.ReviewListActivity;
 import kr.ac.sungshin.colleckingseoul.model.response.MyLandmarkResult;
+import kr.ac.sungshin.colleckingseoul.model.response.rank.LandmarkRank;
 import kr.ac.sungshin.colleckingseoul.network.ApplicationController;
 import kr.ac.sungshin.colleckingseoul.network.NetworkService;
 import kr.ac.sungshin.colleckingseoul.rank.UserRankAdapter;
@@ -111,7 +113,7 @@ public class MyPageFragment extends android.support.v4.app.Fragment {
     }
 
     private void setAdapter() {
-        myPageAdapter = new MyPageAdapter(getContext(), MyVisitList);
+        myPageAdapter = new MyPageAdapter(getContext(), MyVisitList, clickEvent);
         myPageAdapter.notifyDataSetChanged();
         recyclerViewMyLandmark.setAdapter(myPageAdapter);
     }
@@ -146,6 +148,26 @@ public class MyPageFragment extends android.support.v4.app.Fragment {
         });
 
     }
+
+    public View.OnClickListener clickEvent = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int itemPosition = recyclerViewMyLandmark.getChildPosition(v);
+            Landmark landmark = MyVisitList.get(itemPosition);
+            int tempId = landmark.getIdx();
+            double lat = landmark.getLat();
+            double lng = landmark.getLng();
+            String name = landmark.getName();
+            Intent intent = new Intent(getContext(), ReviewListActivity.class);
+
+            intent.putExtra("idx", tempId);
+            intent.putExtra("lat", lat);
+            intent.putExtra("lng", lng);
+            intent.putExtra("title", name);
+            startActivity(intent);
+
+        }
+    };
 
     public void bindClickListener() {
         textViewModifyInfo.setOnClickListener(new View.OnClickListener() {

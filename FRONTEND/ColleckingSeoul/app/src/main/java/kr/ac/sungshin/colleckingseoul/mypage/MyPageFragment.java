@@ -158,6 +158,11 @@ public class MyPageFragment extends android.support.v4.app.Fragment {
         TextViewModifyPw.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (snsCategory != 0) {
+                    Log.d(TAG, "snsCategory : " + snsCategory);
+                    Toast.makeText(getActivity(), "SNS 비밀번호는 해당 SNS에서 수정해주시기 바랍니다.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Intent intent = new Intent(getActivity(), MypageModifyPwActivity.class);
                 startActivity(intent);
             }
@@ -166,10 +171,6 @@ public class MyPageFragment extends android.support.v4.app.Fragment {
         textViewLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (snsCategory != 0) {
-                    Toast.makeText(getActivity(), "SNS 비밀번호는 해당 SNS에서 수정해주시기 바랍니다.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
                 Bundle args = new Bundle();
                 args.putString("key", "value");
                 LogoutFragmentDialog dialog = new LogoutFragmentDialog();

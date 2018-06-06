@@ -166,7 +166,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<LoginResult> call, Throwable t) {
-                        Log.d(TAG, "실패");
+                        Log.d(TAG, "죄송합니다. 서버에 오류가 발생하였습니다. 빠른 시일내에 개선하겠습니다");
                     }
                 });
 
@@ -339,7 +339,7 @@ public class LoginActivity extends AppCompatActivity {
                                                 Toast.makeText(getBaseContext(), "페이스북 아닌 다른 계정이 등록되어 있습니다.", Toast.LENGTH_SHORT).show();
                                                 break;
                                             case "SUCCESS":
-                                                Toast.makeText(getBaseContext(), " 감사합니다!. Facebook 으로 로그인 중 입니다.", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(getBaseContext(), " 감사합니다! Facebook 으로 로그인 중 입니다.", Toast.LENGTH_SHORT).show();
 
                                                 User user = response.body().getUser();
                                                 String token = response.body().getToken();

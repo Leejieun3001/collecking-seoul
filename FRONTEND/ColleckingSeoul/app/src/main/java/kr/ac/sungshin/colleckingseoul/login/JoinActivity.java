@@ -103,11 +103,6 @@ public class JoinActivity extends AppCompatActivity {
     private String verificationCode = "";
 
     private static final int REQ_CODE_SELECT_IMAGE = 100;
-    private static final String TYPE_IMAGE = "image/*";
-
-    private static final String TEMP_FILE_NAME = "profileImageTemp.jpg";
-
-    private String photo = "";
     String imgUrl = "";
 
     Uri data;
@@ -144,7 +139,6 @@ public class JoinActivity extends AppCompatActivity {
         actionBar.setCustomView(imageView);
 
         bindClickListener();
-
     }
 
     @Override
@@ -158,13 +152,12 @@ public class JoinActivity extends AppCompatActivity {
 
     //클릭 이벤트 바인딩
     public void bindClickListener() {
+        Log.d(TAG, "bindClickListener");
         //갤러리에서 프로필 사진 가져오기
         buttonProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 Intent intent = new Intent(Intent.ACTION_PICK);
-                File tempFile = new File(Environment.getExternalStorageDirectory() + "/temp.jpg");
                 intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
                 intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(intent, REQ_CODE_SELECT_IMAGE);
@@ -282,7 +275,7 @@ public class JoinActivity extends AppCompatActivity {
                     birthDate = "0" + Integer.toString(Datepickerbirth.getDayOfMonth());
                 else birthDate = Integer.toString(Datepickerbirth.getDayOfMonth());
 
-                if (!checkValid(editTextId.getText().toString(), editTextPassword.getText().toString(), editTextRepassword.getText().toString(), editTextPhone.getText().toString(), editTextNikname.getText().toString(), birthYear + "-" + birthMonth + "-" + birthDate)) {
+                if (!checkValid(editTextId.getText().toString(), editTextPassword.getText().toString(), editTextRepassword.getText().toString(), editTextPhone.getText().toString(), editTextNikname.getText().toString())) {
                     return;
                 }
 
@@ -312,30 +305,49 @@ public class JoinActivity extends AppCompatActivity {
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
-                    bitmap = BitmapFactory.decodeStream(in, null, options); // InputStream 으로부터 Bitmap 을 만들어 준다
-                    file = new File(imgUrl); // 그저 블러온 파일의 이름을 알아내려고 사용.
+                    bitmap = BitmapFactory.decodeStream(in, null, options);
+                    file = new File(imgUrl);
                 }
 
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos); // 압축 옵션( JPEG, PNG ) , 품질 설정 ( 0 - 100까지의 int형 ),
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
 
                 RequestBody photoBody = RequestBody.create(MediaType.parse("image/jpg"), baos.toByteArray());
                 body = MultipartBody.Part.createFormData("photo", file.getName(), photoBody);
 
 
-
                 Call<BaseResult> getJoinResult = service.getJoinResult(id, password1, password2, phone, nickname, birth, sex, body);
+
                 getJoinResult.enqueue(new Callback<BaseResult>() {
                     @Override
                     public void onResponse(Call<BaseResult> call, Response<BaseResult> response) {
                         if (response.isSuccessful()) {
-                            if (response.body().getMessage().equals("SUCCESS")) {
-                                Toast.makeText(getApplicationContext(), "회원가입이 성공적으로 완료되었습니다.", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                                startActivity(intent);
-                                finish();
-                            } else {
-                                Toast.makeText(getApplicationContext(), "죄송합니다. 오류가 발생하였습니다. 빠른시일 내에 개선하겠습니다.", Toast.LENGTH_SHORT).show();
+                            String message = response.body().getMessage();
+                            switch (message) {
+                                case "SUCCESS":
+                                    Toast.makeText(getApplicationContext(), "회원가입이 성공적으로 완료되었습니다.", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                    break;
+                                case "ALREADY_JOIN":
+                                    Toast.makeText(getApplicationContext(), "이미 가입된 유저 입니다.", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case "EMPTY_VALUE":
+                                    Toast.makeText(getApplicationContext(), "파라미터 값이 비어있습니다.", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case "NULL_VALUE":
+                                    Toast.makeText(getApplicationContext(), "받아야 할 파라미터가 존재하지 않습니다.", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case "NOT_CORRESPOND":
+                                    Toast.makeText(getApplicationContext(), "두 비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case "NOT_MATCH_REGULATION":
+                                    Toast.makeText(getApplicationContext(), "입력 형식이 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case "NO_IMAGE":
+                                    Toast.makeText(getApplicationContext(), "이미지가 없습니다.", Toast.LENGTH_SHORT).show();
+                                    break;
                             }
                             progressBar.setVisibility(View.GONE);
                         }
@@ -343,17 +355,18 @@ public class JoinActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<BaseResult> call, Throwable t) {
-                        Log.d(TAG, "onFailure");
+                        Toast.makeText(getApplicationContext(), "죄송합니다. 서버에 오류가 발생하였습니다. 빠른 시일내에 개선하겠습니다", Toast.LENGTH_SHORT).show();
                         progressBar.setVisibility(View.GONE);
                     }
                 });
+                Log.d(TAG, "통신 끝");
             }
         });
 
         containerLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(editTextId.getWindowToken(), 0);
                 imm.hideSoftInputFromWindow(editTextPassword.getWindowToken(), 0);
                 imm.hideSoftInputFromWindow(editTextcheckCode.getWindowToken(), 0);
@@ -365,7 +378,7 @@ public class JoinActivity extends AppCompatActivity {
     }
     //유효성 체크
 
-    public boolean checkValid(String id, String password, String repassword, String phone, String name, String birth) {
+    public boolean checkValid(String id, String password, String repassword, String phone, String name) {
         // 빈칸 체크
         if (id.equals("")) {
             Toast.makeText(getBaseContext(), "이메일을 입력해주세요.", Toast.LENGTH_SHORT).show();
@@ -383,10 +396,6 @@ public class JoinActivity extends AppCompatActivity {
 
         if (phone.equals("") || !phone.matches("^[0-9]{11}+$")) {
             Toast.makeText(getBaseContext(), "전화번호를 올바르게 입력해주세요. - 없이 번호만 입력해 주세요.", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        if (birth.equals("")) {
-            Toast.makeText(getBaseContext(), "생년월일을 입력해주세요.", Toast.LENGTH_SHORT).show();
             return false;
         }
         //비밀번호 일치 체크

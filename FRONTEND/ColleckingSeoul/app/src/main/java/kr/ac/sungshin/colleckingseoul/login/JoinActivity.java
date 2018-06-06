@@ -263,7 +263,6 @@ public class JoinActivity extends AppCompatActivity {
         buttonJoin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                progressBar.setVisibility(View.VISIBLE);
                 int typeId = radioGroupSex.getCheckedRadioButtonId();
 
                 RadioButton radiobuttonSex = (RadioButton) findViewById(typeId);
@@ -287,6 +286,7 @@ public class JoinActivity extends AppCompatActivity {
                     return;
                 }
 
+                progressBar.setVisibility(View.VISIBLE);
                 RequestBody id = RequestBody.create(MediaType.parse("multipart/form-data"), editTextId.getText().toString().trim());
                 RequestBody password1 = RequestBody.create(MediaType.parse("multipart/form-data"), editTextPassword.getText().toString());
                 RequestBody password2 = RequestBody.create(MediaType.parse("multipart/form-data"), editTextRepassword.getText().toString());

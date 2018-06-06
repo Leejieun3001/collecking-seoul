@@ -40,10 +40,10 @@ router.post('/', function (req, res) {
     }
 
     let selectUserInfo = function (connection, callback) {
-        connection.query("select u.idx, u.id, u.password, u.snsCategory, u.nickname, u.phone, u.birth, u.sex, (case when p.board_idx is null then '' else p.url end) url " +
+        connection.query("select u.idx, u.id, u.password, u.snsCategory, u.nickname, u.phone, u.birth, u.sex, (case when p.board_idx is null then p.url else '' end) url " +
                         "from User u left outer join Photo p " + 
                         "on u.idx=p.user_idx " + 
-                        "where u.id = ?", req.body.id, function (error, rows) {
+                        "where u.id = ? and p.board_idx is null", req.body.id, function (error, rows) {
             if (error) callback(error, connection, "Selecet query Error : ");
             else {
                 console.log(rows);

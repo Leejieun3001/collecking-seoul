@@ -209,7 +209,7 @@ public class LoginActivity extends AppCompatActivity {
         containerLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(idEditText.getWindowToken(), 0);
                 imm.hideSoftInputFromWindow(passwordEditText.getWindowToken(), 0);
             }
@@ -378,6 +378,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
 
     private void loginOnKakao() {
         // 카카오 세션을 오픈한다

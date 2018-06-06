@@ -96,6 +96,8 @@ public class ReviewListActivity extends AppCompatActivity implements OnMapReadyC
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_FOR_BOARD && resultCode == RESULT_OK) {
             // 리스트 갱신 필요
+            recyclerView.setVisibility(View.VISIBLE);
+            textViewNull.setVisibility(View.GONE);
             getReview(idx);
             adapter.notifyDataSetChanged();
         }

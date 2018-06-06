@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -90,7 +91,6 @@ public class ReviewListActivity extends AppCompatActivity implements OnMapReadyC
         initRecyclerView();
         getReview(idx);
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

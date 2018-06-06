@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -59,6 +60,7 @@ public class MyPageFragment extends android.support.v4.app.Fragment {
     private MyPageAdapter myPageAdapter;
     private LinearLayoutManager myPageLayoutManager;
     private ArrayList<Landmark> MyVisitList = new ArrayList<>();
+    private int snsCategory;
 
     public MyPageFragment() {
         super();
@@ -93,6 +95,7 @@ public class MyPageFragment extends android.support.v4.app.Fragment {
 
         SharedPreferences userInfo = getActivity().getSharedPreferences("user", MODE_PRIVATE);
         String userNickname = userInfo.getString("nickname", "");
+        snsCategory = userInfo.getInt("snsCategory", 0);
         textViewMemberNickname.setText(userNickname);
         getVisitList();
         bindClickListener();
@@ -163,6 +166,10 @@ public class MyPageFragment extends android.support.v4.app.Fragment {
         textViewLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (snsCategory != 0) {
+                    Toast.makeText(getActivity(), "SNS 비밀번호는 해당 SNS에서 수정해주시기 바랍니다.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Bundle args = new Bundle();
                 args.putString("key", "value");
                 LogoutFragmentDialog dialog = new LogoutFragmentDialog();

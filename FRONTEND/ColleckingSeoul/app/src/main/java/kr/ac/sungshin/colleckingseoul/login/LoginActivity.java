@@ -340,7 +340,6 @@ public class LoginActivity extends AppCompatActivity {
                                                 break;
                                             case "SUCCESS":
                                                 Toast.makeText(getBaseContext(), " 감사합니다! Facebook 으로 로그인 중 입니다.", Toast.LENGTH_SHORT).show();
-
                                                 User user = response.body().getUser();
                                                 String token = response.body().getToken();
                                                 saveInfo(user, token);

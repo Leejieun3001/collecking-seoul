@@ -1,9 +1,9 @@
 ## 주요코드
 
 ### Retrofit2 + OkHttp3
-`**HTTP API** 통신을 이용해 서버에게 요청을 보내기 위해 사용한 라이브러리`입니다.  
+`HTTP API 통신을 이용해 서버에게 요청을 보내기 위해 사용한 라이브러리`입니다.  
 
-먼저 build.gradle 파일에 아래의 코드를 추가합니다.
+1. 먼저 **build.gradle** 파일에 아래의 코드를 추가합니다.
 ```
 dependencies {
     ...
@@ -22,7 +22,8 @@ AndroidManifest.xml 파일에 Application class를 등록합니다. 저의 경�
 </application>
 ```  
 
-ApplicationController.java 파일에 Retrofit 객체를 생성합니다.
+
+2. **ApplicationController.java** 파일에 Retrofit 객체를 생성합니다.
 ```java
 public class ApplicationController extends Application {
     private static ApplicationController instance;
@@ -55,7 +56,8 @@ public class ApplicationController extends Application {
 }
 ```  
 
-API를 나타낼 NetworkService 인터페이스를 생성합니다.
+
+3. API를 나타낼 **NetworkService 인터페이스**를 생성합니다.
 ```java
 public interface NetworkService {
     @POST("/login")
@@ -64,7 +66,8 @@ public interface NetworkService {
 }
 ```  
 
-실제로 서버와 HTTP 통신하는 코드 예제는 아래와 같습니다.
+
+4. 실제로 **서버와 HTTP 통신**하는 코드 예제는 아래와 같습니다.
 ```java
 loginButton.setOnClickListener(new View.OnClickListener() {
     @Override

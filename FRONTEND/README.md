@@ -22,7 +22,7 @@ AndroidManifest.xml 파일에 Application class를 등록합니다. 저의 경�
 </application>
 ```  
 
-
+  
 2. **ApplicationController.java** 파일에 Retrofit 객체를 생성합니다.
 ```java
 public class ApplicationController extends Application {

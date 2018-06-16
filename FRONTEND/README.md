@@ -13,7 +13,7 @@ dependencies {
 }
 ```  
 
-AndroidManifest.xml 파일에 Application class를 등록합니다. 저의 경우, .network 패키지에 있는 ApplicationController입니다.
+2. **AndroidManifest.xml** 파일에 **Application class**를 등록합니다. 저의 경우, .network 패키지에 있는 ApplicationController입니다.
 ```xml
 <application
         android:name=".network.ApplicationController"
@@ -23,7 +23,7 @@ AndroidManifest.xml 파일에 Application class를 등록합니다. 저의 경�
 ```  
 
   
-2. **ApplicationController.java** 파일에 Retrofit 객체를 생성합니다.
+3. **ApplicationController.java** 파일에 Retrofit 객체를 생성합니다.
 ```java
 public class ApplicationController extends Application {
     private static ApplicationController instance;
@@ -57,7 +57,7 @@ public class ApplicationController extends Application {
 ```  
 
 
-3. API를 나타낼 **NetworkService 인터페이스**를 생성합니다.
+4. API를 나타낼 **NetworkService 인터페이스**를 생성합니다.
 ```java
 public interface NetworkService {
     @POST("/login")
@@ -67,7 +67,7 @@ public interface NetworkService {
 ```  
 
 
-4. 실제로 **서버와 HTTP 통신**하는 코드 예제는 아래와 같습니다.
+5. 실제로 **서버와 HTTP 통신**하는 코드 예제는 아래와 같습니다.
 ```java
 loginButton.setOnClickListener(new View.OnClickListener() {
     @Override

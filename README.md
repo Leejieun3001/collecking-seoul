@@ -23,7 +23,7 @@
 
 
 ## 주요 기능
-`BACKEND`
+`BACKEND` ([주요기능 보러가기](https://github.com/kwonhyeona/collecking-seoul/blob/master/FRONTEND/README.md))
 - async.waterfall() 을 사용해 콜백 지옥 해결
 - jsonwebtoken(jwt) 을 사용해 토큰기반으로 프론트엔드와 통신
 - AWS의 서비스인 EC2를 이용해 구축된 서버를 배포하고, RDS를 통해 MySQL과 연결, S3에 사진을 업로드
